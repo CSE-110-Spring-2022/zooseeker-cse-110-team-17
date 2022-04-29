@@ -10,7 +10,7 @@ public interface EdgeItemDao {
     long insert(edgeItem EdgeItem);
 
     @Query("SELECT * FROM `edge_items` WHERE `id`=:id")
-    edgeItem get(long id);
+    edgeItem get(String id);
 
 //    @Query(SELECT * FROM `edge_items` ORDER BY ``)
 //    List<edgeItem> getAll();
