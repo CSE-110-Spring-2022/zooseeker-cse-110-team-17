@@ -42,7 +42,7 @@ public class ZooKeeperDatabaseTest {
     }
 
     @Test
-    public void testGetNode() {
+    public void testGetNodeSame() {
         List<String> tags = new ArrayList<String>();
         tags.add("gorilla");
         tags.add("monkey");
@@ -59,5 +59,33 @@ public class ZooKeeperDatabaseTest {
         assertEquals(insertedItem.kind, item.kind);
         assertEquals(insertedItem.name, item.name);
         assertEquals(insertedItem.tags, item.tags);
+    }
+
+    @Test
+    public void testGetNodeNotSame() {
+        List<String> tags = new ArrayList<String>();
+        tags.add("gorilla");
+        tags.add("monkey");
+        tags.add("ape");
+        tags.add("mammal");
+
+        List<String> nottags = new ArrayList<String>();
+        tags.add("notgorilla");
+        tags.add("notmonkey");
+        tags.add("notape");
+        tags.add("notmammal");
+
+        nodeItem insertedItem1 = new nodeItem("gorillas", "exhibit", "Gorillas", tags);
+        nodeItem insertedItem2 = new nodeItem("notgorillas", "notexhibit", "NotGorillas", nottags);
+
+        nodeDao.insert(insertedItem1);
+        nodeDao.insert(insertedItem2);
+        nodeItem item1 = nodeDao.get("gorillas");
+        nodeItem item2 = nodeDao.get("notgorillas");
+
+        assertNotEquals(item1.id, item2.id);
+        assertNotEquals(item1.kind, item2.kind);
+        assertNotEquals(item1.name, item2.name);
+        assertNotEquals(item1.tags, item2.tags);
     }
 }
