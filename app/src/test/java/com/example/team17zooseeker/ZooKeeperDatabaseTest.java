@@ -61,5 +61,7 @@ public class ZooKeeperDatabaseTest {
         assertEquals(insertedItem.kind, item.kind);
         assertEquals(insertedItem.name, item.name);
         assertEquals(insertedItem.testString, temp);
+
+        // Random note
     }
 }
