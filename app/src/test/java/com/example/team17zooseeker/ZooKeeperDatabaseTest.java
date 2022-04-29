@@ -49,20 +49,15 @@ public class ZooKeeperDatabaseTest {
         tags.add("ape");
         tags.add("mammal");
 
-        nodeItem insertedItem1 = new nodeItem("gorillas", "exhibit", "Gorillas", tags);
+        nodeItem insertedItem = new nodeItem("gorillas", "exhibit", "Gorillas", tags);
         //nodeItem insertedItem2 = new nodeItem("go", "exhibit", "NotGorillas", tags);
 
-        long id1 = nodeDao.insert(insertedItem1);
-        //long id2 = nodeDao.insert(insertedItem2);
+        nodeDao.insert(insertedItem);
+        nodeItem item = nodeDao.get("gorillas");
 
-        System.out.println("id1 = " + id1);
-
-//      assertEquals(id, item.id);
-//        assertEquals(insertedItem.kind, item.kind);
-//        assertEquals(insertedItem.name, item.name);
-//        //assertEquals(insertedItem.testString, temp);
-//        assertEquals(insertedItem.tags, item.tags);
-
-        // Random note
+        assertEquals(insertedItem.id, item.id);
+        assertEquals(insertedItem.kind, item.kind);
+        assertEquals(insertedItem.name, item.name);
+        assertEquals(insertedItem.tags, item.tags);
     }
 }
