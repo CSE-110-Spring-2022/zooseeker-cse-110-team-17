@@ -7,7 +7,7 @@ import androidx.room.Query;
 @Dao
 public interface NodeItemDao {
     @Insert
-    String insert(nodeItem NodeItem);
+    long insert(nodeItem NodeItem);
 
     @Query("SELECT * FROM `node_items` WHERE `id` = :id")
     nodeItem get(String id);

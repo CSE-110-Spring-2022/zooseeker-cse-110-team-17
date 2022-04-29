@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -27,7 +28,10 @@ public class nodeItem {
     @NonNull
     public String kind;
     public String name;
+
+    @TypeConverters(nodeItemConverter.class)
     public List<String> tags;
+
     public String testString;
 
     nodeItem(@NonNull String id, @NonNull String kind, String name, List<String> tags) {
@@ -35,12 +39,6 @@ public class nodeItem {
         this.kind = kind;
         this.name = name;
         this.tags = tags;
-
-        String temp = new String();
-        for(int i = 0; i < tags.size(); i++) {
-            temp.concat(tags.get(i) + ",");
-        }
-        testString = temp;
     }
 
 

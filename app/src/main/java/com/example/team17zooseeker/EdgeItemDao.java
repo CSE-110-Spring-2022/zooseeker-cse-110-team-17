@@ -7,10 +7,10 @@ import androidx.room.Query;
 @Dao
 public interface EdgeItemDao {
     @Insert
-    String insert(edgeItem EdgeItem);
+    long insert(edgeItem EdgeItem);
 
     @Query("SELECT * FROM `edge_items` WHERE `id`=:id")
-    edgeItem get(String id);
+    edgeItem get(long id);
 
 //    @Query(SELECT * FROM `edge_items` ORDER BY ``)
 //    List<edgeItem> getAll();
