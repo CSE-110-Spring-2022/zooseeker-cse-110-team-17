@@ -21,7 +21,7 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public class ZooKeeperDatabaseTest {
     private EdgeItemDao edgeDao;
-    private GraphItemDao graphDao;
+//    private GraphItemDao graphDao;
     private NodeItemDao nodeDao;
     private ZooKeeperDatabase db;
 
@@ -87,5 +87,32 @@ public class ZooKeeperDatabaseTest {
         assertNotEquals(item1.kind, item2.kind);
         assertNotEquals(item1.name, item2.name);
         assertNotEquals(item1.tags, item2.tags);
+    }
+
+    @Test
+    public void testGetEdgeSame() {
+        edgeItem insertedItem = new edgeItem("edge-0", "Entrance Way");
+
+        edgeDao.insert(insertedItem);
+
+        edgeItem item = edgeDao.get("edge-0");
+
+        assertEquals(insertedItem.id, item.id);
+        assertEquals(insertedItem.street, item.street);
+    }
+
+    @Test
+    public void testGetEdgeNotSame() {
+        edgeItem insertedItem1 = new edgeItem("edge-0", "Entrance Way");
+        edgeItem insertedItem2 = new edgeItem("edge-1", "Exit Way");
+
+        edgeDao.insert(insertedItem1);
+        edgeDao.insert(insertedItem2);
+
+        edgeItem item1 = edgeDao.get("edge-0");
+        edgeItem item2 = edgeDao.get("edge-1");
+
+        assertNotEquals(item1.id, item2.id);
+        assertNotEquals(item1.street, item2.street);
     }
 }
