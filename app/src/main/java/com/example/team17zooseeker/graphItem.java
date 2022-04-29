@@ -2,6 +2,8 @@ package com.example.team17zooseeker;
 
 import android.content.Context;
 
+import androidx.room.Entity;
+
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultUndirectedWeightedGraph;
 import org.jgrapht.nio.json.JSONImporter;
@@ -11,7 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-
+@Entity(tableName = "graph_items")
 public class graphItem {
     public Graph<String, identifiedWeightedEdge> graph;
 

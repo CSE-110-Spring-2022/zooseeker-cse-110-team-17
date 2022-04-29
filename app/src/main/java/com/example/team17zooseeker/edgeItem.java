@@ -2,6 +2,10 @@ package com.example.team17zooseeker;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -14,11 +18,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Entity(tableName = "edge_items")
 public class edgeItem {
+    @PrimaryKey()
+    @NonNull
     public String id;
+
+    @NonNull
     public String street;
 
-    edgeItem(String id, String street) {
+    edgeItem(String id, @NonNull String street) {
         this.id = id;
         this.street = street;
     }
