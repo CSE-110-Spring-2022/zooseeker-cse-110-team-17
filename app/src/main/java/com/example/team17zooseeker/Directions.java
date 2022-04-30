@@ -19,6 +19,9 @@ public class Directions {
     // List to hold single set of directions from start to end
     private static List<String> dirs;
 
+    // Itinerary class
+    // current index
+
     /**
      * The constructor
      * @param start starting location
@@ -53,7 +56,7 @@ public class Directions {
 
         int i = 1;
         for (IdentifiedWeightedEdge e : path.getEdgeList()) {
-            @SuppressLint("DefaultLocale") String instruction = String.format("  %d. Walk %.0f meters along %s from '%s' to '%s'.\n",
+            @SuppressLint("DefaultLocale") String instruction = String.format("%d. Walk %.0f meters along %s from '%s' to '%s'.",
                     i,
                     g.getEdgeWeight(e),
                     // calls could throw null pointer exceptions

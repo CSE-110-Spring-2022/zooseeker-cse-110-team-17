@@ -112,7 +112,7 @@ public class ZooData {
      * @return a Graph with the Vertices and Edges
      */
     public static Graph<String, IdentifiedWeightedEdge> loadZooGraphJSON(Context context, String path) {
-        // Create an empty graph to populate.
+        // Create an empty graph to populate
         Graph<String, IdentifiedWeightedEdge> g = new DefaultUndirectedWeightedGraph<>(IdentifiedWeightedEdge.class);
 
         // Create an importer that can be used to populate our empty graph.
@@ -130,13 +130,13 @@ public class ZooData {
         InputStream inputStream = null;
         try {
             inputStream = context.getAssets().open(path);
-            Reader reader = new InputStreamReader(inputStream);
-
-            // And now we just import it!
-            importer.importGraph(g, reader);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Reader reader = new InputStreamReader(inputStream);
+
+        // And now we just import it!
+        importer.importGraph(g, reader);
         return g;
     }
 }
