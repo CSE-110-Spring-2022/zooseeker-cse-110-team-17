@@ -35,6 +35,7 @@ public class ItineraryTests {
         ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
 
         Context context = ApplicationProvider.getApplicationContext();
+
         Itinerary.createItinerary(context, testVisitationList);
         List<String> testItinerary = Itinerary.getItinerary();
 

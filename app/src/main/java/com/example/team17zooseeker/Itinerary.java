@@ -21,7 +21,6 @@ public class Itinerary {
 
     //Graph data of the zoo to calculate distances between locations.
     private static Graph<String, IdentifiedWeightedEdge> zooMap;
-
     private static Map<String, ZooData.VertexInfo> zooNodes;
     private static Map<String, ZooData.EdgeInfo> zooEdges;
 
@@ -32,6 +31,7 @@ public class Itinerary {
                 zooNodes = ZooData.loadVertexInfoJSON(context, "sample_node_info.json");
                 zooEdges = ZooData.loadEdgeInfoJSON(context,"sample_edge_info.json");
             }catch (IOException e){ return; }
+
             Itinerary.buildItinerary(visitationList);
         }
     }
