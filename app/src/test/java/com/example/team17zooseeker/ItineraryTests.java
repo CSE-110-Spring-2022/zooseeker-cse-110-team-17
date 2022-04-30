@@ -2,6 +2,9 @@ package com.example.team17zooseeker;
 
 import static org.junit.Assert.assertEquals;
 
+import android.content.Context;
+
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.checkerframework.checker.units.qual.A;
@@ -24,7 +27,8 @@ public class ItineraryTests {
         String[] vL = {"entrance_plaza", "entrance_exit_gate", "lions"};
         ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
 
-        Itinerary.createItinerary(testVisitationList);
+        Context context = ApplicationProvider.getApplicationContext();
+        Itinerary.createItinerary(context, testVisitationList);
         List<String> testItinerary = Itinerary.getItinerary();
 
         String[] cI = {"entrance_exit_gate", "entrance_plaza", "lions"};
