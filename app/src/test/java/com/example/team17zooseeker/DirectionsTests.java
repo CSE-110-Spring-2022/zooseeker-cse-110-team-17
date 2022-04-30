@@ -20,7 +20,8 @@ import java.util.List;
 public class DirectionsTests {
     @Test
     public void testDirectionslist(){
-        Directions d = new Directions("entrance_exit_gate", "elephant_odyssey");
+        List<String> itinerary = Arrays.asList("entrance_exit_gate", "elephant_odyssey");
+        Directions d = new Directions(itinerary, 0);
         Context context = ApplicationProvider.getApplicationContext();
         d.createDirections(context);
         // this code will hold the list of directions to be iterated through
@@ -33,27 +34,15 @@ public class DirectionsTests {
         assertEquals(dirs.get(3), "4. Walk 200 meters along Africa Rocks Street from 'Lions' to 'Elephant Odyssey'.");
     }
 
-    @Test
-    public void testValidCreationOfDirections() {
-        Directions d = new Directions("entrance_exit_gate", "elephant_odyssey");
+    // This test tests the exception for out of boundary.
+    @Test(expected = RuntimeException.class)
+    public void TestDirectionsOutOfBoundException() {
+        List<String> itinerary = Arrays.asList("entrance_exit_gate", "elephant_odyssey");
+        Directions d = new Directions(itinerary, 1);
         Context context = ApplicationProvider.getApplicationContext();
         d.createDirections(context);
         // this code will hold the list of directions to be iterated through
         List<String> dirs = d.getDirs();
-
-        //List<String> CorrectDirs = {"", ""}; // in the correctDirs, it shows the Correct Directions consisting of the "1. walk...." , "2. " ...
-        //assertEquals(dirs, CorrectDirs);
     }
 
-    @Test
-    public void TestDirectionslistLength() {
-        Directions d = new Directions("entrance_exit_gate", "elephant_odyssey");
-        Context context = ApplicationProvider.getApplicationContext();
-        d.createDirections(context);
-        // this code will hold the list of directions to be iterated through
-        List<String> dirs = d.getDirs();
-
-
-        assertEquals(dirs.size(), 4);   //
-    }
 }

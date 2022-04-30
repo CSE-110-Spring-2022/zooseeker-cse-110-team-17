@@ -19,18 +19,33 @@ public class Directions {
     // List to hold single set of directions from start to end
     private static List<String> dirs;
 
+    private List<String> itinerary; // that's the list of zoo itinerary from the create-itinerary
+
+    private int currentIndex;   // this one is the current index for the itinerary
     // Itinerary class
     // current index
 
     /**
      * The constructor
-     * @param start starting location
-     * @param end ending location to get directions to
+     * @param itinerary the list of zoo itinerary from the create-itinerary
+     * @param currentIndex the current index for the itinerary
+     * for the currentIndex, we can get the value for the start and end.
      */
-    public Directions(String start, String end){
-        Directions.start = start;
-        Directions.end = end;
-        Directions.dirs = new ArrayList<>();
+    public Directions(List<String> itinerary, int currentIndex){
+
+
+            this.itinerary = itinerary;
+            this.currentIndex = currentIndex;
+            // the start location is the currentIndex of the itinerary one, end is the next one.
+            if (currentIndex <=  itinerary.size() - 2 && currentIndex >= 0){
+                Directions.start = itinerary.get(currentIndex);
+                Directions.end = itinerary.get(currentIndex + 1);
+                Directions.dirs = new ArrayList<>();
+            }else {
+                throw new RuntimeException("The current Index for the itinerary is out of boundary." +
+                        "it should be [0, itineray.size() - 2]");
+            }
+
     }
 
     /**
