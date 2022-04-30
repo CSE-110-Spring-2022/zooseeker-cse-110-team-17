@@ -15,7 +15,7 @@ jobs:
 
       # Execute Itinerary Tests
       - name: Itinerary Tests
-        run: ./gradlew ItineraryTest
+        run: ./gradlew testDebugUnitTest
 
       # Report the results
       - name: Android Test Report
