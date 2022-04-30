@@ -20,6 +20,9 @@ import java.util.List;
 public class ItineraryTests {
     @Test
     public void testShortestPathInItinerary(){
+        //In case an itinerary has been created
+        Itinerary.injectTestItinerary(null);
+
         String[] vL = {"entrance_plaza", "entrance_exit_gate", "lions"};
         ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
         Context context = ApplicationProvider.getApplicationContext();
@@ -31,6 +34,9 @@ public class ItineraryTests {
 
     @Test
     public void testValidCreationOfItinerary() {
+        //In case an itinerary has been created
+        Itinerary.injectTestItinerary(null);
+
         String[] vL = {"entrance_plaza", "lions"};
         ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
 
@@ -50,6 +56,9 @@ public class ItineraryTests {
     //fist and have to back track to the elephants. This isn't optimal but works fine for now.
     @Test
     public void testValidCreationOfItineraryExtended() {
+        //In case an itinerary has been created
+        Itinerary.injectTestItinerary(null);
+
         String[] vL = {"entrance_plaza", "lions", "gorillas", "gators", "elephant_odyssey", "arctic_foxes"};
         ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
 

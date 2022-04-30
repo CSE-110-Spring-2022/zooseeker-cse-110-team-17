@@ -21,15 +21,15 @@ public class Itinerary {
 
     //Graph data of the zoo to calculate distances between locations.
     private static Graph<String, IdentifiedWeightedEdge> zooMap;
-    private static Map<String, ZooData.VertexInfo> zooNodes;
-    private static Map<String, ZooData.EdgeInfo> zooEdges;
+    //private static Map<String, ZooData.VertexInfo> zooNodes; *un-used but may be useful for later*
+    //private static Map<String, ZooData.EdgeInfo> zooEdges;
 
     public static void createItinerary(Context context, List<String> visitationList){
         if(itinerary == null){
             try {
                 zooMap = ZooData.loadZooGraphJSON(context, "sample_zoo_graph.json");
-                zooNodes = ZooData.loadVertexInfoJSON(context, "sample_node_info.json");
-                zooEdges = ZooData.loadEdgeInfoJSON(context,"sample_edge_info.json");
+                // zooNodes = ZooData.loadVertexInfoJSON(context, "sample_node_info.json");
+                // zooEdges = ZooData.loadEdgeInfoJSON(context,"sample_edge_info.json");
             }catch (IOException e){ return; }
 
             Itinerary.buildItinerary(visitationList);
@@ -88,9 +88,10 @@ public class Itinerary {
 
     public static List<String> getItinerary(){ return itinerary; }
 
+    //So when runnning multiple tests at one time you can reset the static itinerary.
     @VisibleForTesting
-    public void injectTestItinerary(List<String> itinerary){
-        this.itinerary = itinerary;
+    public static void injectTestItinerary(List<String> itin){
+        itinerary = itin;
     }
 
     //Developer Notes----------
