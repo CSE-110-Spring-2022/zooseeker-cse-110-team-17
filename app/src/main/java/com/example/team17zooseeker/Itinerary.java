@@ -36,10 +36,10 @@ public class Itinerary {
         }
     }
 
-    private static void buildItinerary(List<String> testVisitationList){
+    private static void buildItinerary(List<String> visitationList){
 
-        itinerary = new ArrayList<String>(testVisitationList.size() + 1);
-        int finalCapacity = testVisitationList.size();
+        itinerary = new ArrayList<String>(visitationList.size() + 1);
+        int finalCapacity = visitationList.size() + 1;
         itinerary.add("entrance_exit_gate"); //Always start at the entrance
 
         //Until the itinerary has every location from the visitation list find the next location
@@ -52,19 +52,19 @@ public class Itinerary {
             // current location and keep track of smallest distance.
             int smallestDistOfDestinations = Integer.MAX_VALUE;
             int indexOfLocationWithSmallestDistance = 0;
-            for(int i = 0; i < testVisitationList.size(); i++){
-                int currDist = Itinerary.distance(currentLocation, testVisitationList.get(i));
+            for(int i = 0; i < visitationList.size(); i++){
+                int currDist = Itinerary.distance(currentLocation, visitationList.get(i));
                 if(currDist < smallestDistOfDestinations){
                     smallestDistOfDestinations = currDist;
                     indexOfLocationWithSmallestDistance = i;
                 }
             }
 
-
-        }
-
-        for (IdentifiedWeightedEdge e : zooMap.edgeSet()) {
-            Log.d("Edge: ", e.toString());
+            //Add the closest destination in visitation list to itinerary and remove it from the
+            //visitation list.
+            itinerary.add(visitationList.get(indexOfLocationWithSmallestDistance));
+            visitationList.remove(indexOfLocationWithSmallestDistance);
+            indexOfCurrLocation++;
         }
     }
 
@@ -72,7 +72,7 @@ public class Itinerary {
     //Returns the shortest distance between the start and end locations on the zooMap
     @VisibleForTesting
     public static int distance(String start, String end){
-        int minDistance=0;
+        int minDistance = 0;
 
         GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(zooMap, start, end);
 
@@ -82,6 +82,7 @@ public class Itinerary {
             i++;
         }
 
+        Log.d("Edge Weight: ", "" + minDistance);
         return minDistance;
     }
 
@@ -91,4 +92,9 @@ public class Itinerary {
     public void injectTestItinerary(List<String> itinerary){
         this.itinerary = itinerary;
     }
+
+    //Developer Notes----------
+    // for (IdentifiedWeightedEdge e : zooMap.edgeSet()) {
+    //     Log.d("Edge: ", e.toString());
+    // }
 }
