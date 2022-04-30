@@ -19,6 +19,11 @@ import java.util.List;
 public class ItineraryTests {
     @Test
     public void testShortestPathInItinerary(){
+        String[] vL = {"entrance_plaza", "entrance_exit_gate", "lions"};
+        ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
+        Context context = ApplicationProvider.getApplicationContext();
+        Itinerary.createItinerary(context, testVisitationList);
+
         assertEquals(310, Itinerary.distance("entrance_exit_gate", "lions"));
     }
 
