@@ -32,7 +32,7 @@ public class nodeItem {
     @TypeConverters(nodeItemConverter.class)
     public List<String> tags;
 
-    public String testString;
+    //public String testString;
 
     nodeItem(@NonNull String id, @NonNull String kind, String name, List<String> tags) {
         this.id = id;
@@ -50,6 +50,10 @@ public class nodeItem {
                 ", name='" + name + '\'' +
                 ", tags=" + tags +
                 '}';
+    }
+
+    public String getId() {
+        return id;
     }
 
     public static Map<String, nodeItem> loadNodeInfoJSON(Context context, String path) throws IOException {

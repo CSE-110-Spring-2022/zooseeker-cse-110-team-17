@@ -40,6 +40,10 @@ public class edgeItem {
                 '}';
     }
 
+    public String getId() {
+        return id;
+    }
+
     public static Map<String, edgeItem> loadEdgeInfoJSON(Context context, String path) throws IOException {
         InputStream input = context.getAssets().open(path);
         Reader reader = new InputStreamReader(input);
