@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import java.io.IOException;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -49,6 +50,7 @@ public class ZooData {
 
         Gson gson = new Gson();
         Type type = new TypeToken<List<ZooData.VertexInfo>>(){}.getType();
+
         List<ZooData.VertexInfo> zooData = gson.fromJson(reader, type);
 
         // This code is equivalent to:
