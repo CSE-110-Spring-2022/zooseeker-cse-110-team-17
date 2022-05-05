@@ -14,45 +14,46 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Directions {
-    // two locations(vertices) for creating directions
-    private static String start,end;
-    // List to hold single set of directions from start to end
-    private static List<String> dirs;
 
-    private List<String> itinerary; // that's the list of zoo itinerary from the create-itinerary
-
-    private int currentIndex;   // this one is the current index for the itinerary
-    // Itinerary class
-    // current index
+    // Optimized itinerary to traverse through zoo
+    private final List<String> itinerary;
+    /**
+     * Can we possibly make this list of strings, exhibit names, not id names?
+     */
+    // current index for iterating through the itinerary
+    private int currentIndex;
 
     /**
      * The constructor
-     * @param itinerary the list of zoo itinerary from the create-itinerary
+     *
+     * @param itinerary    the list of zoo itinerary from the create-itinerary
      * @param currentIndex the current index for the itinerary
-     * for the currentIndex, we can get the value for the start and end.
      */
-    public Directions(List<String> itinerary, int currentIndex){
-
-
-            this.itinerary = itinerary;
-            this.currentIndex = currentIndex;
-            // the start location is the currentIndex of the itinerary one, end is the next one.
-            if (currentIndex <=  itinerary.size() - 2 && currentIndex >= 0){
-                Directions.start = itinerary.get(currentIndex);
-                Directions.end = itinerary.get(currentIndex + 1);
-                Directions.dirs = new ArrayList<>();
-            }else {
-                throw new RuntimeException("The current Index for the itinerary is out of boundary." +
-                        "it should be [0, itineray.size() - 2]");
-            }
-
+    public Directions(List<String> itinerary, int currentIndex) {
+        this.itinerary = itinerary;
+        this.currentIndex = currentIndex;
     }
 
     /**
-     * This creates the directions list from start to end
+     * This creates the directions list from current index to current index + 1
+     *
      * @param context the current application environment
      */
-    public void createDirections(Context context){
+    public List<String> createDirections(Context context) {
+        String start;
+        String end;
+        List<String> dirs = new ArrayList<>();
+
+        if (currentIndex <= itinerary.size() - 2 && currentIndex >= 0) {
+            start = itinerary.get(currentIndex);
+            end = itinerary.get(currentIndex + 1);
+            currentIndex++;
+        } else {
+            throw new RuntimeException("The current Index for the itinerary is out of boundary." +
+                    "it should be [0, itinerary.size() - 2]");
+        }
+
+
         /*
          Graph<String, IdentifiedWeightedEdge> g,
          GraphPath<String, IdentifiedWeightedEdge> path,
@@ -60,37 +61,58 @@ public class Directions {
          Map<String, ZooData.EdgeInfo> eInfo
          */
         // Load the graph...
-        Graph<String, IdentifiedWeightedEdge> g = ZooData.loadZooGraphJSON(context,"sample_zoo_graph.json");
+        Graph<String, IdentifiedWeightedEdge> g = ZooData.loadZooGraphJSON(context, "sample_zoo_graph.json");
         GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g, start, end);
 
         // 2. Load the information about our nodes and edges...
-        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(context,"sample_node_info.json");
-        Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(context,"sample_edge_info.json");
+        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(context, "sample_node_info.json");
+        Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(context, "sample_edge_info.json");
 
         System.out.printf("The shortest path from '%s' to '%s' is:\n", start, end);
 
         int i = 1;
+        // state for maintaining proper direction
+        String tempEnd = "";
+        //string builder to build instruction
+        StringBuilder instructionBuilder = new StringBuilder();
+
         for (IdentifiedWeightedEdge e : path.getEdgeList()) {
-            @SuppressLint("DefaultLocale") String instruction = String.format("%d. Walk %.0f meters along %s from '%s' to '%s'.",
+            instructionBuilder.setLength(0); // reset/empty the string builder
+
+            //distance to be walked along an edge (street)
+            @SuppressLint("DefaultLocale") String street = String.format("%d. Walk %.0f meters along %s ",
                     i,
                     g.getEdgeWeight(e),
                     // calls could throw null pointer exceptions
                     // use wrappers until we can ensure input is valid
-                    Objects.requireNonNull(eInfo.get(e.getId())).street,
-                    Objects.requireNonNull(vInfo.get(g.getEdgeSource(e))).name,
-                    Objects.requireNonNull(vInfo.get(g.getEdgeTarget(e))).name);
-            Log.d("direction",instruction);
-            Log.d("sizePATH",String.valueOf(path.getLength()));
-            dirs.add(instruction);
+                    Objects.requireNonNull(eInfo.get(e.getId())).street);
+            instructionBuilder.append(street); //append to string builder
+
+            //keep source and target data
+            ZooData.VertexInfo target = Objects.requireNonNull(vInfo.get(g.getEdgeTarget(e)));
+            ZooData.VertexInfo source = Objects.requireNonNull(vInfo.get(g.getEdgeSource(e)));
+            String exhibits;
+
+            // logic for direction checking, both to initialize and end
+            if ((i == 1 && source.id.equals(start)) || tempEnd.equals(source.name)) {
+                exhibits = String.format("from '%s' to '%s'.",
+                        source.name,
+                        target.name);
+                tempEnd = target.name;
+            } else {
+                exhibits = String.format("from '%s' to '%s'.",
+                        target.name,
+                        source.name);
+                tempEnd = source.name;
+            }
+
+            instructionBuilder.append(exhibits);
+            String res = instructionBuilder.toString();
+            Log.d("direction", res);
+            // Log.d("sizePATH",String.valueOf(path.getLength()));
+            dirs.add(res);
             i++;
         }
-    }
-
-    /**
-     * This is a getter for the list of directions
-     * @return the list of directions from start to end
-     */
-    public static List<String> getDirs(){
         return dirs;
     }
 }

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -13,13 +14,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // this code will create a directions object with its two points being
-        // start = entrance_exit_gate
-        // end = elephant_odyssey
-        //Directions d = new Directions("entrance_exit_gate", "elephant_odyssey");
-        // this code will create the directions between the start and end
-        //d.createDirections(this);
-        // this code will hold the list of directions to be iterated through
-        //List<String> dirs = d.getDirs();
+        // Directions
+        List<String> itinerary = Arrays.asList("entrance_exit_gate", "elephant_odyssey",
+                "arctic_foxes", "entrance_exit_gate");
+        Directions d = new Directions(itinerary, 0);
+        d.createDirections(this);
+        d.createDirections(this);
+        List<String> dirs = d.createDirections(this);
     }
 }
