@@ -2,12 +2,15 @@ package com.example.team17zooseeker;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import java.io.IOException;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.Collections;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,7 +25,7 @@ import org.jgrapht.nio.json.JSONImporter;
 
 public class ZooData {
     public static class VertexInfo {
-        public enum Kind {
+        public static enum Kind {
             // The SerializedName annotation tells GSON how to convert
             // from the strings in our JSON to this Enum.
             @SerializedName("gate") GATE,
@@ -41,78 +44,47 @@ public class ZooData {
         public String street;
     }
 
-    /**
-     * Creates map that contains the vertex information used to generate directions
-     * @param context the current state of the application environment for input stream
-     * @param path the vertex JSON file to be parsed
-     * @return a map containing vertex information via id key
-     */
-    public static Map<String, ZooData.VertexInfo> loadVertexInfoJSON(Context context, String path) {
-        try {
-            InputStream inputStream = context.getAssets().open(path);
-            Reader reader = new InputStreamReader(inputStream);
-            Gson gson = new Gson();
-            Type type = new TypeToken<List<ZooData.VertexInfo>>(){}.getType();
-            List<ZooData.VertexInfo> zooData = gson.fromJson(reader, type);
+    //Added throws IOException for context
+    public static Map<String, ZooData.VertexInfo> loadVertexInfoJSON(Context context, String path) throws IOException {
+        InputStream inputStream = context.getAssets().open(path);
+        Reader reader = new InputStreamReader(inputStream);
 
-            // This code is equivalent to:
-            //
-            // Map<String, ZooData.VertexInfo> indexedZooData = new HashMap();
-            // for (ZooData.VertexInfo datum : zooData) {
-            //   indexedZooData[datum.id] = datum;
-            // }
-            //
-            Map<String, ZooData.VertexInfo> indexedZooData = zooData
-                    .stream()
-                    .collect(Collectors.toMap(v -> v.id, datum -> datum));
-            return indexedZooData;
+        Gson gson = new Gson();
+        Type type = new TypeToken<List<ZooData.VertexInfo>>(){}.getType();
 
-        } catch (IOException e) {
-            //if input error, then catch prints error and returns empty map instead
-            e.printStackTrace();
-            return Collections.emptyMap();
-        }
+        List<ZooData.VertexInfo> zooData = gson.fromJson(reader, type);
 
+        // This code is equivalent to:
+        //
+        // Map<String, ZooData.VertexInfo> indexedZooData = new HashMap();
+        // for (ZooData.VertexInfo datum : zooData) {
+        //   indexedZooData[datum.id] = datum;
+        // }
+        //
+        Map<String, ZooData.VertexInfo> indexedZooData = zooData
+                .stream()
+                .collect(Collectors.toMap(v -> v.id, datum -> datum));
 
+        return indexedZooData;
     }
 
-    /**
-     * Creates map that contains the edge information used to generate directions
-     * @param context the current state of the application environment for input stream
-     * @param path the edge JSON file to be parsed
-     * @return a map containing edge information via id key
-     */
-    public static Map<String, ZooData.EdgeInfo> loadEdgeInfoJSON(Context context, String path) {
+    public static Map<String, ZooData.EdgeInfo> loadEdgeInfoJSON(Context context, String path) throws IOException {
+        InputStream inputStream = context.getAssets().open(path);
+        Reader reader = new InputStreamReader(inputStream);
 
-        try {
-            InputStream inputStream = context.getAssets().open(path);
-            Reader reader = new InputStreamReader(inputStream);
+        Gson gson = new Gson();
+        Type type = new TypeToken<List<ZooData.EdgeInfo>>(){}.getType();
+        List<ZooData.EdgeInfo> zooData = gson.fromJson(reader, type);
 
-            Gson gson = new Gson();
-            Type type = new TypeToken<List<ZooData.EdgeInfo>>(){}.getType();
-            List<ZooData.EdgeInfo> zooData = gson.fromJson(reader, type);
+        Map<String, ZooData.EdgeInfo> indexedZooData = zooData
+                .stream()
+                .collect(Collectors.toMap(v -> v.id, datum -> datum));
 
-            Map<String, ZooData.EdgeInfo> indexedZooData = zooData
-                    .stream()
-                    .collect(Collectors.toMap(v -> v.id, datum -> datum));
-
-            return indexedZooData;
-        } catch (IOException e) {
-            //if input error, then catch prints error and returns empty map instead
-            e.printStackTrace();
-            return Collections.emptyMap();
-        }
-
+        return indexedZooData;
     }
 
-    /**
-     * Loads the graph data of a zoo from JSON format and turns it into a Graph element
-     * @param context the current state of the application environment for input stream
-     * @param path the vertex JSON file to be parsed
-     * @return a Graph with the Vertices and Edges
-     */
-    public static Graph<String, IdentifiedWeightedEdge> loadZooGraphJSON(Context context, String path) {
-        // Create an empty graph to populate
+    public static Graph<String, IdentifiedWeightedEdge> loadZooGraphJSON(Context context, String path) throws IOException {
+        // Create an empty graph to populate.
         Graph<String, IdentifiedWeightedEdge> g = new DefaultUndirectedWeightedGraph<>(IdentifiedWeightedEdge.class);
 
         // Create an importer that can be used to populate our empty graph.
@@ -127,12 +99,7 @@ public class ZooData {
         importer.addEdgeAttributeConsumer(IdentifiedWeightedEdge::attributeConsumer);
 
         // On Android, you would use context.getAssets().open(path) here like in Lab 5.
-        InputStream inputStream = null;
-        try {
-            inputStream = context.getAssets().open(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        InputStream inputStream = context.getAssets().open(path);
         Reader reader = new InputStreamReader(inputStream);
 
         // And now we just import it!

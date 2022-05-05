@@ -1,4 +1,4 @@
-name: Run Directions Tests
+name: Run ZooKeeper Android Tests
 on: [push]
 
 jobs:
@@ -13,11 +13,13 @@ jobs:
           distribution: 'zulu'
           java-version: '11'
 
-      # Execute Directions Tests
-      - name: Directions Tests
+      # Execute Unit Tests
+      - name: Run Android Unit Tests
         run: ./gradlew testDebugUnitTest
 
       # Report the results
       - name: Android Test Report
         uses: asadmansr/android-test-report-action@v1.2.0
+        
         if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
+
