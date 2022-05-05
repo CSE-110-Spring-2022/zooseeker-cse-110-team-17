@@ -8,6 +8,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -61,12 +62,27 @@ public class Directions {
          Map<String, ZooData.EdgeInfo> eInfo
          */
         // Load the graph...
-        Graph<String, IdentifiedWeightedEdge> g = ZooData.loadZooGraphJSON(context, "sample_zoo_graph.json");
+        Graph<String, IdentifiedWeightedEdge> g = null;
+        try {
+            g = ZooData.loadZooGraphJSON(context, "sample_zoo_graph.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g, start, end);
 
         // 2. Load the information about our nodes and edges...
-        Map<String, ZooData.VertexInfo> vInfo = ZooData.loadVertexInfoJSON(context, "sample_node_info.json");
-        Map<String, ZooData.EdgeInfo> eInfo = ZooData.loadEdgeInfoJSON(context, "sample_edge_info.json");
+        Map<String, ZooData.VertexInfo> vInfo = null;
+        try {
+            vInfo = ZooData.loadVertexInfoJSON(context, "sample_node_info.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Map<String, ZooData.EdgeInfo> eInfo = null;
+        try {
+            eInfo = ZooData.loadEdgeInfoJSON(context, "sample_edge_info.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         System.out.printf("The shortest path from '%s' to '%s' is:\n", start, end);
 
