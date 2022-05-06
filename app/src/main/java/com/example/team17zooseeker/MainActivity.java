@@ -3,16 +3,20 @@ package com.example.team17zooseeker;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import org.jgrapht.Graph;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -21,6 +25,7 @@ import java.util.stream.Collectors;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -40,24 +45,60 @@ public class MainActivity extends AppCompatActivity {
         Context context = this;
         ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(context);
 
+        NodeListAdapter adapter = new NodeListAdapter();
+        adapter.setHasStableIds(true);
+
         nodeDao = database.nodeItemDao();
         edgeDao  = database.edgeItemDao();
 
         List<nodeItem> nodes = nodeDao.getAll();
         List<edgeItem> edges = edgeDao.getAll();
 
-        Map<String, nodeItem> nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getId, Function.identity()));
+        Map<String, nodeItem> nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getName, Function.identity()));
         Map<String, edgeItem> edgeMap = edges.stream().collect(Collectors.toMap(edgeItem::getId, Function.identity()));
 
         Button plan = findViewById(R.id.plan_btn);
-        EditText searchBar = findViewById(R.id.search_text);
+        EditText searchText = findViewById(R.id.search_text);
+        TextView exhibitText = findViewById(R.id.exhibit_count_txt);
 
-        plan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        RecyclerView visitationView = findViewById(R.id.visitation_list_view);
+        visitationView.setLayoutManager(new LinearLayoutManager(this));
+        visitationView.setAdapter(adapter);
 
+        //List<String> visitationList = Collections.emptyList();
+        List<nodeItem> addedNodesList = new ArrayList<nodeItem>();
+        List<String> visitationList = new ArrayList<String>();
+
+        //On enter pressed, add animal to list if it exists
+        searchText.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View view, int keyCode, KeyEvent keyevent) {
+                if ((keyevent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+
+                    String searchQuery = searchText.getText().toString();
+
+                    if(nodeMap.containsKey(searchQuery) && !(visitationList.contains(searchQuery))) {
+
+                        searchText.setText("");
+
+                        addedNodesList.add(nodeMap.get(searchQuery));
+                        visitationList.add(nodeMap.get(searchQuery).getName());
+
+                        Log.e("Current VList: ", visitationList.toString());
+
+                        adapter.setNodeItems(addedNodesList);
+
+                        exhibitText.setText("( " + visitationList.size() + " )");
+
+                    }
+
+                    return true;
+
+                }
+
+                return false;
 
             }
         });
+
     }
 }
