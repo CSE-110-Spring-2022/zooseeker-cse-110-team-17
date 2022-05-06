@@ -18,6 +18,6 @@ public interface NodeItemDao {
     @Query("SELECT * FROM `node_items`")
     List<nodeItem> getAll();
 
-    @Query("SELECT * FROM `node_items` WHERE `name` = :name")
-    nodeItem get(String name);
+    @Query("SELECT * FROM `node_items` WHERE `id` = :id")
+    nodeItem get(String id);
 }
