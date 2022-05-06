@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ItineraryItemAdapter extends RecyclerView.Adapter<ItineraryItemAdapter.ViewHolder>{
 
+    int totalDistance = 0;
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -22,16 +24,16 @@ public class ItineraryItemAdapter extends RecyclerView.Adapter<ItineraryItemAdap
     //Setting viewHolder text values to the Itinerary Values
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String currLoc = Itinerary.getItinerary().get(position);
-        String nextLoc;
-        //If the current position is the end map to exit
-        if(position + 1 > Itinerary.getItinerary().size() - 1){
-            nextLoc = Itinerary.getItinerary().get(0);
-        } else {
-            nextLoc = Itinerary.getItinerary().get(position + 1);
-        }
+        //Shifts everything in the itinerary up 1 position so entrance gate isn't shown.
+        position = position + 1;
+        if(position >= Itinerary.getItinerary().size()){ return; };
 
-        String text=currLoc + "\n(" + Itinerary.distance(currLoc ,nextLoc) + " feet)";
+        //So the distance under each location is the distance to that location
+        String currLoc = Itinerary.getItinerary().get(position - 1);
+        String nextLoc = Itinerary.getItinerary().get(position);
+
+        totalDistance += Itinerary.distance(currLoc ,nextLoc);
+        String text = nextLoc + "\n(" + totalDistance + " feet)";
         holder.setText(text);
     }
 

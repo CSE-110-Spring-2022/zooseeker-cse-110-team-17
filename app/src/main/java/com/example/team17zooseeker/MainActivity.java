@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        String[] VisitationList = {"entrance_plaza", "gators", "lions", "lions","gorillas", "gorillas","gorillas","gorillas","gorillas","elephant_odyssey", "arctic_foxes"};
+        String[] VisitationList = {"entrance_plaza", "lions", "gorillas", "gators", "elephant_odyssey", "arctic_foxes"};
         ArrayList<String> VisList = new ArrayList<String>(Arrays.asList(VisitationList));
         Itinerary.createItinerary(this, VisList);
 
