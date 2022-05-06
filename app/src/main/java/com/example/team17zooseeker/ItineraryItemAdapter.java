@@ -2,16 +2,10 @@ package com.example.team17zooseeker;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class ItineraryItemAdapter extends RecyclerView.Adapter<ItineraryItemAdapter.ViewHolder>{
 
