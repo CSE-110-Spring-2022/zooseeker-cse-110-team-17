@@ -22,17 +22,17 @@ public class ItineraryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_itinerary);
-        ItineraryItemAdapter adaptor = new ItineraryItemAdapter();
-        adaptor.setHasStableIds(true);
 
-        recyclerView = findViewById(R.id.ItItems);
+        //Setting the adapter of the recyclerView
+        ItineraryItemAdapter adapter = new ItineraryItemAdapter();
+        adapter.setHasStableIds(true);
+        recyclerView = findViewById(R.id.itinerary_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adaptor);
+        recyclerView.setAdapter(adapter);
 
-
+        //Setting the directions button event
         this.Get_direction = this.findViewById(R.id.get_direction);
         Get_direction.setOnClickListener(this::onGetDirectionClicked);
-
     }
 
     void onGetDirectionClicked (View view){

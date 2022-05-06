@@ -30,13 +30,14 @@ public class ItineraryItemAdapter extends RecyclerView.Adapter<ItineraryItemAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String currLoc = Itinerary.getItinerary().get(position);
         String nextLoc;
-        if(position+1>Itinerary.getItinerary().size()-1){
+        //If the current position is the end map to exit
+        if(position + 1 > Itinerary.getItinerary().size() - 1){
             nextLoc = Itinerary.getItinerary().get(0);
+        } else {
+            nextLoc = Itinerary.getItinerary().get(position + 1);
         }
-        else{
-            nextLoc = Itinerary.getItinerary().get(position+1);
-        }
-        String text=currLoc + "\n( " + Itinerary.distance(currLoc ,nextLoc) + " feet )";
+
+        String text=currLoc + "\n(" + Itinerary.distance(currLoc ,nextLoc) + " feet)";
         holder.setText(text);
     }
 
@@ -50,8 +51,7 @@ public class ItineraryItemAdapter extends RecyclerView.Adapter<ItineraryItemAdap
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.textView = itemView.findViewById(R.id.ItineraryItem);
-
+            this.textView = itemView.findViewById(R.id.itinerary_textItem);
         }
 
         public void setText(String title) {
