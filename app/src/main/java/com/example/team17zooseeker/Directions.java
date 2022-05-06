@@ -41,6 +41,7 @@ public class Directions {
      * @param context the current application environment
      */
     public List<String> createDirections(Context context) {
+
         String start;
         String end;
         List<String> dirs = new ArrayList<>();
@@ -50,8 +51,7 @@ public class Directions {
             end = itinerary.get(currentIndex + 1);
             currentIndex++;
         } else {
-            throw new RuntimeException("The current Index for the itinerary is out of boundary." +
-                    "it should be [0, itinerary.size() - 2]");
+            return new ArrayList<>();
         }
         Graph<String, IdentifiedWeightedEdge> g = null;
         try {

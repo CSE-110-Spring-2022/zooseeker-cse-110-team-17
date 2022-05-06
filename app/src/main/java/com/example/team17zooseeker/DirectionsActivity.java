@@ -35,10 +35,11 @@ public class DirectionsActivity extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("Button", "clicked");
+                adapter.setDirectItems(DirectionsActivity.this,next);
             }
         });
-        adapter.setDirectItems(this);
+        adapter.setDirectItems(DirectionsActivity.this,next);
+
     }
 
 

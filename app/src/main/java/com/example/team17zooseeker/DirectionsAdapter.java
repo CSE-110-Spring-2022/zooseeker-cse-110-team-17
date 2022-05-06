@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,9 +22,15 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
     }
 
 
-    public void setDirectItems(Context context){
+    public void setDirectItems(Context context, Button next){
         this.directItems.clear();
         this.directItems = this.directions.createDirections(context);
+             if (this.directItems.isEmpty())
+             {
+                 next.setText("FINISH");
+             }
+        notifyDataSetChanged();
+
     }
 
     @NonNull
