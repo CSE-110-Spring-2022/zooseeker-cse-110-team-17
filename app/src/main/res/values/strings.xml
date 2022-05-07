@@ -2,6 +2,6 @@
     <string name="app_name">Team 17 ZooSeeker</string>
     <string name="main_title">San Diego ZooSeeker</string>
     <string name="plan_header">Current Visit Plan</string>
-    <string name="search_hint">Enter an Exhibit Name</string>
+    <string name="search_hint">Search for an Animal</string>
     <string name="plan_btn_title">Plan</string>
 </resources>
