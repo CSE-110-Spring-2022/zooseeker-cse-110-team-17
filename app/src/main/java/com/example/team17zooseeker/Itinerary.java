@@ -11,9 +11,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class Itinerary {
     //Static itinerary list to hold a single organized itinerary
@@ -70,16 +68,13 @@ public class Itinerary {
 
     //Helper Function for building Itinerary
     //Returns the shortest distance between the start and end locations on the zooMap
-    @VisibleForTesting
     public static int distance(String start, String end){
         int minDistance = 0;
 
         GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(zooMap, start, end);
 
-        int i = 1;
         for (IdentifiedWeightedEdge e : path.getEdgeList()) {
             minDistance += zooMap.getEdgeWeight(e);
-            i++;
         }
 
         Log.d("Edge Weight: ", "" + minDistance);
@@ -88,7 +83,7 @@ public class Itinerary {
 
     public static List<String> getItinerary(){ return itinerary; }
 
-    //So when runnning multiple tests at one time you can reset the static itinerary.
+    //So when running multiple tests at one time you can reset the static itinerary.
     @VisibleForTesting
     public static void injectTestItinerary(List<String> itin){
         itinerary = itin;

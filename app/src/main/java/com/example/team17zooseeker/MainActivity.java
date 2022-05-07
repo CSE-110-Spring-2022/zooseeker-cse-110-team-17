@@ -20,9 +20,10 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -59,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         plan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Intent intent = new Intent(this, ItineraryActivity.class);
+                //startActivity(intent);
             }
         });
 
