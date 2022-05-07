@@ -69,6 +69,8 @@
         android:layout_height="wrap_content"
         android:hint="@string/search_hint"
         android:minHeight="48dp"
+        android:singleLine="true"
+        android:imeOptions="actionDone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

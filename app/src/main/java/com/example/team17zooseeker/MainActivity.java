@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -42,8 +43,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        Context context = this;
-        ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(context);
+        ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(this);
 
         NodeListAdapter adapter = new NodeListAdapter();
         adapter.setHasStableIds(true);
@@ -57,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
         Map<String, nodeItem> nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getName, Function.identity()));
         Map<String, edgeItem> edgeMap = edges.stream().collect(Collectors.toMap(edgeItem::getId, Function.identity()));
 
+        Log.e("Starting Node List: ", nodes.toString());
+        Log.e("Starting Node Map: ", nodeMap.toString());
+
         Button plan = findViewById(R.id.plan_btn);
         EditText searchText = findViewById(R.id.search_text);
         TextView exhibitText = findViewById(R.id.exhibit_count_txt);
@@ -69,14 +72,16 @@ public class MainActivity extends AppCompatActivity {
         List<nodeItem> addedNodesList = new ArrayList<nodeItem>();
         List<String> visitationList = new ArrayList<String>();
 
-        //On enter pressed, add animal to list if it exists
-        searchText.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View view, int keyCode, KeyEvent keyevent) {
-                if ((keyevent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+        searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+                int result = actionId & EditorInfo.IME_MASK_ACTION;
 
+                if(result == EditorInfo.IME_ACTION_DONE) {
                     String searchQuery = searchText.getText().toString();
 
-                    if(nodeMap.containsKey(searchQuery) && !(visitationList.contains(searchQuery))) {
+                    if (nodeMap.containsKey(searchQuery) &&
+                            !(visitationList.contains(searchQuery))) {
 
                         searchText.setText("");
 
@@ -90,15 +95,12 @@ public class MainActivity extends AppCompatActivity {
                         exhibitText.setText("( " + visitationList.size() + " )");
 
                     }
-
-                    return true;
-
                 }
 
-                return false;
+                return true;
 
             }
-        });
 
+        });
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.renderscript.Sampler;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -65,4 +66,12 @@ public abstract class ZooKeeperDatabase extends RoomDatabase {
     public abstract EdgeItemDao edgeItemDao();
 //    public abstract GraphItemDao graphItemDao();
     public abstract NodeItemDao nodeItemDao();
+
+    @VisibleForTesting
+    public static void injectTestDatabase(ZooKeeperDatabase testDb) {
+        if (singleton != null) {
+            singleton.close();
+        }
+        singleton = testDb;
+    }
 }

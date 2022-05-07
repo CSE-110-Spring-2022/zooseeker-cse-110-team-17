@@ -15,7 +15,6 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
     private List<nodeItem> nodeItems = Collections.emptyList();
 
     public void setNodeItems(List<nodeItem> nodeItems) {
-        this.nodeItems.clear();
         this.nodeItems = nodeItems;
         notifyDataSetChanged();
     }
