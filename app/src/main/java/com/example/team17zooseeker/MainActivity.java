@@ -39,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        Intent intent = new Intent(this, DirectionsActivity.class);
+        startActivity(intent);
+
         Context context = this;
         ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(context);
 
@@ -56,8 +59,6 @@ public class MainActivity extends AppCompatActivity {
         plan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
             }
         });
 
