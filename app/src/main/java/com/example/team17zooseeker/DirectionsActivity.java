@@ -30,7 +30,7 @@ public class DirectionsActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.directions_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-        Context context = this;
+
         Button next = findViewById(R.id.next_btn);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
