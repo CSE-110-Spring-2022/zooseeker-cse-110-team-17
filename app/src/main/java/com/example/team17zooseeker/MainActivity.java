@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -43,14 +45,13 @@ public class MainActivity extends AppCompatActivity {
         nodeDao = database.nodeItemDao();
         edgeDao  = database.edgeItemDao();
 
-        List<nodeItem> nodes = nodeDao.getAll();
         List<edgeItem> edges = edgeDao.getAll();
+        List<nodeItem> nodes = nodeDao.getAll();
 
         Map<String, nodeItem> nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getId, Function.identity()));
         Map<String, edgeItem> edgeMap = edges.stream().collect(Collectors.toMap(edgeItem::getId, Function.identity()));
 
         Button plan = findViewById(R.id.plan_btn);
-        EditText searchBar = findViewById(R.id.search_text);
 
         plan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,5 +60,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        //Setting up the autocomplete text field with custom adapter
+        AutoCompleteTextView searchTextView = (AutoCompleteTextView)findViewById(R.id.search_text);
+        ArrayAdapter<String> autoCompleteAdapter = new AutoCompleteAdapter(this);
+        searchTextView.setAdapter(autoCompleteAdapter);
     }
 }

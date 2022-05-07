@@ -30,6 +30,7 @@ public class nodeItem {
     public String name;
 
     @TypeConverters(nodeItemConverter.class)
+
     public List<String> tags;
 
     //public String testString;
