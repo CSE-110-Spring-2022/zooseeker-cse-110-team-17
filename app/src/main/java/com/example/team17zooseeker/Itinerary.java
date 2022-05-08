@@ -96,6 +96,10 @@ public class Itinerary {
         itinerary = itin;
     }
 
+    public static void injectTestNodeDao(NodeItemDao noDao){
+        nodeDao = noDao;
+    }
+
     //Developer Notes----------
     // for (IdentifiedWeightedEdge e : zooMap.edgeSet()) {
     //     Log.d("Edge: ", e.toString());

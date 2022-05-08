@@ -60,6 +60,9 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
         return directItems.indexOf(directItems.get(position));
     }
 
+    //Available for testing
+    public String getItemName(int pos){ return directItems.get(pos); }
+
     public class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView textView;
         private String direct;

@@ -50,4 +50,7 @@ public class DirectionsActivity extends AppCompatActivity {
             adapter.setDirectItems(DirectionsActivity.this, nextBtn);
         }
     }
+
+    //For testing
+    public DirectionsAdapter getAdapter(){ return adapter; }
 }

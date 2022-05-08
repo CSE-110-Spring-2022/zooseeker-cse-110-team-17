@@ -70,14 +70,12 @@ public class AddExhibitTests {
     @Test
     public void testAddValidExhibit() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
-//        scenario.moveToState(Lifecycle.State.CREATED);
-//        scenario.moveToState(Lifecycle.State.STARTED);
-//        scenario.moveToState(Lifecycle.State.RESUMED);
+
         scenario.onActivity(activity -> {
             List<String> temp = new ArrayList<String>();
             testDb.nodeItemDao().insert(new nodeItem("lions", "exhibit", "Lions", temp));
             testDb.nodeItemDao().insert(new nodeItem("gorillas", "exhibit", "Gorillas", temp));
-            testDb.nodeItemDao().getAll();
+
             nodeItem temp1 = testDb.nodeItemDao().get("lions");
             nodeItem temp2 = testDb.nodeItemDao().get("gorillas");
             Log.e("Node 1: ", temp1.toString());
@@ -113,14 +111,11 @@ public class AddExhibitTests {
     @Test
     public void testAddInvalidExhibit() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
-//        scenario.moveToState(Lifecycle.State.CREATED);
-//        scenario.moveToState(Lifecycle.State.STARTED);
-//        scenario.moveToState(Lifecycle.State.RESUMED);
+
         scenario.onActivity(activity -> {
             List<String> temp = new ArrayList<String>();
             testDb.nodeItemDao().insert(new nodeItem("lions", "exhibit", "Lions", temp));
             testDb.nodeItemDao().insert(new nodeItem("gorillas", "exhibit", "Gorillas", temp));
-            testDb.nodeItemDao().getAll();
 
             nodeItem temp1 = testDb.nodeItemDao().get("Tapirs");
 
@@ -133,7 +128,6 @@ public class AddExhibitTests {
             searchText.requestFocus();
             searchText.setText("Tapirs");
             searchText.clearFocus();
-            List<nodeItem> addedNodesList = new ArrayList<nodeItem>();
 
             assertNull(temp1);
 
