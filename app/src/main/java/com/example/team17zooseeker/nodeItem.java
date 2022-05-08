@@ -56,6 +56,12 @@ public class nodeItem {
     public String getId() {
         return id;
     }
+    public String getName() {
+        return name;
+    }
+    public String getKind() {
+        return name;
+    }
 
     public static Map<String, nodeItem> loadNodeInfoJSON(Context context, String path) throws IOException {
         InputStream input = context.getAssets().open(path);

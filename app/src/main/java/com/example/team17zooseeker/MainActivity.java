@@ -3,18 +3,23 @@ package com.example.team17zooseeker;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import org.jgrapht.Graph;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -22,6 +27,7 @@ import java.util.stream.Collectors;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.view.View;
 import android.widget.Button;
 
@@ -40,11 +46,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        Intent intent = new Intent(this, DirectionsActivity.class);
-        startActivity(intent);
+        ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(this);
 
-        Context context = this;
-        ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(context);
+        NodeListAdapter adapter = new NodeListAdapter();
+        adapter.setHasStableIds(true);
 
         nodeDao = database.nodeItemDao();
         edgeDao  = database.edgeItemDao();
@@ -52,22 +57,61 @@ public class MainActivity extends AppCompatActivity {
         List<edgeItem> edges = edgeDao.getAll();
         List<nodeItem> nodes = nodeDao.getAll();
 
-        Map<String, nodeItem> nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getId, Function.identity()));
+        Map<String, nodeItem> nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getName, Function.identity()));
         Map<String, edgeItem> edgeMap = edges.stream().collect(Collectors.toMap(edgeItem::getId, Function.identity()));
+
+        Log.e("Starting Node List: ", nodes.toString());
+        Log.e("Starting Node Map: ", nodeMap.toString());
 
         Button plan = findViewById(R.id.plan_btn);
 
-        plan.setOnClickListener(new View.OnClickListener() {
+        EditText searchText = findViewById(R.id.search_text);
+        TextView exhibitText = findViewById(R.id.exhibit_count_txt);
+
+        RecyclerView visitationView = findViewById(R.id.visitation_list_view);
+        visitationView.setLayoutManager(new LinearLayoutManager(this));
+        visitationView.setAdapter(adapter);
+
+        //List<String> visitationList = Collections.emptyList();
+        List<nodeItem> addedNodesList = new ArrayList<nodeItem>();
+        List<String> visitationList = new ArrayList<String>();
+
+        searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onClick(View view) {
-                //Intent intent = new Intent(this, ItineraryActivity.class);
-                //startActivity(intent);
+            public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+                int result = actionId & EditorInfo.IME_MASK_ACTION;
+
+                if(result == EditorInfo.IME_ACTION_DONE) {
+                    String searchQuery = searchText.getText().toString();
+
+                    if (nodeMap.containsKey(searchQuery) &&
+                            !(visitationList.contains(searchQuery))) {
+
+                        searchText.setText("");
+
+                        addedNodesList.add(nodeMap.get(searchQuery));
+                        visitationList.add(nodeMap.get(searchQuery).getName());
+
+                        Log.e("Current VList: ", visitationList.toString());
+
+                        adapter.setNodeItems(addedNodesList);
+
+                        exhibitText.setText("( " + visitationList.size() + " )");
+
+                    }
+                }
+
+                return true;
+
             }
+
         });
 
         //Setting up the autocomplete text field with custom adapter
         AutoCompleteTextView searchTextView = (AutoCompleteTextView)findViewById(R.id.search_text);
         ArrayAdapter<String> autoCompleteAdapter = new AutoCompleteAdapter(this);
         searchTextView.setAdapter(autoCompleteAdapter);
+      
     }
+  
 }
