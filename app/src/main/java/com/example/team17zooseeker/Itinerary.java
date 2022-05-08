@@ -84,7 +84,11 @@ public class Itinerary {
 
     public static String getNameFromId(String id){ return nodeDao.get(id).getName(); }
 
-    public static void clearItinerary(){ itinerary.clear(); }
+    //Allows for a new itinerary if the use of the previous itinerary has been completed.
+    public static void deleteItinerary(){
+        itinerary.clear();
+        itinerary = null;
+    }
 
     //So when running multiple tests at one time you can reset the static itinerary.
     @VisibleForTesting

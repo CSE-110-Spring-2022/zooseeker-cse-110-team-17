@@ -37,7 +37,7 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ZooKeeperDatabase db;
+    private ZooKeeperDatabase database;
     private NodeItemDao nodeDao;
     private EdgeItemDao edgeDao;
     private Map<String, nodeItem> nodeMap;
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         //Database stuff
-        ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(this);
+        database = ZooKeeperDatabase.getSingleton(this);
 
         nodeDao = database.nodeItemDao();
         edgeDao  = database.edgeItemDao();
@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void onPlanClicked (View view){
+        Log.d("Visitation List: ", this.visitationList.toString());
         //Visitation List needs to be in Ids and not names
         for(int i = 0; i < this.visitationList.size(); i++){
             this.visitationList.set(i, this.nodeMap.get(this.visitationList.get(i)).getId());
@@ -117,5 +118,6 @@ public class MainActivity extends AppCompatActivity {
         this.visitationList.clear();
         Intent intent = new Intent(this, ItineraryActivity.class);
         startActivity(intent);
+        finish();
     }
 }

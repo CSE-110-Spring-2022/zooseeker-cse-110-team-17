@@ -42,9 +42,10 @@ public class DirectionsActivity extends AppCompatActivity {
 
     public void onNextClicked (View view){
         if(nextBtn.getText().equals("FINISH")){
-            Itinerary.clearItinerary();
+            Itinerary.deleteItinerary();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+            finish();
         }else{
             adapter.setDirectItems(DirectionsActivity.this, nextBtn);
         }
