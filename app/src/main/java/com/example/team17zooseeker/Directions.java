@@ -41,6 +41,7 @@ public class Directions {
      * @param context the current application environment
      */
     public List<String> createDirections(Context context) {
+
         String start;
         String end;
         List<String> dirs = new ArrayList<>();
@@ -50,21 +51,11 @@ public class Directions {
             end = itinerary.get(currentIndex + 1);
             currentIndex++;
         } else {
-            throw new RuntimeException("The current Index for the itinerary is out of boundary." +
-                    "it should be [0, itinerary.size() - 2]");
+            return new ArrayList<>();
         }
-
-
-        /*
-         Graph<String, IdentifiedWeightedEdge> g,
-         GraphPath<String, IdentifiedWeightedEdge> path,
-         Map<String, ZooData.VertexInfo> vInfo,
-         Map<String, ZooData.EdgeInfo> eInfo
-         */
-        // Load the graph...
         Graph<String, IdentifiedWeightedEdge> g = null;
         try {
-            g = ZooData.loadZooGraphJSON(context, "sample_zoo_graph.json");
+            g = ZooData.loadZooGraphJSON(context, "graph.json");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -73,16 +64,24 @@ public class Directions {
         // 2. Load the information about our nodes and edges...
         Map<String, ZooData.VertexInfo> vInfo = null;
         try {
-            vInfo = ZooData.loadVertexInfoJSON(context, "sample_node_info.json");
+            vInfo = ZooData.loadVertexInfoJSON(context, "node.json");
         } catch (IOException e) {
             e.printStackTrace();
         }
         Map<String, ZooData.EdgeInfo> eInfo = null;
         try {
-            eInfo = ZooData.loadEdgeInfoJSON(context, "sample_edge_info.json");
+            eInfo = ZooData.loadEdgeInfoJSON(context, "edge.json");
         } catch (IOException e) {
             e.printStackTrace();
         }
+        /*
+         Graph<String, IdentifiedWeightedEdge> g,
+         GraphPath<String, IdentifiedWeightedEdge> path,
+         Map<String, ZooData.VertexInfo> vInfo,
+         Map<String, ZooData.EdgeInfo> eInfo
+         */
+        // Load the graph...
+
 
         System.out.printf("The shortest path from '%s' to '%s' is:\n", start, end);
 

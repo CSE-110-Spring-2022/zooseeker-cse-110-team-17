@@ -51,13 +51,14 @@ public class DirectionsTests {
         //Todo
     }
 
-    // This test tests the exception for out of boundary.
-    @Test(expected = RuntimeException.class)
+
+    // if it is out of bound, createDirections function just return empty list.
     public void TestDirectionsOutOfBoundException() {
         List<String> itinerary = Arrays.asList("entrance_exit_gate", "elephant_odyssey");
         Directions d = new Directions(itinerary, 1);
         Context context = ApplicationProvider.getApplicationContext();
-        d.createDirections(context);
+        List<String> dirs = d.createDirections(context);
+        assertEquals(dirs.isEmpty(), Boolean.TRUE);
     }
 
 }
