@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Directions {
 
@@ -64,12 +66,14 @@ public class Directions {
         // 2. Load the information about our nodes and edges...
         Map<String, ZooData.VertexInfo> vInfo = null;
         try {
+            //Map<String, nodeItem> nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getName, Function.identity()));
             vInfo = ZooData.loadVertexInfoJSON(context, "node.json");
         } catch (IOException e) {
             e.printStackTrace();
         }
         Map<String, ZooData.EdgeInfo> eInfo = null;
         try {
+            //Map<String, edgeItem> edgeMap = edges.stream().collect(Collectors.toMap(edgeItem::getId, Function.identity()));
             eInfo = ZooData.loadEdgeInfoJSON(context, "edge.json");
         } catch (IOException e) {
             e.printStackTrace();

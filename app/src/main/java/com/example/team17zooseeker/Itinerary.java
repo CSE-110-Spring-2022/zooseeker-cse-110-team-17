@@ -19,15 +19,14 @@ public class Itinerary {
 
     //Graph data of the zoo to calculate distances between locations.
     private static Graph<String, IdentifiedWeightedEdge> zooMap;
-    //private static Map<String, ZooData.VertexInfo> zooNodes; *un-used but may be useful for later*
-    //private static Map<String, ZooData.EdgeInfo> zooEdges;
+    private static NodeItemDao nodeDao;
 
     public static void createItinerary(Context context, List<String> visitationList){
         if(itinerary == null){
             try {
                 zooMap = ZooData.loadZooGraphJSON(context, "sample_zoo_graph.json");
-                // zooNodes = ZooData.loadVertexInfoJSON(context, "sample_node_info.json");
-                // zooEdges = ZooData.loadEdgeInfoJSON(context,"sample_edge_info.json");
+                ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(context);
+                nodeDao = database.nodeItemDao();
             }catch (IOException e){ return; }
 
             Itinerary.buildItinerary(visitationList);
@@ -82,6 +81,10 @@ public class Itinerary {
     }
 
     public static List<String> getItinerary(){ return itinerary; }
+
+    public static String getNameFromId(String id){ return nodeDao.get(id).getName(); }
+
+    public static void clearItinerary(){ itinerary.clear(); }
 
     //So when running multiple tests at one time you can reset the static itinerary.
     @VisibleForTesting

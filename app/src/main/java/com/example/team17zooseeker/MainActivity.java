@@ -40,16 +40,17 @@ public class MainActivity extends AppCompatActivity {
     private ZooKeeperDatabase db;
     private NodeItemDao nodeDao;
     private EdgeItemDao edgeDao;
+    private Map<String, nodeItem> nodeMap;
+
+    private List<String> visitationList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        //Database stuff
         ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(this);
-
-        NodeListAdapter adapter = new NodeListAdapter();
-        adapter.setHasStableIds(true);
 
         nodeDao = database.nodeItemDao();
         edgeDao  = database.edgeItemDao();
@@ -57,24 +58,22 @@ public class MainActivity extends AppCompatActivity {
         List<edgeItem> edges = edgeDao.getAll();
         List<nodeItem> nodes = nodeDao.getAll();
 
-        Map<String, nodeItem> nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getName, Function.identity()));
-        Map<String, edgeItem> edgeMap = edges.stream().collect(Collectors.toMap(edgeItem::getId, Function.identity()));
+        this.nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getName, Function.identity()));
 
-        Log.e("Starting Node List: ", nodes.toString());
-        Log.e("Starting Node Map: ", nodeMap.toString());
-
-        Button plan = findViewById(R.id.plan_btn);
-
-        EditText searchText = findViewById(R.id.search_text);
-        TextView exhibitText = findViewById(R.id.exhibit_count_txt);
+        //Visitation List recycler
+        NodeListAdapter adapter = new NodeListAdapter();
+        adapter.setHasStableIds(true);
 
         RecyclerView visitationView = findViewById(R.id.visitation_list_view);
         visitationView.setLayoutManager(new LinearLayoutManager(this));
         visitationView.setAdapter(adapter);
 
-        //List<String> visitationList = Collections.emptyList();
+        //Adding an exhibit to visitation list
+        EditText searchText = findViewById(R.id.search_text);
+        TextView exhibitText = findViewById(R.id.exhibit_count_txt);
+
         List<nodeItem> addedNodesList = new ArrayList<nodeItem>();
-        List<String> visitationList = new ArrayList<String>();
+        this.visitationList = new ArrayList<String>();
 
         searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -87,31 +86,36 @@ public class MainActivity extends AppCompatActivity {
                     if (nodeMap.containsKey(searchQuery) &&
                             !(visitationList.contains(searchQuery))) {
 
-                        searchText.setText("");
-
                         addedNodesList.add(nodeMap.get(searchQuery));
                         visitationList.add(nodeMap.get(searchQuery).getName());
-
-                        Log.e("Current VList: ", visitationList.toString());
 
                         adapter.setNodeItems(addedNodesList);
 
                         exhibitText.setText("( " + visitationList.size() + " )");
-
                     }
                 }
-
+                searchText.setText("");
                 return true;
-
             }
-
         });
+
+        Button plan = findViewById(R.id.plan_btn);
+        plan.setOnClickListener(this::onPlanClicked);
 
         //Setting up the autocomplete text field with custom adapter
         AutoCompleteTextView searchTextView = (AutoCompleteTextView)findViewById(R.id.search_text);
         ArrayAdapter<String> autoCompleteAdapter = new AutoCompleteAdapter(this);
         searchTextView.setAdapter(autoCompleteAdapter);
-      
     }
-  
+
+    void onPlanClicked (View view){
+        //Visitation List needs to be in Ids and not names
+        for(int i = 0; i < this.visitationList.size(); i++){
+            this.visitationList.set(i, this.nodeMap.get(this.visitationList.get(i)).getId());
+        }
+        Itinerary.createItinerary(this, this.visitationList);
+        this.visitationList.clear();
+        Intent intent = new Intent(this, ItineraryActivity.class);
+        startActivity(intent);
+    }
 }

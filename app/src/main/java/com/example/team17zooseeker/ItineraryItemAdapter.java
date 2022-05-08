@@ -33,6 +33,10 @@ public class ItineraryItemAdapter extends RecyclerView.Adapter<ItineraryItemAdap
         String nextLoc = Itinerary.getItinerary().get(position);
 
         totalDistance += Itinerary.distance(currLoc ,nextLoc);
+
+        //Set displayed name to node name and not Id
+        nextLoc = Itinerary.getNameFromId(nextLoc);
+
         String text = nextLoc + "\n(" + totalDistance + " feet)";
         holder.setText(text);
     }

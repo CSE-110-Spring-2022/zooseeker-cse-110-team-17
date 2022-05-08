@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,14 +17,17 @@ import java.util.List;
 public class DirectionsActivity extends AppCompatActivity {
 
     public RecyclerView recyclerView;
-    private int i = 1;
+    private Button nextBtn;
+
+    private DirectionsAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_directions);
-        List<String> itinerary = Arrays.asList("entrance_exit_gate", "elephant_odyssey", "arctic_foxes");
-        Directions d = new Directions(itinerary,0);
-        final DirectionsAdapter adapter = new DirectionsAdapter(d);
+
+        Directions d = new Directions(Itinerary.getItinerary(),0);
+        adapter = new DirectionsAdapter(d);
 
         adapter.setHasStableIds(true);
 
@@ -31,16 +35,18 @@ public class DirectionsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        Button next = findViewById(R.id.next_btn);
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                adapter.setDirectItems(DirectionsActivity.this,next);
-            }
-        });
-        adapter.setDirectItems(DirectionsActivity.this,next);
-
+        nextBtn = findViewById(R.id.next_btn);
+        nextBtn.setOnClickListener(this::onNextClicked);
+        adapter.setDirectItems(DirectionsActivity.this, nextBtn);
     }
 
-
+    public void onNextClicked (View view){
+        if(nextBtn.getText().equals("FINISH")){
+            Itinerary.clearItinerary();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }else{
+            adapter.setDirectItems(DirectionsActivity.this, nextBtn);
+        }
+    }
 }
