@@ -21,24 +21,6 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public class DirectionsTests {
 
-    ZooKeeperDatabase testDb;
-    NodeItemDao nodeDao;
-    EdgeItemDao edgeDao;
-
-    @Before
-    public void resetDatabase() throws IOException {
-//        Context context = ApplicationProvider.getApplicationContext();
-//        testDb = Room.inMemoryDatabaseBuilder(context, ZooKeeperDatabase.class)
-//                .allowMainThreadQueries()
-//                .build();
-//        edgeDao = testDb.edgeItemDao();
-////        graphDao = db.graphItemDao();
-//        nodeDao = testDb.nodeItemDao();
-//
-//        List<String> temp = Collections.emptyList();
-
-    }
-
     @Test
     public void testDirectionsList(){
         List<String> itinerary = Arrays.asList("entrance_exit_gate", "elephant_odyssey");
@@ -58,8 +40,6 @@ public class DirectionsTests {
         List<String> itinerary = Arrays.asList("entrance_exit_gate", "elephant_odyssey", "arctic_foxes");
         Directions d = new Directions(itinerary, 0);
         Context context = ApplicationProvider.getApplicationContext();
-        // this code will hold the list of directions to be iterated through
-        //d.createDirections(context);
         List<String> dirs = d.createTestDirections(context);
 
         assertEquals(dirs.get(0), "1. Walk 10 meters along Entrance Way from 'Entrance and Exit Gate' to 'Entrance Plaza'.");   // in the "" is the string line for the 1. walking .... , so we can test it.

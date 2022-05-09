@@ -25,7 +25,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
 
     public void setDirectItems(Context context, Button next){
         this.directItems.clear();
-        this.directItems = this.directions.createDirections(context);
+        this.directItems = this.directions.createTestDirections(context); //Not using database
              if (this.directItems.isEmpty())
              {
                  next.setText("FINISH");
