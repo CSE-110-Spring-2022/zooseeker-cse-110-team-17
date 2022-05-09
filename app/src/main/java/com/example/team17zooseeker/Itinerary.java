@@ -24,7 +24,7 @@ public class Itinerary {
     public static void createItinerary(Context context, List<String> visitationList){
         if(itinerary == null){
             try {
-                zooMap = ZooData.loadZooGraphJSON(context, "sample_zoo_graph.json");
+                zooMap = ZooData.loadZooGraphJSON(context, "graph.json");
                 ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(context);
                 nodeDao = database.nodeItemDao();
             }catch (IOException e){ return; }
