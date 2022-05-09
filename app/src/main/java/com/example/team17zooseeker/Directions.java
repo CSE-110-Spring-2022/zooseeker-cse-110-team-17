@@ -33,6 +33,9 @@ public class Directions {
      * @param currentIndex the current index for the itinerary
      */
     public Directions(List<String> itinerary, int currentIndex) {
+        if(itinerary.size() >= 2 && itinerary.get(0).equals(itinerary.get(1)))
+            itinerary.remove(0);
+
         this.itinerary = itinerary;
         this.currentIndex = currentIndex;
     }
@@ -43,6 +46,18 @@ public class Directions {
      * @param context the current application environment
      */
     public List<String> createDirections(Context context) {
+
+        //Database stuff
+        ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(context);
+
+        NodeItemDao nodeDao = database.nodeItemDao();
+        EdgeItemDao edgeDao  = database.edgeItemDao();
+
+        List<edgeItem> edges = edgeDao.getAll();
+        List<nodeItem> nodes = nodeDao.getAll();
+
+        Map<String, nodeItem> nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getId, Function.identity()));
+        Map<String, edgeItem> edgeMap = edges.stream().collect(Collectors.toMap(edgeItem::getId, Function.identity()));
 
         String start;
         String end;
@@ -55,6 +70,7 @@ public class Directions {
         } else {
             return new ArrayList<>();
         }
+
         Graph<String, IdentifiedWeightedEdge> g = null;
         try {
             g = ZooData.loadZooGraphJSON(context, "graph.json");
@@ -63,21 +79,6 @@ public class Directions {
         }
         GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g, start, end);
 
-        // 2. Load the information about our nodes and edges...
-        Map<String, ZooData.VertexInfo> vInfo = null;
-        try {
-            //Map<String, nodeItem> nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getName, Function.identity()));
-            vInfo = ZooData.loadVertexInfoJSON(context, "node.json");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Map<String, ZooData.EdgeInfo> eInfo = null;
-        try {
-            //Map<String, edgeItem> edgeMap = edges.stream().collect(Collectors.toMap(edgeItem::getId, Function.identity()));
-            eInfo = ZooData.loadEdgeInfoJSON(context, "edge.json");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         /*
          Graph<String, IdentifiedWeightedEdge> g,
          GraphPath<String, IdentifiedWeightedEdge> path,
@@ -104,12 +105,12 @@ public class Directions {
                     g.getEdgeWeight(e),
                     // calls could throw null pointer exceptions
                     // use wrappers until we can ensure input is valid
-                    Objects.requireNonNull(eInfo.get(e.getId())).street);
+                    Objects.requireNonNull(edgeMap.get(e.getId())).street);
             instructionBuilder.append(street); //append to string builder
 
             //keep source and target data
-            ZooData.VertexInfo target = Objects.requireNonNull(vInfo.get(g.getEdgeTarget(e)));
-            ZooData.VertexInfo source = Objects.requireNonNull(vInfo.get(g.getEdgeSource(e)));
+            nodeItem target = Objects.requireNonNull(nodeMap.get(g.getEdgeTarget(e)));
+            nodeItem source = Objects.requireNonNull(nodeMap.get(g.getEdgeSource(e)));
             String exhibits;
 
             // logic for direction checking, both to initialize and end

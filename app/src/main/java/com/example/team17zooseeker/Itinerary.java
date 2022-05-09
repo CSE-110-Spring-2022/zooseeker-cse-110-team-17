@@ -39,6 +39,8 @@ public class Itinerary {
         int finalCapacity = visitationList.size() + 1;
         itinerary.add("entrance_exit_gate"); //Always start at the entrance
 
+        //itinerary.add("entrance_exit_gate"); //Always start at the entrance
+
         //Until the itinerary has every location from the visitation list find the next location
         int indexOfCurrLocation = 0;
         while(itinerary.size() < finalCapacity){
