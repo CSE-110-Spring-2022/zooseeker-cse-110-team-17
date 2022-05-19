@@ -1,6 +1,7 @@
 package com.example.team17zooseeker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
 
     public void setDirectItems(Context context, Button next){
         this.directItems.clear();
-        this.directItems = this.directions.createDirections(context);
+        this.directItems = this.directions.createTestDirections(context); //Not using database
              if (this.directItems.isEmpty())
              {
                  next.setText("FINISH");
@@ -58,6 +59,9 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
         // not sure what to do with this yet
         return directItems.indexOf(directItems.get(position));
     }
+
+    //Available for testing
+    public String getItemName(int pos){ return directItems.get(pos); }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView textView;

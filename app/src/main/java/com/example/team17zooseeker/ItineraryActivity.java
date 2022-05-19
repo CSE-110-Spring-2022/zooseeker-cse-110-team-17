@@ -31,8 +31,9 @@ public class ItineraryActivity extends AppCompatActivity {
     }
 
     void onGetDirectionClicked (View view){
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, DirectionsActivity.class);
         startActivity(intent);
+        finish();
     }
 }
 

@@ -19,15 +19,14 @@ public class Itinerary {
 
     //Graph data of the zoo to calculate distances between locations.
     private static Graph<String, IdentifiedWeightedEdge> zooMap;
-    //private static Map<String, ZooData.VertexInfo> zooNodes; *un-used but may be useful for later*
-    //private static Map<String, ZooData.EdgeInfo> zooEdges;
+    private static NodeItemDao nodeDao;
 
     public static void createItinerary(Context context, List<String> visitationList){
         if(itinerary == null){
             try {
-                zooMap = ZooData.loadZooGraphJSON(context, "sample_zoo_graph.json");
-                // zooNodes = ZooData.loadVertexInfoJSON(context, "sample_node_info.json");
-                // zooEdges = ZooData.loadEdgeInfoJSON(context,"sample_edge_info.json");
+                zooMap = ZooData.loadZooGraphJSON(context, "graph.json");
+                ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(context);
+                nodeDao = database.nodeItemDao();
             }catch (IOException e){ return; }
 
             Itinerary.buildItinerary(visitationList);
@@ -39,6 +38,8 @@ public class Itinerary {
         itinerary = new ArrayList<String>(visitationList.size() + 1);
         int finalCapacity = visitationList.size() + 1;
         itinerary.add("entrance_exit_gate"); //Always start at the entrance
+
+        //itinerary.add("entrance_exit_gate"); //Always start at the entrance
 
         //Until the itinerary has every location from the visitation list find the next location
         int indexOfCurrLocation = 0;
@@ -83,10 +84,22 @@ public class Itinerary {
 
     public static List<String> getItinerary(){ return itinerary; }
 
+    public static String getNameFromId(String id){ return nodeDao.get(id).getName(); }
+
+    //Allows for a new itinerary if the use of the previous itinerary has been completed.
+    public static void deleteItinerary(){
+        itinerary.clear();
+        itinerary = null;
+    }
+
     //So when running multiple tests at one time you can reset the static itinerary.
     @VisibleForTesting
     public static void injectTestItinerary(List<String> itin){
         itinerary = itin;
+    }
+
+    public static void injectTestNodeDao(NodeItemDao noDao){
+        nodeDao = noDao;
     }
 
     //Developer Notes----------
