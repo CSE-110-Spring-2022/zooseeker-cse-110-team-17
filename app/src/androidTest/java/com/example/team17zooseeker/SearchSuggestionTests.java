@@ -74,18 +74,15 @@ public class SearchSuggestionTests {
     @Test
     public void testAutoCompleteTextView() {
         onView(withId(R.id.search_text))
-                .perform(typeText("en"), closeSoftKeyboard());
-        onView(withText("Entrance and Exit Gate"))
+                .perform(typeText("an"), closeSoftKeyboard());
+        onView(withText("Elephant Odyssey"))
                 .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
-        onView(withText("Entrance Plaza"))
-                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
-                .check(matches(isDisplayed()));
-        onView(withText("Entrance Plaza"))
+        onView(withText("Elephant Odyssey"))
                 .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
                 .perform(click());
         onView(withId(R.id.search_text))
-                .check(matches(withText("Entrance Plaza")));
+                .check(matches(withText("Elephant Odyssey")));
     }
 
     @Test
