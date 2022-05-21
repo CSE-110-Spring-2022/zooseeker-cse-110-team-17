@@ -18,7 +18,7 @@ public class DirectionsActivity extends AppCompatActivity {
 
     public RecyclerView recyclerView;
     private Button nextBtn;
-
+    private Button prevBtn;
     private DirectionsAdapter adapter;
 
     @Override
@@ -35,9 +35,15 @@ public class DirectionsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
+        prevBtn = findViewById(R.id.prev_btn);
+        prevBtn.setOnClickListener(this::onPrevClicked);
         nextBtn = findViewById(R.id.next_btn);
         nextBtn.setOnClickListener(this::onNextClicked);
-        adapter.setDirectItems(DirectionsActivity.this, nextBtn);
+        adapter.setDirectItems(DirectionsActivity.this, prevBtn, nextBtn, true);
+    }
+
+    public void onPrevClicked (View view) {
+        adapter.setDirectItems(DirectionsActivity.this, prevBtn, nextBtn, false);
     }
 
     public void onNextClicked (View view){
@@ -47,7 +53,7 @@ public class DirectionsActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }else{
-            adapter.setDirectItems(DirectionsActivity.this, nextBtn);
+            adapter.setDirectItems(DirectionsActivity.this, prevBtn, nextBtn, true);
         }
     }
 
