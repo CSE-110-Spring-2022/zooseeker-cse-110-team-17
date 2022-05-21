@@ -2,6 +2,7 @@ package com.example.team17zooseeker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import java.util.List;
 public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.ViewHolder> {
     private List<String> directItems = Collections.emptyList();
     private Directions directions;
+    private  final  String finalDirections = "2. Walk 10 meters along Entrance Way from 'Entrance Plaza' to 'Entrance and Exit Gate'.";
 
     public DirectionsAdapter(Directions directions) {
         this.directions = directions;
@@ -26,7 +28,8 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
     public void setDirectItems(Context context, Button next){
         this.directItems.clear();
         this.directItems = this.directions.createTestDirections(context); //Not using database
-             if (this.directItems.isEmpty())
+            //Assuming the final content is a constant
+             if (this.directItems.get(this.directItems.size()-1).equals(finalDirections))
              {
                  next.setText("FINISH");
              }
