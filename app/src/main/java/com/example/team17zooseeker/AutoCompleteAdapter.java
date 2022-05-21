@@ -62,7 +62,7 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
 
             for (nodeItem item : allNodes) {
                 String filterPattern = constraint.toString().toLowerCase().trim();
-                if(!Objects.equals(item.name, "Entrance and Exit Gate") && !Objects.equals(item.name, "Entrance Plaza")){
+                if(Objects.equals(item.kind, "exhibit")){
                     if(item.name.toLowerCase().contains(filterPattern)){
                         suggestions.add(item.name);
                     }
