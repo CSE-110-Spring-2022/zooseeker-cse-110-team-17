@@ -28,6 +28,13 @@ public class Directions {
     // current index for iterating through the itinerary
     private int currentIndex;
 
+    private boolean detailedDirection = false;
+    private boolean dataLoaded = false;
+
+    //Zoo Data
+    Graph<String, IdentifiedWeightedEdge> g = null;
+    Map<String, ZooData.VertexInfo> vInfo = null;
+    Map<String, ZooData.EdgeInfo> eInfo = null;
     /**
      * The constructor
      *
@@ -35,6 +42,7 @@ public class Directions {
      * @param currentIndex the current index for the itinerary
      */
     public Directions(List<String> itinerary, int currentIndex) {
+        //What does this do????
         if(itinerary.size() >= 2 && itinerary.get(0).equals(itinerary.get(1)))
             itinerary.remove(0);
 
@@ -140,10 +148,9 @@ public class Directions {
 
     @VisibleForTesting
     public List<String> createTestDirections(Context context) {
-
+        //Set the start and end positions based off of current index in itinerary
         String start;
         String end;
-        List<String> dirs = new ArrayList<>();
 
         if (currentIndex <= itinerary.size() - 2 && currentIndex >= 0) {
             start = itinerary.get(currentIndex);
@@ -152,37 +159,24 @@ public class Directions {
         } else {
             return new ArrayList<>();
         }
-        Graph<String, IdentifiedWeightedEdge> g = null;
-        try {
-            g = ZooData.loadZooGraphJSON(context, "graph.json");
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        //Load Data if needed
+        if(!dataLoaded){
+            this.getZooData(context);
         }
+
+        //Find a path between start and end
         GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g, start, end);
 
-        // 2. Load the information about our nodes and edges...
-        Map<String, ZooData.VertexInfo> vInfo = null;
-        try {
-            vInfo = ZooData.loadVertexInfoJSON(context, "node.json");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Map<String, ZooData.EdgeInfo> eInfo = null;
-        try {
-            eInfo = ZooData.loadEdgeInfoJSON(context, "edge.json");
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(detailedDirection){
+            return getDetailedDirections(path, start);
         }
 
-        /*
-         Graph<String, IdentifiedWeightedEdge> g,
-         GraphPath<String, IdentifiedWeightedEdge> path,
-         Map<String, ZooData.VertexInfo> vInfo,
-         Map<String, ZooData.EdgeInfo> eInfo
-         */
-        // Load the graph...
+        return getSimpleDirections(path, start);
+    }
 
-        System.out.printf("The shortest path from '%s' to '%s' is:\n", start, end);
+    private List<String> getSimpleDirections(GraphPath<String, IdentifiedWeightedEdge> path, String start){
+        List<String> dirs = new ArrayList<>();
 
         int i = 1;
         // state for maintaining proper direction
@@ -194,7 +188,8 @@ public class Directions {
             instructionBuilder.setLength(0); // reset/empty the string builder
 
             //distance to be walked along an edge (street)
-            @SuppressLint("DefaultLocale") String street = String.format("%d. Walk %.0f meters along %s ",
+            @SuppressLint("DefaultLocale")
+            String street = String.format("%d. Walk %.0f meters along %s ",
                     i,
                     g.getEdgeWeight(e),
                     // calls could throw null pointer exceptions
@@ -223,11 +218,43 @@ public class Directions {
             instructionBuilder.append(exhibits);
             String res = instructionBuilder.toString();
             Log.d("direction", res);
-            // Log.d("sizePATH",String.valueOf(path.getLength()));
             dirs.add(res);
             i++;
         }
+
         return dirs;
     }
 
+
+    //TO-DO
+    private List<String> getDetailedDirections(GraphPath<String, IdentifiedWeightedEdge> path, String start){
+        List<String> dirs = new ArrayList<>();
+
+        return dirs;
+    }
+
+    private void getZooData(Context context){
+        //Get the graph info
+        try {
+            g = ZooData.loadZooGraphJSON(context, "graph.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // Load the information about our nodes and edges
+        try {
+            vInfo = ZooData.loadVertexInfoJSON(context, "node.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            eInfo = ZooData.loadEdgeInfoJSON(context, "edge.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //Data is now loaded
+        dataLoaded = true;
+    }
+
+    public void setDetailedDirections(boolean bool){ this.detailedDirection = bool; }
 }
