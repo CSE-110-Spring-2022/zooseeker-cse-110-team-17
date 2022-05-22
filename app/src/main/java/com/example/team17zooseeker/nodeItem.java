@@ -28,6 +28,10 @@ public class nodeItem {
     @NonNull
     public String kind;
     public String name;
+    public String parent_id;
+
+    public float lat;
+    public float lng;
 
     @TypeConverters(nodeItemConverter.class)
 
@@ -35,13 +39,15 @@ public class nodeItem {
 
     //public String testString;
 
-    nodeItem(@NonNull String id, @NonNull String kind, String name, List<String> tags) {
+    nodeItem(@NonNull String id, @NonNull String kind, String name, String parent_id, float lat, float lng, List<String> tags) {
         this.id = id;
         this.kind = kind;
         this.name = name;
         this.tags = tags;
+        this.parent_id = parent_id;
+        this.lat = lat;
+        this.lng = lng;
     }
-
 
     @Override
     public String toString() {
@@ -49,6 +55,9 @@ public class nodeItem {
                 "id='" + id + '\'' +
                 ", kind='" + kind + '\'' +
                 ", name='" + name + '\'' +
+                ", parent_id='" + parent_id + '\'' +
+                ", lat=" + lat +
+                ", lng=" + lng +
                 ", tags=" + tags +
                 '}';
     }

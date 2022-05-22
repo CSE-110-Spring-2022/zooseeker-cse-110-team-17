@@ -97,7 +97,6 @@ public class Directions {
          */
         // Load the graph...
 
-
         System.out.printf("The shortest path from '%s' to '%s' is:\n", start, end);
 
         int i = 1;

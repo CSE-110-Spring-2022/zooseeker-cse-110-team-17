@@ -49,7 +49,7 @@ public class ZooKeeperDatabaseTest {
         tags.add("ape");
         tags.add("mammal");
 
-        nodeItem insertedItem = new nodeItem("gorillas", "exhibit", "Gorillas", tags);
+        nodeItem insertedItem = new nodeItem("gorillas", "exhibit", "Gorillas",null,1,1, tags);
         //nodeItem insertedItem2 = new nodeItem("go", "exhibit", "NotGorillas", tags);
 
         nodeDao.insert(insertedItem);
@@ -75,8 +75,8 @@ public class ZooKeeperDatabaseTest {
         tags.add("notape");
         tags.add("notmammal");
 
-        nodeItem insertedItem1 = new nodeItem("gorillas", "exhibit", "Gorillas", tags);
-        nodeItem insertedItem2 = new nodeItem("notgorillas", "notexhibit", "NotGorillas", nottags);
+        nodeItem insertedItem1 = new nodeItem("gorillas", "exhibit", "Gorillas",null,1,1, tags);
+        nodeItem insertedItem2 = new nodeItem("notgorillas", "notexhibit", "NotGorillas", null, 0,0, nottags);
 
         nodeDao.insert(insertedItem1);
         nodeDao.insert(insertedItem2);

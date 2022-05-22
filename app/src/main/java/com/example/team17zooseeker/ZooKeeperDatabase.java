@@ -2,6 +2,7 @@ package com.example.team17zooseeker;
 
 import android.content.Context;
 import android.renderscript.Sampler;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
