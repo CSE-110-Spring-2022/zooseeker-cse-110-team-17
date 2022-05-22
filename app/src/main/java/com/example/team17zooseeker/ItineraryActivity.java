@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,10 +14,25 @@ public class ItineraryActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     private Button Get_direction;
 
+    private ZooKeeperDatabase database;
+    private StateDao stateDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_itinerary);
+
+        database = ZooKeeperDatabase.getSingleton(this);
+        stateDao = database.stateDao();
+
+        stateDao.delete(stateDao.get());
+        stateDao.insert(new State("1"));
+
+        // For Itinerary Activity
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("state", "1");
+        editor.apply();
 
         //Setting the adapter of the recyclerView
         ItineraryItemAdapter adapter = new ItineraryItemAdapter();

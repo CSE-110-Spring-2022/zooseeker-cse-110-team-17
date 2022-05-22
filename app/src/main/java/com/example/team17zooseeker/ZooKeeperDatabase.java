@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.function.ToDoubleBiFunction;
 
-@Database(entities = {edgeItem.class, nodeItem.class}, version = 1, exportSchema = false)
+@Database(entities = {edgeItem.class, nodeItem.class, State.class}, version = 1, exportSchema = false)
 public abstract class ZooKeeperDatabase extends RoomDatabase {
     private static ZooKeeperDatabase singleton = null;
 
@@ -44,9 +44,13 @@ public abstract class ZooKeeperDatabase extends RoomDatabase {
                                 Map<String, nodeItem> nodes = null;
                                 Map<String, edgeItem> edges = null;
 
+                                State state = null;
+
                                 try {
                                     nodes = nodeItem.loadNodeInfoJSON(context, "node.json");
                                     edges = edgeItem.loadEdgeInfoJSON(context, "edge.json");
+                                    state = State.loadStateInfoJSON(context, "state.json");
+
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -56,6 +60,7 @@ public abstract class ZooKeeperDatabase extends RoomDatabase {
 
                                 getSingleton(context).nodeItemDao().insertAll(nodeList);
                                 getSingleton(context).edgeItemDao().insertAll(edgeList);
+                                getSingleton(context).stateDao().insert(state);
 
                             });
                         }
@@ -64,8 +69,10 @@ public abstract class ZooKeeperDatabase extends RoomDatabase {
     }
 
     public abstract EdgeItemDao edgeItemDao();
-//    public abstract GraphItemDao graphItemDao();
+
     public abstract NodeItemDao nodeItemDao();
+
+    public abstract StateDao stateDao();
 
     @VisibleForTesting
     public static void injectTestDatabase(ZooKeeperDatabase testDb) {
