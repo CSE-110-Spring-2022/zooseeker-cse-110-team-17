@@ -18,6 +18,7 @@ public class DirectionsActivity extends AppCompatActivity {
 
     public RecyclerView recyclerView;
     private Button nextBtn;
+    private Button skipBtn;
 
     private DirectionsAdapter adapter;
 
@@ -35,9 +36,16 @@ public class DirectionsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
+        skipBtn = findViewById(R.id.skip_btn);
+        skipBtn.setOnClickListener(this::onSkipClicked);
+
         nextBtn = findViewById(R.id.next_btn);
         nextBtn.setOnClickListener(this::onNextClicked);
-        adapter.setDirectItems(DirectionsActivity.this, nextBtn);
+        adapter.setDirectItems(DirectionsActivity.this, skipBtn, nextBtn, false);
+    }
+
+    public void onSkipClicked (View view) {
+        adapter.setDirectItems(DirectionsActivity.this, skipBtn, nextBtn, true);
     }
 
     public void onNextClicked (View view){
@@ -47,7 +55,7 @@ public class DirectionsActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }else{
-            adapter.setDirectItems(DirectionsActivity.this, nextBtn);
+            adapter.setDirectItems(DirectionsActivity.this, skipBtn, nextBtn, false);
         }
     }
 
