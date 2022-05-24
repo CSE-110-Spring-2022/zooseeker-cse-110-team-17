@@ -50,6 +50,8 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final String STATE_ITINERARY = "1";
+
     private ZooKeeperDatabase database;
     private NodeItemDao nodeDao;
     private EdgeItemDao edgeDao;
@@ -57,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Map<String, nodeItem> nodeMap;
 
-    private List<String> visitationList;
+    private ArrayList<String> visitationList;
 
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
@@ -67,38 +69,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        // For MainActivity
-        preferences = getPreferences(MODE_PRIVATE);
-        String state_retrieved = preferences.getString("state", "default_if_not_found");
-        editor = preferences.edit();
-        editor.putString("state", "0");
-        editor.apply();
-
-        Set<String> vSet = preferences.getStringSet("visitationList", null);
-
-        //if state == 0
-        //  We have a non-empty visitation list to populate
-        //  After populating, clear the state
-        //
-        //if state == 1
-        //  We have to go to the itinerary activity and refill it
-        //  After populating, clear the state
-
-        //
-        //if state == 2
-        //  We have to go to the specific page in the directions they were on
-        //  After populating, clear the state
-
-        //Database stuff
         database = ZooKeeperDatabase.getSingleton(this);
 
         nodeDao = database.nodeItemDao();
         edgeDao  = database.edgeItemDao();
         stateDao = database.stateDao();
 
+        //TESTING
+//        stateDao.delete(stateDao.get());
+//        stateDao.insert(new State("0"));
+
         List<edgeItem> edges = edgeDao.getAll();
         List<nodeItem> nodes = nodeDao.getAll();
         State state = stateDao.get();
+
+        // For MainActivity
+        preferences = getPreferences(MODE_PRIVATE);
+        editor = preferences.edit();
+
+        Set<String> vSet = preferences.getStringSet("visitationList", null);
+
+        //Database stuff
 
         this.nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getName, Function.identity()));
 
@@ -131,6 +122,24 @@ public class MainActivity extends AppCompatActivity {
 
         else {
             this.visitationList = new ArrayList<String>();
+        }
+
+        //Itinerary State Check
+        if(state.state.equals(STATE_ITINERARY)) {
+
+            for(int i = 0; i < this.visitationList.size(); i++){
+                this.visitationList.set(i, this.nodeMap.get(this.visitationList.get(i)).getId());
+            }
+
+            this.visitationList.clear();
+            editor.putStringSet("visitationList", null);
+            editor.apply();
+
+            Intent intent = new Intent(this, ItineraryActivity.class);
+
+            startActivity(intent);
+            finish();
+
         }
 
         searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -176,13 +185,16 @@ public class MainActivity extends AppCompatActivity {
             this.visitationList.set(i, this.nodeMap.get(this.visitationList.get(i)).getId());
         }
 
-        Itinerary.createItinerary(this, this.visitationList);
+        Intent intent = new Intent(this, ItineraryActivity.class);
+        intent.putStringArrayListExtra("VList", this.visitationList);
 
-        this.visitationList.clear();
+        Itinerary.createItinerary(this, new ArrayList<>(visitationList));
+
         editor.putStringSet("visitationList", null);
         editor.apply();
 
-        Intent intent = new Intent(this, ItineraryActivity.class);
+        //this.visitationList.clear();
+
         startActivity(intent);
         finish();
     }

@@ -22,16 +22,23 @@ public class DirectionsActivity extends AppCompatActivity {
 
     private DirectionsAdapter adapter;
 
+    private ZooKeeperDatabase database;
+    private StateDao stateDao;
+
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_directions);
 
         // For Directions Activity
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("state", "2");
-        editor.apply();
+        database = ZooKeeperDatabase.getSingleton(this);
+        stateDao = database.stateDao();
+
+        stateDao.delete(stateDao.get());
+        stateDao.insert(new State("2"));
 
         Directions d = new Directions(Itinerary.getItinerary(),0);
         adapter = new DirectionsAdapter(d);

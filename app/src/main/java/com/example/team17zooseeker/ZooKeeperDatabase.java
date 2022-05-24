@@ -49,7 +49,7 @@ public abstract class ZooKeeperDatabase extends RoomDatabase {
                                 try {
                                     nodes = nodeItem.loadNodeInfoJSON(context, "node.json");
                                     edges = edgeItem.loadEdgeInfoJSON(context, "edge.json");
-                                    state = State.loadStateInfoJSON(context, "state.json");
+                                    //state = State.loadStateInfoJSON(context, "state.json");
 
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -60,7 +60,7 @@ public abstract class ZooKeeperDatabase extends RoomDatabase {
 
                                 getSingleton(context).nodeItemDao().insertAll(nodeList);
                                 getSingleton(context).edgeItemDao().insertAll(edgeList);
-                                getSingleton(context).stateDao().insert(state);
+                                //getSingleton(context).stateDao().insert(state);
 
                             });
                         }
