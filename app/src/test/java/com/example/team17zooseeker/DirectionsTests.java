@@ -28,7 +28,7 @@ public class DirectionsTests {
         Directions d = new Directions(itinerary, 0);
         Context context = ApplicationProvider.getApplicationContext();
         // this code will hold the list of directions to be iterated through
-        List<String> dirs = d.createTestDirections(context);
+        List<String> dirs = d.createTestDirections(context, true);
 
         assertEquals(dirs.get(0), "1. Walk 10 meters along Entrance Way from 'Entrance and Exit Gate' to 'Entrance Plaza'.");   // in the "" is the string line for the 1. walking .... , so we can test it.
         assertEquals(dirs.get(1), "2. Walk 100 meters along Reptile Road from 'Entrance Plaza' to 'Alligators'.");
@@ -41,7 +41,7 @@ public class DirectionsTests {
         List<String> itinerary = Arrays.asList("entrance_exit_gate", "elephant_odyssey", "arctic_foxes");
         Directions d = new Directions(itinerary, 0);
         Context context = ApplicationProvider.getApplicationContext();
-        List<String> dirs = d.createTestDirections(context);
+        List<String> dirs = d.createTestDirections(context, true);
 
         assertEquals(dirs.get(0), "1. Walk 10 meters along Entrance Way from 'Entrance and Exit Gate' to 'Entrance Plaza'.");   // in the "" is the string line for the 1. walking .... , so we can test it.
         assertEquals(dirs.get(1), "2. Walk 100 meters along Reptile Road from 'Entrance Plaza' to 'Alligators'.");
@@ -49,13 +49,26 @@ public class DirectionsTests {
     }
 
     @Test
+    public void testPreviousDirectionsList(){
+        List<String> itinerary = Arrays.asList("entrance_exit_gate", "arctic_foxes", "elephant_odyssey", "entrance_exit_gate" );
+        Directions d = new Directions(itinerary, 0);
+        Context context = ApplicationProvider.getApplicationContext();
+        d.createTestDirections(context, true);
+        d.createTestDirections(context, true);
+        List<String> dirs = d.createTestDirections(context, false);
+
+        assertEquals(dirs.get(0), "1. Walk 300 meters along Arctic Avenue from 'Arctic Foxes' to 'Entrance Plaza'.");   // in the "" is the string line for the 1. walking .... , so we can test it.
+        assertEquals(dirs.get(1), "2. Walk 10 meters along Entrance Way from 'Entrance Plaza' to 'Entrance and Exit Gate'.");
+    }
+  
+    @Test
     public void testSkipDirectionsList(){
         List<String> itinerary = new LinkedList<>(Arrays.asList("entrance_exit_gate", "arctic_foxes", "elephant_odyssey"));
         Directions d = new Directions(itinerary, 0);
         Context context = ApplicationProvider.getApplicationContext();
-        d.createTestDirections(context);
+        d.createTestDirections(context, true);
         d.skipDirections();
-        List<String> dirs = d.createTestDirections(context);
+        List<String> dirs = d.createTestDirections(context, true);
 
         assertEquals(dirs.get(0), "1. Walk 10 meters along Entrance Way from 'Entrance and Exit Gate' to 'Entrance Plaza'.");   // in the "" is the string line for the 1. walking .... , so we can test it.
         assertEquals(dirs.get(1), "2. Walk 100 meters along Reptile Road from 'Entrance Plaza' to 'Alligators'.");
@@ -69,7 +82,7 @@ public class DirectionsTests {
         List<String> itinerary = Arrays.asList("entrance_exit_gate", "elephant_odyssey");
         Directions d = new Directions(itinerary, 1);
         Context context = ApplicationProvider.getApplicationContext();
-        List<String> dirs = d.createDirections(context);
+        List<String> dirs = d.createDirections(context, true);
         assertEquals(dirs.isEmpty(), Boolean.TRUE);
     }
 

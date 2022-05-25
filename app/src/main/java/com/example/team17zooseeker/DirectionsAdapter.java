@@ -23,21 +23,28 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
     }
 
 
-    public void setDirectItems(Context context, Button skip, Button next, boolean skipNext){
+    public void setDirectItems(Context context, Button prev, Button skip, Button next, boolean forward, boolean skipNext){
         if(skipNext){
             this.directions.skipDirections();
         }
         this.directItems.clear();
-        this.directItems = this.directions.createTestDirections(context); //Not using database
+        this.directItems = this.directions.createTestDirections(context, forward); //Not using database
         int index = this.directions.getCurrentIndex();
         int size = this.directions.getItinerarySize();
-            if (index == size - 1) {
+             if (index == size - 1) {
                 next.setText("FINISH");
                 skip.setEnabled(false);
-            } else {
+             } else {
                 next.setText("NEXT");
                 skip.setEnabled(true);
-            }
+             }
+             if (size == 2 || index == 1) {
+                 prev.setEnabled(false);
+                 prev.setClickable(false);
+             } else {
+                 prev.setEnabled(true);
+                 prev.setClickable(true);
+             }
         notifyDataSetChanged();
     }
 
