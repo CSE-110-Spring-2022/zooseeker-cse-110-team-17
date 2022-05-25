@@ -257,4 +257,10 @@ public class Directions {
         return dirs;
     }
 
+    @VisibleForTesting
+    public void skipDirections(){
+        itinerary.remove(currentIndex);
+        currentIndex--;
+    }
+
 }
