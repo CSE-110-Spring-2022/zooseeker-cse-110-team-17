@@ -42,6 +42,14 @@ public class Directions {
         this.currentIndex = currentIndex;
     }
 
+    public int getCurrentIndex(){
+        return currentIndex;
+    }
+
+    public int getItinerarySize(){
+        return itinerary.size();
+    }
+
     /**
      * This creates the directions list from current index to current index + 1
      *
@@ -228,6 +236,12 @@ public class Directions {
             i++;
         }
         return dirs;
+    }
+
+    @VisibleForTesting
+    public void skipDirections(){
+        itinerary.remove(currentIndex);
+        currentIndex--;
     }
 
 }
