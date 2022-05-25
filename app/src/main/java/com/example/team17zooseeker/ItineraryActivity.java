@@ -24,6 +24,8 @@ public class ItineraryActivity extends AppCompatActivity {
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
+    private ArrayList<String> VList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +43,7 @@ public class ItineraryActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
 
-        ArrayList<String> VList = null;
+        VList = null;
 
         //Store Planned VisitationList if New One Supplied
         if(extras != null) {
@@ -60,7 +62,7 @@ public class ItineraryActivity extends AppCompatActivity {
 
             Itinerary.createItinerary(this, VList);
 
-            editor.putStringSet("vList", new HashSet(VList));
+            editor.putStringSet("VList", new HashSet(VList));
             editor.apply();
 
         }
@@ -79,6 +81,7 @@ public class ItineraryActivity extends AppCompatActivity {
 
     void onGetDirectionClicked (View view){
         Intent intent = new Intent(this, DirectionsActivity.class);
+        intent.putStringArrayListExtra("VList", this.VList);
         startActivity(intent);
 
         editor.putStringSet("VList", null);

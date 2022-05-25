@@ -51,6 +51,7 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
 
     private final String STATE_ITINERARY = "1";
+    private final String STATE_DIRECTIONS = "2";
 
     private ZooKeeperDatabase database;
     private NodeItemDao nodeDao;
@@ -136,6 +137,15 @@ public class MainActivity extends AppCompatActivity {
             editor.apply();
 
             Intent intent = new Intent(this, ItineraryActivity.class);
+
+            startActivity(intent);
+            finish();
+
+        }
+
+        else if(state.state.equals(STATE_DIRECTIONS)) {
+
+            Intent intent = new Intent(this, DirectionsActivity.class);
 
             startActivity(intent);
             finish();

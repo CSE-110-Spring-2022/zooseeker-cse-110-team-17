@@ -12,8 +12,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DirectionsActivity extends AppCompatActivity {
 
@@ -28,6 +31,8 @@ public class DirectionsActivity extends AppCompatActivity {
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
+    ArrayList<String> VList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +44,30 @@ public class DirectionsActivity extends AppCompatActivity {
 
         stateDao.delete(stateDao.get());
         stateDao.insert(new State("2"));
+
+        preferences = getPreferences(MODE_PRIVATE);
+        editor = preferences.edit();
+
+        Bundle extras = getIntent().getExtras();
+
+        if(extras != null) {
+
+            VList = extras.getStringArrayList("VList");
+            editor.putStringSet("VList", new HashSet(VList));
+            editor.apply();
+
+        }
+
+        Set<String> VSet = preferences.getStringSet("VList", null);
+
+        if(VSet != null)
+        {
+
+            VList = new ArrayList(VSet);
+
+            Itinerary.createItinerary(this, VList);
+
+        }
 
         Directions d = new Directions(Itinerary.getItinerary(),0);
         adapter = new DirectionsAdapter(d);
@@ -57,6 +86,13 @@ public class DirectionsActivity extends AppCompatActivity {
     public void onNextClicked (View view){
         if(nextBtn.getText().equals("FINISH")){
             Itinerary.deleteItinerary();
+
+            stateDao.delete(stateDao.get());
+            stateDao.insert(new State("0"));
+
+            editor.putStringSet("VList", null);
+            editor.apply();
+
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
