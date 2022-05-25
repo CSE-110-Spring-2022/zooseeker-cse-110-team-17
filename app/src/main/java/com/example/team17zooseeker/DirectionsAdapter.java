@@ -18,23 +18,35 @@ import java.util.List;
 public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.ViewHolder> {
     private List<String> directItems = Collections.emptyList();
     private Directions directions;
-    private  final  String finalDirections = "2. Walk 10 meters along Entrance Way from 'Entrance Plaza' to 'Entrance and Exit Gate'.";
 
     public DirectionsAdapter(Directions directions) {
         this.directions = directions;
     }
 
 
-    public void setDirectItems(Context context, Button next){
+    public void setDirectItems(Context context, Button prev, Button skip, Button next, boolean forward, boolean skipNext){
+        if(skipNext){
+            this.directions.skipDirections();
+        }
         this.directItems.clear();
-        this.directItems = this.directions.createTestDirections(context); //Not using database
-            //Assuming the final content is a constant
-             if (this.directItems.get(this.directItems.size()-1).equals(finalDirections))
-             {
-                 next.setText("FINISH");
+        this.directItems = this.directions.createTestDirections(context, forward); //Not using database
+        int index = this.directions.getCurrentIndex();
+        int size = this.directions.getItinerarySize();
+             if (index == size - 1) {
+                next.setText("FINISH");
+                skip.setEnabled(false);
+             } else {
+                next.setText("NEXT");
+                skip.setEnabled(true);
+             }
+             if (size == 2 || index == 1) {
+                 prev.setEnabled(false);
+                 prev.setClickable(false);
+             } else {
+                 prev.setEnabled(true);
+                 prev.setClickable(true);
              }
         notifyDataSetChanged();
-
     }
 
     @NonNull
