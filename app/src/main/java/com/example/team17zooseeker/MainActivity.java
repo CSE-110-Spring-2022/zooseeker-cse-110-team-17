@@ -80,9 +80,15 @@ public class MainActivity extends AppCompatActivity {
 //        stateDao.delete(stateDao.get());
 //        stateDao.insert(new State("0"));
 
+        State state = stateDao.get();
+
+        if(state == null) {
+            stateDao.insert(new State("0"));
+        }
+
         List<edgeItem> edges = edgeDao.getAll();
         List<nodeItem> nodes = nodeDao.getAll();
-        State state = stateDao.get();
+
 
         // For MainActivity
         preferences = getPreferences(MODE_PRIVATE);
