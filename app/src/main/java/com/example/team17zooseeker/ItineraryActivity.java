@@ -25,6 +25,7 @@ public class ItineraryActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
 
     private ArrayList<String> VList;
+    private Set<String> VSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,7 @@ public class ItineraryActivity extends AppCompatActivity {
 
         }
 
-        Set<String> VSet = preferences.getStringSet("VList", null);
+        VSet = preferences.getStringSet("VList", null);
 
         if (VSet != null) {
 
@@ -81,7 +82,7 @@ public class ItineraryActivity extends AppCompatActivity {
 
     void onGetDirectionClicked (View view){
         Intent intent = new Intent(this, DirectionsActivity.class);
-        intent.putStringArrayListExtra("VList", this.VList);
+        intent.putExtra("VList", new ArrayList(VSet));
         startActivity(intent);
 
         editor.putStringSet("VList", null);

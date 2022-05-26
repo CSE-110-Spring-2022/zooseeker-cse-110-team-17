@@ -54,11 +54,13 @@ public class DirectionsActivity extends AppCompatActivity {
 
             VList = extras.getStringArrayList("VList");
             editor.putStringSet("VList", new HashSet(VList));
+            editor.putInt("ItinIndex", 0);
             editor.apply();
 
         }
 
         Set<String> VSet = preferences.getStringSet("VList", null);
+        int index = preferences.getInt("ItinIndex", 0);
 
         if(VSet != null)
         {
@@ -69,7 +71,7 @@ public class DirectionsActivity extends AppCompatActivity {
 
         }
 
-        Directions d = new Directions(Itinerary.getItinerary(),0);
+        Directions d = new Directions(Itinerary.getItinerary(), index);
         adapter = new DirectionsAdapter(d);
 
         adapter.setHasStableIds(true);
@@ -91,6 +93,7 @@ public class DirectionsActivity extends AppCompatActivity {
             stateDao.insert(new State("0"));
 
             editor.putStringSet("VList", null);
+            editor.putInt("ItinIndex", 0);
             editor.apply();
 
             Intent intent = new Intent(this, MainActivity.class);
@@ -98,6 +101,8 @@ public class DirectionsActivity extends AppCompatActivity {
             finish();
         }else{
             adapter.setDirectItems(DirectionsActivity.this, nextBtn);
+            editor.putInt("ItinIndex", preferences.getInt("ItinIndex", 0) + 1);
+            editor.apply();
         }
     }
 
