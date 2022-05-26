@@ -11,6 +11,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class Itinerary {
@@ -33,7 +34,9 @@ public class Itinerary {
         }
     }
 
-    private static void buildItinerary(List<String> visitationList){
+    private static void buildItinerary(List<String> visitationList1){
+        //Handle parent Id edge cases
+        List<String> visitationList = Itinerary.Formats(visitationList1);
 
         itinerary = new ArrayList<String>(visitationList.size() + 1);
         int finalCapacity = visitationList.size() + 1;
@@ -82,6 +85,20 @@ public class Itinerary {
 
         Log.d("Edge Weight: ", "" + minDistance);
         return minDistance;
+    }
+
+    private static List<String> Formats(List<String> visitationList){
+        HashSet<String> resultsSet = new HashSet<String>();
+        //Loop through all results including tags triggered
+        for(String place : visitationList){
+            if(nodeDao.get(place).group_id != null){
+                resultsSet.add(nodeDao.get(place).group_id);
+            }else{
+                resultsSet.add(place);
+            }
+        }
+
+        return new ArrayList<String>(resultsSet);
     }
 
     public static List<String> getItinerary(){ return itinerary; }

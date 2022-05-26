@@ -28,6 +28,13 @@ public class Directions {
     // current index for iterating through the itinerary
     private int currentIndex;
 
+    private boolean detailedDirection = true;
+    private boolean dataLoaded = false;
+
+    //Zoo Data
+    Graph<String, IdentifiedWeightedEdge> g = null;
+    Map<String, ZooData.VertexInfo> vInfo = null;
+    Map<String, ZooData.EdgeInfo> eInfo = null;
     /**
      * The constructor
      *
@@ -35,6 +42,7 @@ public class Directions {
      * @param currentIndex the current index for the itinerary
      */
     public Directions(List<String> itinerary, int currentIndex) {
+        //What does this do????
         if(itinerary.size() >= 2 && itinerary.get(0).equals(itinerary.get(1)))
             itinerary.remove(0);
 
@@ -105,7 +113,6 @@ public class Directions {
          */
         // Load the graph...
 
-
         System.out.printf("The shortest path from '%s' to '%s' is:\n", start, end);
 
         int i = 1;
@@ -174,54 +181,40 @@ public class Directions {
             } else {
                 return new ArrayList<>();
             }
-
         } else {
             return new ArrayList<>();
         }
-        Log.d("post index", String.valueOf(currentIndex));
-        Graph<String, IdentifiedWeightedEdge> g = null;
-        try {
-            g = ZooData.loadZooGraphJSON(context, "graph.json");
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        //Load Data if needed
+        if(!dataLoaded){
+            this.getZooData(context);
         }
+
+        //Find a path between start and end
         GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g, start, end);
 
-        // 2. Load the information about our nodes and edges...
-        Map<String, ZooData.VertexInfo> vInfo = null;
-        try {
-            vInfo = ZooData.loadVertexInfoJSON(context, "node.json");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Map<String, ZooData.EdgeInfo> eInfo = null;
-        try {
-            eInfo = ZooData.loadEdgeInfoJSON(context, "edge.json");
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(detailedDirection){
+            return getDetailedDirections(path, start);
         }
 
-        /*
-         Graph<String, IdentifiedWeightedEdge> g,
-         GraphPath<String, IdentifiedWeightedEdge> path,
-         Map<String, ZooData.VertexInfo> vInfo,
-         Map<String, ZooData.EdgeInfo> eInfo
-         */
-        // Load the graph...
+        return getSimpleDirections(path, start);
+    }
 
-        System.out.printf("The shortest path from '%s' to '%s' is:\n", start, end);
+    private List<String> getDetailedDirections(GraphPath<String, IdentifiedWeightedEdge> path, String start){
+        List<String> dirs = new ArrayList<>();
 
         int i = 1;
         // state for maintaining proper direction
         String tempEnd = "";
         //string builder to build instruction
         StringBuilder instructionBuilder = new StringBuilder();
-
+        Log.d("edge list", path.getEdgeList().toString());
         for (IdentifiedWeightedEdge e : path.getEdgeList()) {
             instructionBuilder.setLength(0); // reset/empty the string builder
 
             //distance to be walked along an edge (street)
-            @SuppressLint("DefaultLocale") String street = String.format("%d. Walk %.0f meters along %s ",
+            @SuppressLint("DefaultLocale")
+            String street = String.format("%d. Walk %.0f meters along %s ",
                     i,
                     g.getEdgeWeight(e),
                     // calls could throw null pointer exceptions
@@ -250,13 +243,112 @@ public class Directions {
             instructionBuilder.append(exhibits);
             String res = instructionBuilder.toString();
             Log.d("direction", res);
-            // Log.d("sizePATH",String.valueOf(path.getLength()));
+            dirs.add(res);
+            i++;
+        }
+
+        return dirs;
+    }
+
+
+    //TO-DO
+    private List<String> getSimpleDirections(GraphPath<String, IdentifiedWeightedEdge> path, String start){
+        List<String> dirs = new ArrayList<>();
+        List<IdentifiedWeightedEdge> edges = path.getEdgeList();
+        int edgeSize = edges.size();
+
+
+        int i = 1;
+        // state for maintaining proper direction
+        String tempEnd = "";
+        String edge1;
+        ZooData.VertexInfo ogSource = null;
+        ZooData.VertexInfo ogTarget = null;
+
+        double dist = 0;
+        //string builder to build instruction
+        StringBuilder instructionBuilder = new StringBuilder();
+        Log.d("edge list", path.getEdgeList().toString());
+
+        for (int j = 0; j < edgeSize; j++) {
+            instructionBuilder.setLength(0); // reset/empty the string builder
+            //keep source and target data
+            ZooData.VertexInfo source = Objects.requireNonNull(vInfo.get(g.getEdgeSource(edges.get(j))));
+            ZooData.VertexInfo target = Objects.requireNonNull(vInfo.get(g.getEdgeTarget(edges.get(j))));
+
+            if(dist == 0){
+                ogSource = Objects.requireNonNull(vInfo.get(g.getEdgeSource(edges.get(j))));
+                ogTarget = Objects.requireNonNull(vInfo.get(g.getEdgeTarget(edges.get(j))));
+            }
+
+            String exhibits;
+
+            // logic for direction checking, both to initialize and end
+            if ((i == 1 && source.id.equals(start)) || tempEnd.equals(source.name)) {
+                exhibits = String.format("from '%s' to '%s'.",
+                        ogSource.name,
+                        target.name);
+                tempEnd = target.name;
+            } else {
+                exhibits = String.format("from '%s' to '%s'.",
+                        ogTarget.name,
+                        source.name);
+                tempEnd = source.name;
+            }
+
+            //distance to be walked along an edge (street)
+            dist += g.getEdgeWeight(edges.get(j));
+            edge1 = Objects.requireNonNull(eInfo.get(edges.get(j).getId())).street;
+
+            @SuppressLint("DefaultLocale")
+            String street = String.format("%d. Walk %.0f meters along %s ",
+                    i,
+                    dist,
+                    edge1);
+            instructionBuilder.append(street); //append to string builder
+
+            if(j < edgeSize - 1){
+                String edge2 = Objects.requireNonNull(eInfo.get(edges.get(j+1).getId())).street;
+                if(edge1.equals(edge2)){
+                    continue;
+                }
+            }
+
+            dist = 0;
+            instructionBuilder.append(exhibits);
+            String res = instructionBuilder.toString();
+
             dirs.add(res);
             i++;
         }
         return dirs;
     }
 
+    private void getZooData(Context context){
+        //Get the graph info
+        try {
+            g = ZooData.loadZooGraphJSON(context, "graph.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // Load the information about our nodes and edges
+        try {
+            vInfo = ZooData.loadVertexInfoJSON(context, "node.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            eInfo = ZooData.loadEdgeInfoJSON(context, "edge.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //Data is now loaded
+        dataLoaded = true;
+    }
+
+    public void setDetailedDirections(boolean bool){ this.detailedDirection = bool; }
+      
     @VisibleForTesting
     public void skipDirections(){
         itinerary.remove(currentIndex);
