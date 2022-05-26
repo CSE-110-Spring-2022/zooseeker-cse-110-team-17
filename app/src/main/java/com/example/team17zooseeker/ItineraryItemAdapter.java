@@ -43,7 +43,10 @@ public class ItineraryItemAdapter extends RecyclerView.Adapter<ItineraryItemAdap
 
     @Override
     public int getItemCount() {
-        return Itinerary.getItinerary().size();
+        if(Itinerary.getItinerary() != null)
+            return Itinerary.getItinerary().size();
+        else
+            return 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
