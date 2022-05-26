@@ -28,7 +28,7 @@ public class Directions {
     // current index for iterating through the itinerary
     private int currentIndex;
 
-    private boolean detailedDirection = false;
+    private boolean detailedDirection = true;
     private boolean dataLoaded = false;
 
     //Zoo Data
@@ -174,7 +174,7 @@ public class Directions {
         return getSimpleDirections(path, start);
     }
 
-    private List<String> getSimpleDirections(GraphPath<String, IdentifiedWeightedEdge> path, String start){
+    private List<String> getDetailedDirections(GraphPath<String, IdentifiedWeightedEdge> path, String start){
         List<String> dirs = new ArrayList<>();
 
         int i = 1;
@@ -182,7 +182,7 @@ public class Directions {
         String tempEnd = "";
         //string builder to build instruction
         StringBuilder instructionBuilder = new StringBuilder();
-
+        Log.d("edge list", path.getEdgeList().toString());
         for (IdentifiedWeightedEdge e : path.getEdgeList()) {
             instructionBuilder.setLength(0); // reset/empty the string builder
 
@@ -226,9 +226,75 @@ public class Directions {
 
 
     //TO-DO
-    private List<String> getDetailedDirections(GraphPath<String, IdentifiedWeightedEdge> path, String start){
+    private List<String> getSimpleDirections(GraphPath<String, IdentifiedWeightedEdge> path, String start){
         List<String> dirs = new ArrayList<>();
+        List<IdentifiedWeightedEdge> edges = path.getEdgeList();
+        int edgeSize = edges.size();
 
+
+        int i = 1;
+        // state for maintaining proper direction
+        String tempEnd = "";
+        String edge1;
+        ZooData.VertexInfo ogSource = null;
+        ZooData.VertexInfo ogTarget = null;
+
+        double dist = 0;
+        //string builder to build instruction
+        StringBuilder instructionBuilder = new StringBuilder();
+        Log.d("edge list", path.getEdgeList().toString());
+
+        for (int j = 0; j < edgeSize; j++) {
+            instructionBuilder.setLength(0); // reset/empty the string builder
+            //keep source and target data
+            ZooData.VertexInfo source = Objects.requireNonNull(vInfo.get(g.getEdgeSource(edges.get(j))));
+            ZooData.VertexInfo target = Objects.requireNonNull(vInfo.get(g.getEdgeTarget(edges.get(j))));
+
+            if(dist == 0){
+                ogSource = Objects.requireNonNull(vInfo.get(g.getEdgeSource(edges.get(j))));
+                ogTarget = Objects.requireNonNull(vInfo.get(g.getEdgeTarget(edges.get(j))));
+            }
+
+            String exhibits;
+
+            // logic for direction checking, both to initialize and end
+            if ((i == 1 && source.id.equals(start)) || tempEnd.equals(source.name)) {
+                exhibits = String.format("from '%s' to '%s'.",
+                        ogSource.name,
+                        target.name);
+                tempEnd = target.name;
+            } else {
+                exhibits = String.format("from '%s' to '%s'.",
+                        ogTarget.name,
+                        source.name);
+                tempEnd = source.name;
+            }
+
+            //distance to be walked along an edge (street)
+            dist += g.getEdgeWeight(edges.get(j));
+            edge1 = Objects.requireNonNull(eInfo.get(edges.get(j).getId())).street;
+
+            @SuppressLint("DefaultLocale")
+            String street = String.format("%d. Walk %.0f meters along %s ",
+                    i,
+                    dist,
+                    edge1);
+            instructionBuilder.append(street); //append to string builder
+
+            if(j < edgeSize - 1){
+                String edge2 = Objects.requireNonNull(eInfo.get(edges.get(j+1).getId())).street;
+                if(edge1.equals(edge2)){
+                    continue;
+                }
+            }
+
+            dist = 0;
+            instructionBuilder.append(exhibits);
+            String res = instructionBuilder.toString();
+
+            dirs.add(res);
+            i++;
+        }
         return dirs;
     }
 

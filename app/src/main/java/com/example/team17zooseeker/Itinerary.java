@@ -89,8 +89,8 @@ public class Itinerary {
         HashSet<String> resultsSet = new HashSet<String>();
         //Loop through all results including tags triggered
         for(String place : visitationList){
-            if(nodeDao.get(place).parent_id != null){
-                resultsSet.add(nodeDao.get(place).parent_id);
+            if(nodeDao.get(place).group_id != null){
+                resultsSet.add(nodeDao.get(place).group_id);
             }else{
                 resultsSet.add(place);
             }

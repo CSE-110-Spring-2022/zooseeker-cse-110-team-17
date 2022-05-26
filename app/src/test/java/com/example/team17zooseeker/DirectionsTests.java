@@ -51,6 +51,22 @@ public class DirectionsTests {
         assertEquals(true, true);
     }
 
+    @Test
+    public void testDetailedDirectionsList(){
+        List<String> itinerary = Arrays.asList("entrance_exit_gate", "siamang", "capuchin", "gorilla");
+        Directions d = new Directions(itinerary, 0);
+        Context context = ApplicationProvider.getApplicationContext();
+        //List<String> dirs = d.createTestDirections(context);
+
+        //Planning to change after a merge so we know what the graph looks like and what to expect
+        //assertEquals(dirs.get(0), "1. Walk 10 meters along Entrance Way from 'Entrance and Exit Gate' to 'Entrance Plaza'.");   // in the "" is the string line for the 1. walking .... , so we can test it.
+        //assertEquals(dirs.get(1), "2. Walk 100 meters along Reptile Road from 'Entrance Plaza' to 'Alligators'.");
+        //assertEquals(dirs.get(2), "3. Walk 200 meters along Sharp Teeth Shortcut from 'Alligators' to 'Lions'.");
+        assertEquals(true, true);
+    }
+
+
+
     // if it is out of bound, createDirections function just return empty list.
     @Test
     public void TestDirectionsOutOfBoundException() {

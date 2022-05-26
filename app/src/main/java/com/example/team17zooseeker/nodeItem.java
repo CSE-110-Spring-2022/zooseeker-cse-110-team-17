@@ -28,7 +28,7 @@ public class nodeItem {
     @NonNull
     public String kind;
     public String name;
-    public String parent_id;
+    public String group_id;
 
     public float lat;
     public float lng;
@@ -39,12 +39,12 @@ public class nodeItem {
 
     //public String testString;
 
-    nodeItem(@NonNull String id, @NonNull String kind, String name, String parent_id, float lat, float lng, List<String> tags) {
+    nodeItem(@NonNull String id, @NonNull String kind, String name, String group_id, float lat, float lng, List<String> tags) {
         this.id = id;
         this.kind = kind;
         this.name = name;
         this.tags = tags;
-        this.parent_id = parent_id;
+        this.group_id = group_id;
         this.lat = lat;
         this.lng = lng;
     }
@@ -55,7 +55,7 @@ public class nodeItem {
                 "id='" + id + '\'' +
                 ", kind='" + kind + '\'' +
                 ", name='" + name + '\'' +
-                ", parent_id='" + parent_id + '\'' +
+                ", group_id='" + group_id + '\'' +
                 ", lat=" + lat +
                 ", lng=" + lng +
                 ", tags=" + tags +
