@@ -196,6 +196,10 @@ public class MainActivity extends AppCompatActivity {
 
     void onPlanClicked (View view){
         Log.d("Visitation List: ", this.visitationList.toString());
+        if(visitationList.size()==0){
+            Utilities.showAlert(this, "Please add Exhibits to your Visitation Vlan :D");
+            return;
+        }
         //Visitation List needs to be in Ids and not names
         for(int i = 0; i < this.visitationList.size(); i++){
             this.visitationList.set(i, this.nodeMap.get(this.visitationList.get(i)).getId());

@@ -26,7 +26,7 @@ public class ItineraryItemAdapter extends RecyclerView.Adapter<ItineraryItemAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         //Shifts everything in the itinerary up 1 position so entrance gate isn't shown.
         position = position + 1;
-        if(position >= Itinerary.getItinerary().size()){ return; };
+        if(position >= Itinerary.getItinerary().size()-1){ return; };
 
         //So the distance under each location is the distance to that location
         String currLoc = Itinerary.getItinerary().get(position - 1);

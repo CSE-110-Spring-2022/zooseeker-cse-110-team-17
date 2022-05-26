@@ -43,7 +43,7 @@ public class ItineraryTests {
         Itinerary.createItinerary(context, testVisitationList);
         List<String> testItinerary = Itinerary.getItinerary();
 
-        String[] cI = {"entrance_exit_gate", "entrance_plaza", "lions"};
+        String[] cI = {"entrance_exit_gate", "entrance_plaza", "lions", "entrance_exit_gate"};
         ArrayList<String> correctItinerary = new ArrayList<String>(Arrays.asList(cI));
 
         assertEquals(correctItinerary, testItinerary);
@@ -64,7 +64,7 @@ public class ItineraryTests {
         Itinerary.createItinerary(context, testVisitationList);
         List<String> testItinerary = Itinerary.getItinerary();
 
-        String[] cI = {"entrance_exit_gate", "entrance_plaza", "gators", "lions", "gorillas", "elephant_odyssey", "arctic_foxes"};
+        String[] cI = {"entrance_exit_gate", "entrance_plaza", "gators", "lions", "gorillas", "elephant_odyssey", "arctic_foxes", "entrance_exit_gate"};
         ArrayList<String> correctItinerary = new ArrayList<String>(Arrays.asList(cI));
 
         assertEquals(correctItinerary, testItinerary);

@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 public class AutoCompleteAdapter extends ArrayAdapter<String> {
     private NodeItemDao nodeDao;
@@ -61,12 +62,14 @@ public class AutoCompleteAdapter extends ArrayAdapter<String> {
 
             for (nodeItem item : allNodes) {
                 String filterPattern = constraint.toString().toLowerCase().trim();
-                if(item.name.toLowerCase().contains(filterPattern)){
-                    suggestions.add(item.name);
-                }
-                for(String tag: item.tags){
-                    if(tag.toLowerCase().contains(filterPattern)){
-                        suggestions.add(tag);
+                if(Objects.equals(item.kind, "exhibit")){
+                    if(item.name.toLowerCase().contains(filterPattern)){
+                        suggestions.add(item.name);
+                    }
+                    for(String tag: item.tags){
+                        if(tag.toLowerCase().contains(filterPattern)){
+                            suggestions.add(tag);
+                        }
                     }
                 }
             }

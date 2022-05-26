@@ -2,6 +2,7 @@ package com.example.team17zooseeker;
 
 import android.content.Context;
 import android.renderscript.Sampler;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
@@ -57,6 +58,7 @@ public abstract class ZooKeeperDatabase extends RoomDatabase {
 
                                 List<nodeItem> nodeList = new ArrayList<nodeItem>(nodes.values());
                                 List<edgeItem> edgeList = new ArrayList<edgeItem>(edges.values());
+                                Log.d("database", nodeList.toString());
 
                                 getSingleton(context).nodeItemDao().insertAll(nodeList);
                                 getSingleton(context).edgeItemDao().insertAll(edgeList);
