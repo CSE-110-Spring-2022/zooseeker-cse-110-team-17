@@ -50,12 +50,21 @@ public class Directions {
         this.currentIndex = currentIndex;
     }
 
+    public int getCurrentIndex(){
+        return currentIndex;
+    }
+
+    public int getItinerarySize(){
+        return itinerary.size();
+    }
+
     /**
      * This creates the directions list from current index to current index + 1
      *
      * @param context the current application environment
      */
-    public List<String> createDirections(Context context) {
+    @VisibleForTesting
+    public List<String> createDirections(Context context, boolean forward) {
 
         //Database stuff
         ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(context);
@@ -74,9 +83,16 @@ public class Directions {
         List<String> dirs = new ArrayList<>();
 
         if (currentIndex <= itinerary.size() - 2 && currentIndex >= 0) {
-            start = itinerary.get(currentIndex);
-            end = itinerary.get(currentIndex + 1);
-            currentIndex++;
+
+            if(forward) {
+                start = itinerary.get(currentIndex);
+                end = itinerary.get(currentIndex + 1);
+                currentIndex++;
+            } else {
+                currentIndex--;
+                start = itinerary.get(currentIndex);
+                end = itinerary.get(currentIndex - 1);
+            }
         } else {
             return new ArrayList<>();
         }
@@ -146,15 +162,25 @@ public class Directions {
     }
 
     @VisibleForTesting
-    public List<String> createTestDirections(Context context) {
-        //Set the start and end positions based off of current index in itinerary
+    public List<String> createTestDirections(Context context, boolean forward) {
+
         String start;
         String end;
-
-        if (currentIndex <= itinerary.size() - 2 && currentIndex >= 0) {
-            start = itinerary.get(currentIndex);
-            end = itinerary.get(currentIndex + 1);
-            currentIndex++;
+        List<String> dirs = new ArrayList<>();
+        Log.d("pre index", String.valueOf(currentIndex));
+        if (currentIndex <= itinerary.size() - 1 && currentIndex >= 0) {
+            if(!forward) {
+                currentIndex--;
+                start = itinerary.get(currentIndex);
+                end = itinerary.get(currentIndex - 1);
+            }
+            else if (currentIndex <= itinerary.size() - 2) {
+                start = itinerary.get(currentIndex);
+                end = itinerary.get(currentIndex + 1);
+                currentIndex++;
+            } else {
+                return new ArrayList<>();
+            }
         } else {
             return new ArrayList<>();
         }
@@ -322,4 +348,11 @@ public class Directions {
     }
 
     public void setDetailedDirections(boolean bool){ this.detailedDirection = bool; }
+      
+    @VisibleForTesting
+    public void skipDirections(){
+        itinerary.remove(currentIndex);
+        currentIndex--;
+    }
+
 }

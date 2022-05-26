@@ -2,6 +2,7 @@ package com.example.team17zooseeker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,15 +24,29 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
     }
 
 
-    public void setDirectItems(Context context, Button next){
+    public void setDirectItems(Context context, Button prev, Button skip, Button next, boolean forward, boolean skipNext){
+        if(skipNext){
+            this.directions.skipDirections();
+        }
         this.directItems.clear();
-        this.directItems = this.directions.createTestDirections(context); //Not using database
-             if (this.directItems.isEmpty())
-             {
-                 next.setText("FINISH");
+        this.directItems = this.directions.createTestDirections(context, forward); //Not using database
+        int index = this.directions.getCurrentIndex();
+        int size = this.directions.getItinerarySize();
+             if (index == size - 1) {
+                next.setText("FINISH");
+                skip.setEnabled(false);
+             } else {
+                next.setText("NEXT");
+                skip.setEnabled(true);
+             }
+             if (size == 2 || index == 1) {
+                 prev.setEnabled(false);
+                 prev.setClickable(false);
+             } else {
+                 prev.setEnabled(true);
+                 prev.setClickable(true);
              }
         notifyDataSetChanged();
-
     }
 
     @NonNull

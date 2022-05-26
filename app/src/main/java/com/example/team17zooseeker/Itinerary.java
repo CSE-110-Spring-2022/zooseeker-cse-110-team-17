@@ -68,6 +68,8 @@ public class Itinerary {
             visitationList.remove(indexOfLocationWithSmallestDistance);
             indexOfCurrLocation++;
         }
+        //When finish rollback to exit
+        itinerary.add("entrance_exit_gate");
     }
 
     //Helper Function for building Itinerary
