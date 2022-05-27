@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(state == null) {
             stateDao.insert(new State("0"));
+            state = stateDao.get();
         }
 
         List<edgeItem> edges = edgeDao.getAll();
