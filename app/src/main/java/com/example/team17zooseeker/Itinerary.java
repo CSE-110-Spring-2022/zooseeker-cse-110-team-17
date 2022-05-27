@@ -28,6 +28,7 @@ public class Itinerary {
                 zooMap = ZooData.loadZooGraphJSON(context, "graph.json");
                 ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(context);
                 nodeDao = database.nodeItemDao();
+                Log.d("testttt",nodeDao.toString());
             }catch (IOException e){ return; }
 
             Itinerary.buildItinerary(visitationList);
@@ -119,6 +120,17 @@ public class Itinerary {
 
     public static void injectTestNodeDao(NodeItemDao noDao){
         nodeDao = noDao;
+    }
+
+    public static void skip(String exhibitToSkip){
+        ArrayList<String> newVisitationList = new ArrayList<>();
+        for(int i = 0; i < itinerary.size(); i++){
+            if(!itinerary.get(i).equals(exhibitToSkip) && !itinerary.get(i).equals("entrance_exit_gate")){
+                newVisitationList.add(itinerary.get(i));
+            }
+        }
+        Itinerary.injectTestItinerary(null);
+        Itinerary.buildItinerary(newVisitationList);
     }
 
     //Developer Notes----------

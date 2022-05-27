@@ -98,7 +98,7 @@ public class DirectionsActivity extends AppCompatActivity {
     }
 
     public void onSkipClicked (View view) {
-        adapter.setDirectItems(DirectionsActivity.this, prevBtn, skipBtn, nextBtn, true, true);
+            adapter.setDirectItems(DirectionsActivity.this, prevBtn, skipBtn, nextBtn, true, true);
     }
 
     public void onNextClicked (View view){

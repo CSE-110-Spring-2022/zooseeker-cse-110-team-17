@@ -21,7 +21,7 @@ public class ItineraryTests {
         //In case an itinerary has been created
         Itinerary.injectTestItinerary(null);
 
-        String[] vL = {"entrance_plaza", "entrance_exit_gate", "lions"};
+        String[] vL = {"Emerald Dove"};
         ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
         Context context = ApplicationProvider.getApplicationContext();
         //Itinerary.createItinerary(context, testVisitationList);
@@ -75,4 +75,26 @@ public class ItineraryTests {
         //assertEquals(correctItinerary, testItinerary);
         assertEquals(true,true);
     }
+
+//    @Test
+//    public void testSkipItinerary(){
+//        //In case an itinerary has been created
+//        Itinerary.injectTestItinerary(null);
+//
+//        String[] vL = {"dove","mynah","capuchin","gorilla","hippo","siamang"};
+//        ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
+//        Context context = ApplicationProvider.getApplicationContext();
+//        Itinerary.createItinerary(context, testVisitationList);
+//
+//        String[] ciBefore = {"entrance_exit_gate","siamang","owens_aviary","hippo","capuchin","gorilla","entrance_exit_gate"};
+//        ArrayList<String> b_Itinerary = new ArrayList<String>(Arrays.asList(ciBefore));
+//        assertEquals(b_Itinerary,Itinerary.getItinerary());
+//        String[] ciAfter = {"entrance_exit_gate","siamang","owens_aviary","gorilla","capuchin","entrance_exit_gate"};
+//        ArrayList<String> a_Itinerary = new ArrayList<String>(Arrays.asList(ciAfter));
+//        Itinerary.skip("hippo");
+//        assertEquals(a_Itinerary,Itinerary.getItinerary());
+//
+//    }
+
+
 }
