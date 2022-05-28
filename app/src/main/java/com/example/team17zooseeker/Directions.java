@@ -26,7 +26,7 @@ public class Directions {
      * Can we possibly make this list of strings, exhibit names, not id names?
      */
     // current index for iterating through the itinerary
-    private int currentIndex;
+    private static int currentIndex;
 
     private boolean detailedDirection = true;
     private boolean dataLoaded = false;
@@ -50,7 +50,7 @@ public class Directions {
         this.currentIndex = currentIndex;
     }
 
-    public int getCurrentIndex(){
+    public static int getCurrentIndex(){
         return currentIndex;
     }
 

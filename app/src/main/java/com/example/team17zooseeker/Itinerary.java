@@ -22,6 +22,8 @@ public class Itinerary {
     private static Graph<String, IdentifiedWeightedEdge> zooMap;
     private static NodeItemDao nodeDao;
 
+    private static boolean itineraryCreated = false;
+
     public static void createItinerary(Context context, List<String> visitationList){
         if(itinerary == null){
             try {
@@ -31,6 +33,7 @@ public class Itinerary {
             }catch (IOException e){ return; }
 
             Itinerary.buildItinerary(visitationList);
+            itineraryCreated = true;
         }
     }
 
@@ -111,6 +114,77 @@ public class Itinerary {
         itinerary = null;
     }
 
+    //If false no need for new itinerary if true a better path exists (closest node must be an ID)
+    public static boolean checkForReRoute(String closestNode, int currIndex){
+
+        ArrayList<String> newItinerary = new ArrayList<>();
+        ArrayList<String> remainingExhibitVisitationList = new ArrayList<>();
+
+        //Loop through already visited locations
+        for(int i = 0; i <= currIndex; i++){
+            //If the closest Node to user is already in itinerary and visited
+            if(itinerary.get(i).equals(closestNode)){
+                Log.d("CheckForReRoute", "Closest already Visited");
+                return false;
+            }
+            newItinerary.add(itinerary.get(i));
+        }
+
+        //"The next thing we want to see is the closest node"
+        newItinerary.add(closestNode);
+        Log.d("CheckForReRoute-FirstHalfItinerary", newItinerary.toString());
+
+        //Loop through all unvisited locations
+        for(int i = currIndex + 1; i < itinerary.size(); i++){
+            //Get all remaining exhibits that we haven't been to
+            if(!itinerary.get(i).equals("entrance_exit_gate") && !itinerary.get(i).equals(closestNode)){
+                remainingExhibitVisitationList.add(itinerary.get(i));
+            }
+        }
+        Log.d("CheckForReRoute-SecondHalfVisitationList", remainingExhibitVisitationList.toString());
+
+        //Index of current location is now the closest location to the user
+        int indexOfCurrLocation = currIndex + 1;
+        while(newItinerary.size() < itinerary.size() - 1){ //It's not +1 because we removed the entrance gate so this is final capacity
+
+            String currentLocation = newItinerary.get(indexOfCurrLocation);
+
+            int smallestDistOfDestinations = Integer.MAX_VALUE;
+            int indexOfLocationWithSmallestDistance = 0;
+            for(int i = 0; i < remainingExhibitVisitationList.size(); i++){
+                int currDist = Itinerary.distance(currentLocation, remainingExhibitVisitationList.get(i));
+                if(currDist < smallestDistOfDestinations){
+                    smallestDistOfDestinations = currDist;
+                    indexOfLocationWithSmallestDistance = i;
+                }
+            }
+
+            newItinerary.add(remainingExhibitVisitationList.get(indexOfLocationWithSmallestDistance));
+            remainingExhibitVisitationList.remove(indexOfLocationWithSmallestDistance);
+            indexOfCurrLocation++;
+        }
+        //We want to leave the zoo at the end
+        newItinerary.add("entrance_exit_gate");
+
+        Log.d("CheckForReRoute-FinalNewItinerary", newItinerary.toString());
+        Log.d("CheckForReRoute-CurrentItinerary", itinerary.toString());
+
+        //Check the ends of the current Itinerary to the new itinerary and see if they are different
+        int currItinSize = itinerary.size();
+        int newItinSize = newItinerary.size();
+        //Loop over the total remaining items in the itinerary
+        for(int i = 0; i < itinerary.size() - (currIndex + 1); i++){
+            //If the ends of the each itinerary are the not the same we need to reRoute
+            if(!itinerary.get(currItinSize - i - 1).equals(newItinerary.get(newItinSize - i - 1))){
+                Log.d("CheckForReRoute", "Better Path Exists");
+                return true;
+            }
+        }
+
+        Log.d("CheckForReRoute", "Same route using current location");
+        return false;
+    }
+
     //So when running multiple tests at one time you can reset the static itinerary.
     @VisibleForTesting
     public static void injectTestItinerary(List<String> itin){
@@ -120,6 +194,8 @@ public class Itinerary {
     public static void injectTestNodeDao(NodeItemDao noDao){
         nodeDao = noDao;
     }
+
+    public static boolean isItineraryCreated(){ return itineraryCreated; }
 
     //Developer Notes----------
     // for (IdentifiedWeightedEdge e : zooMap.edgeSet()) {
