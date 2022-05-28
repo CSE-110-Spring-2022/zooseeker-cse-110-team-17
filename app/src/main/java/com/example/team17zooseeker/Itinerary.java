@@ -22,14 +22,20 @@ public class Itinerary {
     private static Graph<String, IdentifiedWeightedEdge> zooMap;
     private static NodeItemDao nodeDao;
 
+    private static boolean nodeDaoWasInjected = false;
+
     public static void createItinerary(Context context, List<String> visitationList){
         if(itinerary == null){
             try {
                 zooMap = ZooData.loadZooGraphJSON(context, "graph.json");
+            }catch (IOException e){ return; }
+
+            //Conditional for testing with database. Tests should always inject a nodeDao
+            if(!nodeDaoWasInjected){
                 ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(context);
                 nodeDao = database.nodeItemDao();
-                Log.d("testttt",nodeDao.toString());
-            }catch (IOException e){ return; }
+                Log.d("Itinerary", "Itinerary created with no injected Database.");
+            }
 
             Itinerary.buildItinerary(visitationList);
         }
@@ -93,7 +99,6 @@ public class Itinerary {
         //Loop through all results including tags triggered
 
         for(String place : visitationList){
-            ArrayList<nodeItem> temp = new ArrayList<nodeItem>(nodeDao.getAll());
             if(nodeDao.get(place).group_id != null){
                 resultsSet.add(nodeDao.get(place).group_id);
             }else{
@@ -120,7 +125,10 @@ public class Itinerary {
         itinerary = itin;
     }
 
+    //Must inject a nodeDao for tests to work
+    @VisibleForTesting
     public static void injectTestNodeDao(NodeItemDao noDao){
+        nodeDaoWasInjected = true;
         nodeDao = noDao;
     }
 
