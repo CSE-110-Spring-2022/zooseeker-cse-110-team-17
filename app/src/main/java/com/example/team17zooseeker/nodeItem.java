@@ -27,6 +27,7 @@ public class nodeItem {
 
     @NonNull
     public String kind;
+
     public String name;
     public String group_id;
 

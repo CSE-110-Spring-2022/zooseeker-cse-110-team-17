@@ -91,7 +91,9 @@ public class Itinerary {
     private static List<String> Formats(List<String> visitationList){
         HashSet<String> resultsSet = new HashSet<String>();
         //Loop through all results including tags triggered
+
         for(String place : visitationList){
+            ArrayList<nodeItem> temp = new ArrayList<nodeItem>(nodeDao.getAll());
             if(nodeDao.get(place).group_id != null){
                 resultsSet.add(nodeDao.get(place).group_id);
             }else{

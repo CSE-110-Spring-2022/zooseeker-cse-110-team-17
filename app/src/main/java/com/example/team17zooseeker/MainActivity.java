@@ -83,12 +83,12 @@ public class MainActivity extends AppCompatActivity {
         State state = stateDao.get();
 
         if(state == null) {
-            stateDao.insert(new State("0"));
+            state = new State("0");
+            stateDao.insert(state);
         }
 
         List<edgeItem> edges = edgeDao.getAll();
         List<nodeItem> nodes = nodeDao.getAll();
-
 
         // For MainActivity
         preferences = getPreferences(MODE_PRIVATE);
@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
         List<nodeItem> addedNodesList = new ArrayList<nodeItem>();
 
+        //Checks for persisted vList data
         if(vSet != null) {
 
             visitationList = new ArrayList(vSet);
@@ -127,37 +128,15 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        //If no persisted vList data, there is no vList to extract from memory
         else {
             this.visitationList = new ArrayList<String>();
         }
 
-        //Itinerary State Check
-        if(state.state.equals(STATE_ITINERARY)) {
+        //Check to see if user closed app on non-main activity
+        handleNMState(state);
 
-            for(int i = 0; i < this.visitationList.size(); i++){
-                this.visitationList.set(i, this.nodeMap.get(this.visitationList.get(i)).getId());
-            }
-
-            this.visitationList.clear();
-            editor.putStringSet("visitationList", null);
-            editor.apply();
-
-            Intent intent = new Intent(this, ItineraryActivity.class);
-
-            startActivity(intent);
-            finish();
-
-        }
-
-        else if(state.state.equals(STATE_DIRECTIONS)) {
-
-            Intent intent = new Intent(this, DirectionsActivity.class);
-
-            startActivity(intent);
-            finish();
-
-        }
-
+        //If not, proceed using default main activity functionality
         searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
@@ -192,6 +171,36 @@ public class MainActivity extends AppCompatActivity {
         AutoCompleteTextView searchTextView = (AutoCompleteTextView)findViewById(R.id.search_text);
         ArrayAdapter<String> autoCompleteAdapter = new AutoCompleteAdapter(this);
         searchTextView.setAdapter(autoCompleteAdapter);
+    }
+
+    private void handleNMState(State state) {
+
+        if(state.state.equals(STATE_ITINERARY)) {
+
+            for(int i = 0; i < this.visitationList.size(); i++){
+                this.visitationList.set(i, this.nodeMap.get(this.visitationList.get(i)).getId());
+            }
+
+            this.visitationList.clear();
+            editor.putStringSet("visitationList", null);
+            editor.apply();
+
+            Intent intent = new Intent(this, ItineraryActivity.class);
+
+            startActivity(intent);
+            finish();
+
+        }
+
+        else if(state.state.equals(STATE_DIRECTIONS)) {
+
+            Intent intent = new Intent(this, DirectionsActivity.class);
+
+            startActivity(intent);
+            finish();
+
+        }
+
     }
 
     void onPlanClicked (View view){

@@ -95,10 +95,14 @@ public class DirectionsActivity extends AppCompatActivity {
 
     public void onPrevClicked (View view) {
         adapter.setDirectItems(DirectionsActivity.this, prevBtn, skipBtn, nextBtn, false, false);
+        editor.putInt("ItinIndex", preferences.getInt("ItinIndex", 0) - 1);
+        editor.apply();
     }
 
     public void onSkipClicked (View view) {
             adapter.setDirectItems(DirectionsActivity.this, prevBtn, skipBtn, nextBtn, true, true);
+            editor.putStringSet("VList", new HashSet(Itinerary.getItinerary()));
+            editor.apply();
     }
 
     public void onNextClicked (View view){
