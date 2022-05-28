@@ -25,6 +25,10 @@ public class DynamicDirections {
 
     private static boolean dynamicEnabled = false;
 
+    private static String closestLocationTitle;
+
+    private static final String pathChangedPrompt = "You are close to %s. Would you like to be rerouted from there?";
+
     public DynamicDirections(Context context, Activity activity) {
         ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(context);
         nodeDao = database.nodeItemDao();
@@ -36,6 +40,7 @@ public class DynamicDirections {
     private void checkForReRouteFromCurrentLocation(){
         //The closest location in zoo to their live coordinates
         String closestLocation = findClosestLocation();
+        closestLocationTitle = nodeDao.get(closestLocation).name;
 
         //Check if they are currently on predicted path. If so don't reroute them.
         String start = Itinerary.getItinerary().get(Directions.getCurrentIndex());
@@ -48,7 +53,7 @@ public class DynamicDirections {
         boolean reRoute = Itinerary.checkForReRoute(closestLocation, Directions.getCurrentIndex());
         Log.d("DynoDirections-ReRoute", String.valueOf(reRoute));
         if(reRoute){
-            Utilities.promptUpdatePath(currActivity, "TBD");
+            Utilities.promptUpdatePath(currActivity, String.format(pathChangedPrompt, closestLocationTitle));
             //"You are close to 'this' exhibit. Would you like to reroute from here?
         }
     }
@@ -97,9 +102,10 @@ public class DynamicDirections {
     //For Mocking and Updating User location
     public void updateUserLocation(Pair<Double, Double> updatedLocation){
         //Set our coordinates
-        lastKnownCoordinates.setValue(new Pair<Double, Double>(32.7440416465169
-                ,-117.15952052282296
-        ));
+        lastKnownCoordinates.setValue(updatedLocation);
+        //new Pair<Double, Double>(32.7440416465169,-117.15952052282296) Flamingo
+        //new Pair<Double, Double>(32.74531131120979,-117.16626781198586) Hippo
+
         //Set our location
         lastKnownLocation.setLatitude(lastKnownCoordinates.getValue().first);
         lastKnownLocation.setLongitude(lastKnownCoordinates.getValue().second);
@@ -118,7 +124,7 @@ public class DynamicDirections {
     public static void setCurrActivity(Activity activity){
         currActivity = activity;
         if(Utilities.getUpdateCurrentlyPrompted()){
-            Utilities.promptUpdatePath(currActivity, "TBD");
+            Utilities.promptUpdatePath(currActivity, String.format(pathChangedPrompt, closestLocationTitle));
         }
     }
 

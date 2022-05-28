@@ -198,7 +198,7 @@ public class Itinerary {
         int currItinSize = itinerary.size();
         int newItinSize = newItinerary.size();
         //Loop over the total remaining items in the itinerary
-        for(int i = 0; i < itinerary.size() - (currIndex - 1); i++){
+        for(int i = 0; i < itinerary.size() - (currIndex); i++){
             //If the ends of the each itinerary are the not the same we need to reRoute
             if(!itinerary.get(currItinSize - i - 1).equals(newItinerary.get(newItinSize - i - 1))){
                 Log.d("CheckForReRoute", "Better Path Exists");
