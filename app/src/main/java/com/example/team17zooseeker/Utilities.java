@@ -36,11 +36,11 @@ public class Utilities {
                     DynamicDirections.pathApproved();
                     dialog.cancel();
                     updatedCurrentlyPrompted = false;
-                }).setCancelable(true).setNegativeButton("No Thanks!", (dialog, id) -> {
+                }).setNegativeButton("No Thanks!", (dialog, id) -> {
                     //dynamic directions will remain off
                     updatedCurrentlyPrompted = false;
                     dialog.cancel();
-                });
+                }).setCancelable(false);
 
         AlertDialog alertDialog = alertBuilder.create();
         alertDialog.show();

@@ -15,8 +15,13 @@ public class IdentifiedWeightedEdge extends DefaultWeightedEdge {
     public void setId(String id) { this.id = id; }
 
     @Override
-    public String toString() {
-        return "(" + getSource() + " :" + id + ": " + getTarget() + ")";
+    public String toString() { return "(" + getSource() + " :" + id + ": " + getTarget() + ")"; }
+
+    public String getFrom() {
+        return getSource().toString();
+    }
+    public String getTo() {
+        return getTarget().toString();
     }
 
     public static void attributeConsumer(Pair<IdentifiedWeightedEdge, String> pair, Attribute attr) {

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class Directions {
 
     // Optimized itinerary to traverse through zoo
-    private final List<String> itinerary;
+    private static List<String> itinerary;
     /**
      * Can we possibly make this list of strings, exhibit names, not id names?
      */
@@ -170,15 +170,13 @@ public class Directions {
         List<String> dirs = new ArrayList<>();
         Log.d("pre index", String.valueOf(currentIndex));
         if (currentIndex <= itinerary.size() - 1 && currentIndex >= 0) {
-            if(!forward) {
-                currentIndex--;
+            if(!forward && currentIndex > 0) {
                 start = itinerary.get(currentIndex);
                 end = itinerary.get(currentIndex - 1);
             }
             else if (currentIndex <= itinerary.size() - 2) {
                 start = itinerary.get(currentIndex);
                 end = itinerary.get(currentIndex + 1);
-                currentIndex++;
             } else {
                 return new ArrayList<>();
             }
@@ -251,8 +249,6 @@ public class Directions {
         return dirs;
     }
 
-
-    //TO-DO
     private List<String> getSimpleDirections(GraphPath<String, IdentifiedWeightedEdge> path, String start){
         List<String> dirs = new ArrayList<>();
         List<IdentifiedWeightedEdge> edges = path.getEdgeList();
@@ -352,8 +348,19 @@ public class Directions {
       
     @VisibleForTesting
     public void skipDirections(){
-        itinerary.remove(currentIndex);
-        currentIndex--;
+        itinerary.remove(currentIndex  + 1);
     }
 
+    public static void updateItinerary(){
+        if(itinerary.size() < Itinerary.getItinerary().size()){
+            //Our current location is now one past the last thing we were at because something was added
+            Directions.increaseCurrentPosition();
+        }
+        //Get new path
+        itinerary = Itinerary.getItinerary();
+
+    }
+
+    public static void increaseCurrentPosition(){ if(currentIndex < Itinerary.getItinerary().size() - 1) currentIndex++; }
+    public static void decreaseCurrentPosition(){ if(currentIndex > 0) currentIndex--; }
 }

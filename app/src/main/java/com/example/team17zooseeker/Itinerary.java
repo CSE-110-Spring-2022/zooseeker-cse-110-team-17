@@ -24,6 +24,8 @@ public class Itinerary {
 
     private static boolean itineraryCreated = false;
 
+    private static List<String> newItinerary;
+
     public static void createItinerary(Context context, List<String> visitationList){
         if(itinerary == null){
             try {
@@ -90,6 +92,19 @@ public class Itinerary {
         return minDistance;
     }
 
+    //Returns true if the query is on the path between start and end
+    public static boolean existsOnPath(String start, String end, String query){
+
+        GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(zooMap, start, end);
+
+        for (IdentifiedWeightedEdge e : path.getEdgeList()) {
+            if(e.getFrom().equals(query)){ return true; }
+            //Log.d("Edge Info: ", e.toString());
+        }
+
+        return false;
+    }
+
     private static List<String> Formats(List<String> visitationList){
         HashSet<String> resultsSet = new HashSet<String>();
         //Loop through all results including tags triggered
@@ -117,7 +132,7 @@ public class Itinerary {
     //If false no need for new itinerary if true a better path exists (closest node must be an ID)
     public static boolean checkForReRoute(String closestNode, int currIndex){
 
-        ArrayList<String> newItinerary = new ArrayList<>();
+        newItinerary = new ArrayList<>();
         ArrayList<String> remainingExhibitVisitationList = new ArrayList<>();
 
         //No matter what you have visited the entrance gate. Handles edge case if closest node is the entrance.
@@ -152,6 +167,7 @@ public class Itinerary {
         //If closestNode is already in the Itinerary our final capacity needs to be one smaller
         if(itinerary.contains(closestNode)){
             finalCapacity -= 1;
+            indexOfCurrLocation -= 1;
         }
 
         while(newItinerary.size() < finalCapacity){
@@ -182,7 +198,7 @@ public class Itinerary {
         int currItinSize = itinerary.size();
         int newItinSize = newItinerary.size();
         //Loop over the total remaining items in the itinerary
-        for(int i = 0; i < itinerary.size() - (currIndex + 1); i++){
+        for(int i = 0; i < itinerary.size() - (currIndex - 1); i++){
             //If the ends of the each itinerary are the not the same we need to reRoute
             if(!itinerary.get(currItinSize - i - 1).equals(newItinerary.get(newItinSize - i - 1))){
                 Log.d("CheckForReRoute", "Better Path Exists");
@@ -192,6 +208,10 @@ public class Itinerary {
 
         Log.d("CheckForReRoute", "Same route using current location");
         return false;
+    }
+
+    public static void newItineraryAccepted(){
+        itinerary = newItinerary;
     }
 
     //So when running multiple tests at one time you can reset the static itinerary.

@@ -9,6 +9,9 @@ import android.util.Pair;
 
 import androidx.lifecycle.MutableLiveData;
 
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+
 import java.util.List;
 
 public class DynamicDirections {
@@ -20,7 +23,7 @@ public class DynamicDirections {
     //Needs the activity to prompt user in.
     private static Activity currActivity = null;
 
-    private static boolean dynamicEnabled = true;
+    private static boolean dynamicEnabled = false;
 
     public DynamicDirections(Context context, Activity activity) {
         ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(context);
@@ -31,25 +34,34 @@ public class DynamicDirections {
     }
 
     private void checkForReRouteFromCurrentLocation(){
+        //The closest location in zoo to their live coordinates
         String closestLocation = findClosestLocation();
+
+        //Check if they are currently on predicted path. If so don't reroute them.
+        String start = Itinerary.getItinerary().get(Directions.getCurrentIndex());
+        String end = Itinerary.getItinerary().get(Directions.getCurrentIndex() + 1);
+        if(DirectionsActivity.theLastButtonPressedWasPrevious){
+            end = Itinerary.getItinerary().get(Directions.getCurrentIndex() - 1);
+        }
+        if(Itinerary.existsOnPath(start, end, closestLocation)){ Log.d("DynoDirections-OnPredictedPath", "True"); return; }
+
         boolean reRoute = Itinerary.checkForReRoute(closestLocation, Directions.getCurrentIndex());
         Log.d("DynoDirections-ReRoute", String.valueOf(reRoute));
         if(reRoute){
-
-
-            //Check if they are currently on predicted path. TO_DO!!!
-            //If itinerary has already approved a reroute. Ask directions if we also need a reroute
-
-
             Utilities.promptUpdatePath(currActivity, "TBD");
             //"You are close to 'this' exhibit. Would you like to reroute from here?
         }
     }
 
-    //TO-DO
     public static void pathApproved(){
-        //Rebase Itinerary
-        Log.d("Path Approved", "yes");
+        //Rebase Itinerary, update directions itinerary, update display
+        Log.d("Path Approved", "True");
+        Itinerary.newItineraryAccepted();
+        Directions.updateItinerary();
+
+        //This assumes we only check if the path is approved from the directions activity
+        DirectionsActivity dA = (DirectionsActivity) currActivity;
+        dA.getAdapter().itineraryUpdated();
     }
 
     //return the node in the graph that is closest to our last known location
@@ -85,12 +97,14 @@ public class DynamicDirections {
     //For Mocking and Updating User location
     public void updateUserLocation(Pair<Double, Double> updatedLocation){
         //Set our coordinates
-        lastKnownCoordinates.setValue(updatedLocation);
+        lastKnownCoordinates.setValue(new Pair<Double, Double>(32.7440416465169
+                ,-117.15952052282296
+        ));
         //Set our location
         lastKnownLocation.setLatitude(lastKnownCoordinates.getValue().first);
         lastKnownLocation.setLongitude(lastKnownCoordinates.getValue().second);
 
-        Log.d("DynoDirections", updatedLocation.toString());
+        Log.d("DynoDirections", lastKnownCoordinates.getValue().toString());
 
         //Check if we need to reroute if Itinerary has been created
         if(Itinerary.isItineraryCreated() && dynamicEnabled){

@@ -104,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //TESTING
-//        stateDao.delete(stateDao.get());
-//        stateDao.insert(new State("0"));
+        //stateDao.delete(stateDao.get());
+        //stateDao.insert(new State("0"));
 
         State state = stateDao.get();
 
@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
         LocationListener locationListener = new LocationListener(){
             @Override
             public void onLocationChanged(@NonNull Location location) {
-                Log.d("Position", location.getLatitude() + ", " + location.getLongitude());
+                Log.d("Position From Listener", location.getLatitude() + ", " + location.getLongitude());
                 Pair<Double, Double> updatedLocation = Pair.create(
                         location.getLatitude(),
                         location.getLongitude()

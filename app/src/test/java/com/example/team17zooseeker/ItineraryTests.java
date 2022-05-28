@@ -95,6 +95,4 @@ public class ItineraryTests {
 //        assertEquals(a_Itinerary,Itinerary.getItinerary());
 //
 //    }
-
-
 }

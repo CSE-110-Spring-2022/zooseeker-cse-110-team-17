@@ -34,6 +34,8 @@ public class DirectionsActivity extends AppCompatActivity {
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
+    public static boolean theLastButtonPressedWasPrevious = false;
+
     ArrayList<String> VList;
 
     @Override
@@ -43,6 +45,7 @@ public class DirectionsActivity extends AppCompatActivity {
 
         //Allows for user prompts on this page
         DynamicDirections.setCurrActivity(this);
+        DynamicDirections.setDynamicEnabled(true);
 
         // For Directions Activity
         database = ZooKeeperDatabase.getSingleton(this);
@@ -77,8 +80,17 @@ public class DirectionsActivity extends AppCompatActivity {
 
         }
 
+        skipBtn = findViewById(R.id.skip_btn);
+        skipBtn.setOnClickListener(this::onSkipClicked);
+
+        prevBtn = findViewById(R.id.prev_btn);
+        prevBtn.setOnClickListener(this::onPrevClicked);
+
+        nextBtn = findViewById(R.id.next_btn);
+        nextBtn.setOnClickListener(this::onNextClicked);
+
         Directions d = new Directions(Itinerary.getItinerary(), index);
-        adapter = new DirectionsAdapter(d);
+        adapter = new DirectionsAdapter(d, prevBtn, skipBtn, nextBtn);
 
         adapter.setHasStableIds(true);
 
@@ -86,29 +98,35 @@ public class DirectionsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        skipBtn = findViewById(R.id.skip_btn);
-        skipBtn.setOnClickListener(this::onSkipClicked);
-      
-        prevBtn = findViewById(R.id.prev_btn);
-        prevBtn.setOnClickListener(this::onPrevClicked);
-      
-        nextBtn = findViewById(R.id.next_btn);
-        nextBtn.setOnClickListener(this::onNextClicked);
-        adapter.setDirectItems(DirectionsActivity.this, prevBtn, skipBtn, nextBtn, true, false);
+        adapter.setDirectItems(DirectionsActivity.this, true, false);
     }
 
     public void onPrevClicked (View view) {
-        adapter.setDirectItems(DirectionsActivity.this, prevBtn, skipBtn, nextBtn, false, false);
+        if(theLastButtonPressedWasPrevious){
+            //Now the person has moved so decrease their position on directions
+            Directions.decreaseCurrentPosition();
+
+            //Set Save info
+            editor.putInt("ItinIndex", Directions.getCurrentIndex());
+            editor.apply();
+        }
+        theLastButtonPressedWasPrevious = true;
+        adapter.setDirectItems(DirectionsActivity.this, false, false);
+
+        Log.d("Current Position", Itinerary.getItinerary().get(Directions.getCurrentIndex()));
     }
 
     public void onSkipClicked (View view) {
-        adapter.setDirectItems(DirectionsActivity.this, prevBtn, skipBtn, nextBtn, true, true);
+        adapter.setDirectItems(DirectionsActivity.this, true, true);
+        //Position stays the same because we just skipped the next thing
+        Log.d("Current Position", Itinerary.getItinerary().get(Directions.getCurrentIndex()));
     }
 
     public void onNextClicked (View view){
         if(nextBtn.getText().equals("FINISH")){
             Itinerary.deleteItinerary();
             Itinerary.setItineraryCreated(false);
+            //Setting current index position
             Directions.resetCurrentIndex();
 
             stateDao.delete(stateDao.get());
@@ -122,10 +140,22 @@ public class DirectionsActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }else{
-            editor.putInt("ItinIndex", preferences.getInt("ItinIndex", 0) + 1);
+            if(theLastButtonPressedWasPrevious){
+                //Now the person has moved so decrease their position on directions
+                Directions.decreaseCurrentPosition();
+            }else{
+                //Now the person has moved so increase their position on directions
+                Directions.increaseCurrentPosition();
+            }
+
+            //Set Save info
+            editor.putInt("ItinIndex", Directions.getCurrentIndex());
             editor.apply();
-            adapter.setDirectItems(DirectionsActivity.this, prevBtn, skipBtn, nextBtn, true, false);
+
+            adapter.setDirectItems(DirectionsActivity.this, true, false);
+            Log.d("Current Position", Itinerary.getItinerary().get(Directions.getCurrentIndex()));
         }
+        theLastButtonPressedWasPrevious = false;
     }
 
     //For testing
