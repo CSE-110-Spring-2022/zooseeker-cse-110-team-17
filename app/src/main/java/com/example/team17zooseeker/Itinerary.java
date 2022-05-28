@@ -86,7 +86,7 @@ public class Itinerary {
             minDistance += zooMap.getEdgeWeight(e);
         }
 
-        Log.d("Edge Weight: ", "" + minDistance);
+        //Log.d("Edge Weight: ", "" + minDistance);
         return minDistance;
     }
 
@@ -120,12 +120,14 @@ public class Itinerary {
         ArrayList<String> newItinerary = new ArrayList<>();
         ArrayList<String> remainingExhibitVisitationList = new ArrayList<>();
 
+        //No matter what you have visited the entrance gate. Handles edge case if closest node is the entrance.
+        newItinerary.add("entrance_exit_gate");
+
         //Loop through already visited locations
-        for(int i = 0; i <= currIndex; i++){
-            //If the closest Node to user is already in itinerary and visited
+        for(int i = 1; i <= currIndex; i++){ //Starts at 1 for entrance gate edge case
+            //If the closest Node to user is already in itinerary and visited don't add
             if(itinerary.get(i).equals(closestNode)){
-                Log.d("CheckForReRoute", "Closest already Visited");
-                return false;
+                continue;
             }
             newItinerary.add(itinerary.get(i));
         }
@@ -145,7 +147,14 @@ public class Itinerary {
 
         //Index of current location is now the closest location to the user
         int indexOfCurrLocation = currIndex + 1;
-        while(newItinerary.size() < itinerary.size() - 1){ //It's not +1 because we removed the entrance gate so this is final capacity
+
+        int finalCapacity = itinerary.size(); //It's not +1 because we removed the entrance gate so this is final capacity
+        //If closestNode is already in the Itinerary our final capacity needs to be one smaller
+        if(itinerary.contains(closestNode)){
+            finalCapacity -= 1;
+        }
+
+        while(newItinerary.size() < finalCapacity){
 
             String currentLocation = newItinerary.get(indexOfCurrLocation);
 

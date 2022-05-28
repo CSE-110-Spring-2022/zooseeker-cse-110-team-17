@@ -32,12 +32,12 @@ public class DynamicDirections {
     //return the node in the graph that is closest to our last known location
     private String findClosestLocation(){
         List<nodeItem> nodes = nodeDao.getAll();
-        nodeItem closestNode = new nodeItem("parker_aviary", "Test", "Test", "Test", 1,1, null);
+        nodeItem closestNode = new nodeItem("scripps_aviary", "Test", "Test", "Test", 1,1, null);
         double shortestDistance = Double.MAX_VALUE;
         //Loop through all nodes in database. Save closest node
         for(nodeItem node : nodes){
             double currDistance = distanceToNode(node);
-            if(!node.kind.equals("exhibit") || !node.kind.equals("exhibit_group")){
+            if(!node.kind.equals("exhibit") && !node.kind.equals("exhibit_group")){
                 continue;
             }
             if(node.lat != 0 && currDistance < shortestDistance){
