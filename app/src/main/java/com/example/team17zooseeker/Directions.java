@@ -53,6 +53,7 @@ public class Directions {
     public static int getCurrentIndex(){
         return currentIndex;
     }
+    public static void resetCurrentIndex(){ currentIndex = 0; }
 
     public int getItinerarySize(){
         return itinerary.size();

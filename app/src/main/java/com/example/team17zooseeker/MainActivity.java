@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Configure Location Listener and Setup Dynamic Directions
         {
-            dynoDirections = new DynamicDirections(this);
+            dynoDirections = new DynamicDirections(this, this);
             setupLocationListener(dynoDirections::updateUserLocation);
         }
 

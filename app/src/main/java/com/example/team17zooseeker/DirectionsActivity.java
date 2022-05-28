@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.strictmode.DiskReadViolation;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -39,6 +40,9 @@ public class DirectionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_directions);
+
+        //Allows for user prompts on this page
+        DynamicDirections.setCurrActivity(this);
 
         // For Directions Activity
         database = ZooKeeperDatabase.getSingleton(this);
@@ -104,6 +108,8 @@ public class DirectionsActivity extends AppCompatActivity {
     public void onNextClicked (View view){
         if(nextBtn.getText().equals("FINISH")){
             Itinerary.deleteItinerary();
+            Itinerary.setItineraryCreated(false);
+            Directions.resetCurrentIndex();
 
             stateDao.delete(stateDao.get());
             stateDao.insert(new State("0"));

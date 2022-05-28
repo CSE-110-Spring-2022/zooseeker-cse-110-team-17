@@ -206,6 +206,8 @@ public class Itinerary {
 
     public static boolean isItineraryCreated(){ return itineraryCreated; }
 
+    public static void setItineraryCreated(boolean created){ itineraryCreated = created; }
+
     //Developer Notes----------
     // for (IdentifiedWeightedEdge e : zooMap.edgeSet()) {
     //     Log.d("Edge: ", e.toString());
