@@ -27,9 +27,14 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
     public void setDirectItems(Context context, Button prev, Button skip, Button next, boolean forward, boolean skipNext){
         if(skipNext){
             this.directions.skipDirections();
+
         }
         this.directItems.clear();
         this.directItems = this.directions.createTestDirections(context, forward); //Not using database
+        //If you already at the exhibit
+        if(this.directItems.size() == 0){
+            this.directItems.add("You are already at the exit! :-)");
+        }
         int index = this.directions.getCurrentIndex();
         int size = this.directions.getItinerarySize();
              if (index == size - 1) {

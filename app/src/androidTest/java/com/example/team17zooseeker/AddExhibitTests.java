@@ -58,85 +58,77 @@ public class AddExhibitTests {
     ZooKeeperDatabase testDb;
     NodeItemDao nodeItemDao;
 
-    //Planning on changing when we have everything put together
-//    @Before
-//    public void resetDatabase() {
-//        Context context = ApplicationProvider.getApplicationContext();
-//        testDb = Room.inMemoryDatabaseBuilder(context, ZooKeeperDatabase.class)
-//                .allowMainThreadQueries()
-//                .build();
-//        ZooKeeperDatabase.injectTestDatabase(testDb);
-//    }
-//
-//    @Test
-//    public void testAddValidExhibit() {
-//        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
-//
-//        scenario.onActivity(activity -> {
-//            List<String> temp = new ArrayList<String>();
-//            testDb.nodeItemDao().insert(new nodeItem("lions", "exhibit", "Lions", temp));
-//            testDb.nodeItemDao().insert(new nodeItem("gorillas", "exhibit", "Gorillas", temp));
-//
-//            nodeItem temp1 = testDb.nodeItemDao().get("lions");
-//            nodeItem temp2 = testDb.nodeItemDao().get("gorillas");
-//            Log.e("Node 1: ", temp1.toString());
-//            Log.e("Node 2: ", temp2.toString());
-//
-//            EditText searchText = activity.findViewById(R.id.search_text);
-//            RecyclerView vh = activity.findViewById(R.id.visitation_list_view);
-//            NodeListAdapter adapter = new NodeListAdapter();
-//            adapter.setHasStableIds(true);
-//            vh.setAdapter(adapter);
-//
-//            searchText.requestFocus();
-//            searchText.setText("Lions");
-//            searchText.clearFocus();
-//            List<nodeItem> addedNodesList = new ArrayList<nodeItem>();
-//
-//            Log.e("Node 1: ", temp1.name);
-//            Log.e("Text Search: ", String.valueOf(searchText.getText()));
-//            if(String.valueOf(searchText.getText()).equals(temp1.name)) {
-//                Log.e("ENTERED HERE!", "HELLO");
-//                addedNodesList.add(temp1);
-//                adapter.setNodeItems(addedNodesList);
-//            }
-//
-//            Log.e("Search Text: ", String.valueOf(searchText.getText()));
-//            Log.e("Adapter: ->>>", String.valueOf(adapter.getItemCount()));
-//            Log.e("VH: ", String.valueOf(adapter.getItemName(0)));
-//            assertEquals(String.valueOf(searchText.getText()), String.valueOf(adapter.getItemName(0)));
-//
-//        });
-//    }
-//
-//    @Test
-//    public void testAddInvalidExhibit() {
-//        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
-//
-//        scenario.onActivity(activity -> {
-//            List<String> temp = new ArrayList<String>();
-//            testDb.nodeItemDao().insert(new nodeItem("lions", "exhibit", "Lions", temp));
-//            testDb.nodeItemDao().insert(new nodeItem("gorillas", "exhibit", "Gorillas", temp));
-//
-//            nodeItem temp1 = testDb.nodeItemDao().get("Tapirs");
-//
-//            EditText searchText = activity.findViewById(R.id.search_text);
-//            RecyclerView vh = activity.findViewById(R.id.visitation_list_view);
-//            NodeListAdapter adapter = new NodeListAdapter();
-//            adapter.setHasStableIds(true);
-//            vh.setAdapter(adapter);
-//
-//            searchText.requestFocus();
-//            searchText.setText("Tapirs");
-//            searchText.clearFocus();
-//
-//            assertNull(temp1);
-//
-//        });
-//    }
+    @Before
+    public void resetDatabase() {
+        Context context = ApplicationProvider.getApplicationContext();
+        testDb = Room.inMemoryDatabaseBuilder(context, ZooKeeperDatabase.class)
+                .allowMainThreadQueries()
+                .build();
+        ZooKeeperDatabase.injectTestDatabase(testDb);
+    }
 
     @Test
-    public void testThis(){
-        assertEquals(true,true);
+    public void testAddValidExhibit() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.onActivity(activity -> {
+            List<String> temp = new ArrayList<String>();
+            testDb.nodeItemDao().insert(new nodeItem("gorillas", "exhibit", "Gorillas","000",1,1, temp));
+            testDb.nodeItemDao().insert(new nodeItem("koi", "exhibit", "Koi Fish", "111", 0,0, temp));
+
+            nodeItem temp1 = testDb.nodeItemDao().get("gorillas");
+            nodeItem temp2 = testDb.nodeItemDao().get("koi");
+            Log.e("Node 1: ", temp1.toString());
+            Log.e("Node 2: ", temp2.toString());
+
+            EditText searchText = activity.findViewById(R.id.search_text);
+            RecyclerView vh = activity.findViewById(R.id.visitation_list_view);
+            NodeListAdapter adapter = new NodeListAdapter();
+            adapter.setHasStableIds(true);
+            vh.setAdapter(adapter);
+
+            searchText.requestFocus();
+            searchText.setText("Gorillas");
+            searchText.clearFocus();
+            List<nodeItem> addedNodesList = new ArrayList<nodeItem>();
+
+            Log.e("Node 1: ", temp1.name);
+            Log.e("Text Search: ", String.valueOf(searchText.getText()));
+            if(String.valueOf(searchText.getText()).equals(temp1.name)) {
+                Log.e("ENTERED HERE!", "HELLO");
+                addedNodesList.add(temp1);
+                adapter.setNodeItems(addedNodesList);
+            }
+
+            Log.e("Search Text: ", String.valueOf(searchText.getText()));
+            Log.e("Adapter: ->>>", String.valueOf(adapter.getItemCount()));
+            Log.e("VH: ", String.valueOf(adapter.getItemName(0)));
+            assertEquals(String.valueOf(searchText.getText()), String.valueOf(adapter.getItemName(0)));
+        });
+    }
+
+    @Test
+    public void testAddInvalidExhibit() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+
+        scenario.onActivity(activity -> {
+            List<String> temp = new ArrayList<String>();
+            testDb.nodeItemDao().insert(new nodeItem("gorillas", "exhibit", "Gorillas","000",1,1, temp));
+            testDb.nodeItemDao().insert(new nodeItem("koi", "exhibit", "Koi Fish", "111", 0,0, temp));
+
+            nodeItem temp1 = testDb.nodeItemDao().get("Tapirs");
+
+            EditText searchText = activity.findViewById(R.id.search_text);
+            RecyclerView vh = activity.findViewById(R.id.visitation_list_view);
+            NodeListAdapter adapter = new NodeListAdapter();
+            adapter.setHasStableIds(true);
+            vh.setAdapter(adapter);
+
+            searchText.requestFocus();
+            searchText.setText("Tapirs");
+            searchText.clearFocus();
+
+            assertNull(temp1);
+
+        });
     }
 }

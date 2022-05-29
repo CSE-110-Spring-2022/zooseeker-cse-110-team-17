@@ -45,8 +45,6 @@ public abstract class ZooKeeperDatabase extends RoomDatabase {
                                 Map<String, nodeItem> nodes = null;
                                 Map<String, edgeItem> edges = null;
 
-                                State state = null;
-
                                 try {
                                     nodes = nodeItem.loadNodeInfoJSON(context, "node.json");
                                     edges = edgeItem.loadEdgeInfoJSON(context, "edge.json");
