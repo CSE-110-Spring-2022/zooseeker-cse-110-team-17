@@ -19,15 +19,23 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
     private List<String> directItems = Collections.emptyList();
     private Directions directions;
 
-    public DirectionsAdapter(Directions directions) {
+    private Context currContext = null;
+
+    private Button prev;
+    private Button skip;
+    private Button next;
+
+    public DirectionsAdapter(Directions directions, Button prev, Button skip, Button next) {
         this.directions = directions;
+        this.prev = prev;
+        this.next = next;
+        this.skip = skip;
     }
 
 
-    public void setDirectItems(Context context, Button prev, Button skip, Button next, boolean forward, boolean skipNext){
+    public void setDirectItems(Context context, boolean forward, boolean skipNext){
         if(skipNext){
             this.directions.skipDirections();
-
         }
         this.directItems.clear();
         this.directItems = this.directions.createTestDirections(context, forward); //Not using database
@@ -35,22 +43,50 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
         if(this.directItems.size() == 0){
             this.directItems.add("You are already at the exit! :-)");
         }
-        int index = this.directions.getCurrentIndex();
+        int index = Directions.getCurrentIndex();
         int size = this.directions.getItinerarySize();
-             if (index == size - 1) {
+             if (index == size - 2) {
                 next.setText("FINISH");
                 skip.setEnabled(false);
              } else {
                 next.setText("NEXT");
                 skip.setEnabled(true);
              }
-             if (size == 2 || index == 1) {
+             if (size == 2 || index == 0) {
+                 prev.setEnabled(false);
+                 prev.setClickable(false);
+             } else if(index == 1 && DirectionsActivity.theLastButtonPressedWasPrevious){
                  prev.setEnabled(false);
                  prev.setClickable(false);
              } else {
                  prev.setEnabled(true);
                  prev.setClickable(true);
              }
+        notifyDataSetChanged();
+        currContext = context;
+    }
+
+    public void itineraryUpdated(){
+        this.directItems = this.directions.createTestDirections(currContext, true);
+        int index = Directions.getCurrentIndex();
+        int size = this.directions.getItinerarySize();
+        if (index == size - 2) {
+            next.setText("FINISH");
+            skip.setEnabled(false);
+        } else {
+            next.setText("NEXT");
+            skip.setEnabled(true);
+        }
+        if (size == 2 || index == 0) {
+            prev.setEnabled(false);
+            prev.setClickable(false);
+        } else if(index == 1 && DirectionsActivity.theLastButtonPressedWasPrevious){
+            prev.setEnabled(false);
+            prev.setClickable(false);
+        } else {
+            prev.setEnabled(true);
+            prev.setClickable(true);
+        }
         notifyDataSetChanged();
     }
 

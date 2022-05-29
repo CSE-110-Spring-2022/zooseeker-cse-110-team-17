@@ -21,12 +21,12 @@ import java.util.stream.Collectors;
 public class Directions {
 
     // Optimized itinerary to traverse through zoo
-    private List<String> itinerary;
+    private static List<String> itinerary;
     /**
      * Can we possibly make this list of strings, exhibit names, not id names?
      */
     // current index for iterating through the itinerary
-    private int currentIndex;
+    private static int currentIndex;
 
     private boolean detailedDirection = true;
     private boolean dataLoaded = false;
@@ -50,9 +50,10 @@ public class Directions {
         this.currentIndex = currentIndex;
     }
 
-    public int getCurrentIndex(){
+    public static int getCurrentIndex(){
         return currentIndex;
     }
+    public static void resetCurrentIndex(){ currentIndex = 0; }
 
     public int getItinerarySize(){
         return itinerary.size();
@@ -169,15 +170,13 @@ public class Directions {
         List<String> dirs = new ArrayList<>();
         Log.d("pre index", String.valueOf(currentIndex));
         if (currentIndex <= itinerary.size() - 1 && currentIndex >= 0) {
-            if(!forward) {
-                currentIndex--;
+            if(!forward && currentIndex > 0) {
                 start = itinerary.get(currentIndex);
                 end = itinerary.get(currentIndex - 1);
             }
             else if (currentIndex <= itinerary.size() - 2) {
                 start = itinerary.get(currentIndex);
                 end = itinerary.get(currentIndex + 1);
-                currentIndex++;
             } else {
                 return new ArrayList<>();
             }
@@ -250,8 +249,6 @@ public class Directions {
         return dirs;
     }
 
-
-    //TO-DO
     private List<String> getSimpleDirections(GraphPath<String, IdentifiedWeightedEdge> path, String start){
         List<String> dirs = new ArrayList<>();
         List<IdentifiedWeightedEdge> edges = path.getEdgeList();
@@ -351,9 +348,19 @@ public class Directions {
       
     @VisibleForTesting
     public void skipDirections(){
-        Itinerary.skip(itinerary.get(currentIndex));
-        itinerary=Itinerary.getItinerary();
-        currentIndex--;
+        Itinerary.skip(itinerary.get(currentIndex  + 1));
+        itinerary = Itinerary.getItinerary();
     }
 
+    public static void updateItinerary(){
+        if(itinerary.size() < Itinerary.getItinerary().size()){
+            //Our current location is now one past the last thing we were at because something was added
+            Directions.increaseCurrentPosition();
+        }
+        //Get new path
+        itinerary = Itinerary.getItinerary();
+    }
+
+    public static void increaseCurrentPosition(){ if(currentIndex < Itinerary.getItinerary().size() - 1) currentIndex++; }
+    public static void decreaseCurrentPosition(){ if(currentIndex > 0) currentIndex--; }
 }

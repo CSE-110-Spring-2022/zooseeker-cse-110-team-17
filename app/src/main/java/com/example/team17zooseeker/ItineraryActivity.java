@@ -32,6 +32,11 @@ public class ItineraryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_itinerary);
 
+        //Allows for user prompts on this page
+        //DynamicDirections.setCurrActivity(this);
+        //Forcing that we cannot update itinerary from this activity. (pathApproved)
+        DynamicDirections.setDynamicEnabled(false);
+
         database = ZooKeeperDatabase.getSingleton(this);
         stateDao = database.stateDao();
 

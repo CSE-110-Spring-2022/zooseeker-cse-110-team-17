@@ -1,9 +1,14 @@
 package com.example.team17zooseeker;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -12,12 +17,15 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Ignore;
 import androidx.room.Room;
 
 import org.jgrapht.Graph;
+import org.xml.sax.DTDHandler;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -32,6 +40,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -41,6 +50,8 @@ import android.widget.TextView;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -49,6 +60,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
+
+    private final PermissionsChecker permissionsChecker = new PermissionsChecker(this);
+
+    private DynamicDirections dynoDirections;
 
     private final String STATE_ITINERARY = "1";
     private final String STATE_DIRECTIONS = "2";
@@ -87,9 +102,21 @@ public class MainActivity extends AppCompatActivity {
         edgeDao  = database.edgeItemDao();
         stateDao = database.stateDao();
 
+        //Permissions Setup
+        {
+            //If location permissions aren't granted then use default app functionality
+            if (permissionsChecker.ensurePermissions()) return;
+        }
+
+        //Configure Location Listener and Setup Dynamic Directions
+        {
+            dynoDirections = new DynamicDirections(this, this);
+            setupLocationListener(dynoDirections::updateUserLocation);
+        }
+
         //TESTING
-//        stateDao.delete(stateDao.get());
-//        stateDao.insert(new State("0"));
+        //stateDao.delete(stateDao.get());
+        //stateDao.insert(new State("0"));
 
         State state = stateDao.get();
 
@@ -181,6 +208,25 @@ public class MainActivity extends AppCompatActivity {
         AutoCompleteTextView searchTextView = (AutoCompleteTextView)findViewById(R.id.search_text);
         ArrayAdapter<String> autoCompleteAdapter = new AutoCompleteAdapter(this);
         searchTextView.setAdapter(autoCompleteAdapter);
+    }
+
+    @SuppressLint("MissingPermission")
+    private void setupLocationListener(Consumer<Pair<Double, Double>> handleUserLocationUpdate) {
+        String provider = LocationManager.GPS_PROVIDER;
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        LocationListener locationListener = new LocationListener(){
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                Log.d("Position From Listener", location.getLatitude() + ", " + location.getLongitude());
+                Pair<Double, Double> updatedLocation = Pair.create(
+                        location.getLatitude(),
+                        location.getLongitude()
+                );
+                handleUserLocationUpdate.accept(updatedLocation);
+            }
+        };
+
+        locationManager.requestLocationUpdates(provider,0,0f, locationListener);
     }
 
     private void handleNMState(State state) {
