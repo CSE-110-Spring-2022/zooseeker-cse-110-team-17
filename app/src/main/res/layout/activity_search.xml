@@ -8,23 +8,42 @@
     android:backgroundTint="#B7C34E"
     tools:context=".MainActivity">
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/clear_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:backgroundTint="#FFFFFF"
+        android:layout_marginBottom="88dp"
+        android:background="#FF5E5E"
+        android:backgroundTint="#FF6161"
         android:fontFamily="sans-serif-condensed-medium"
         android:foregroundTint="#FFFFFF"
         android:text="@string/clear_btn_title"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.356"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/plan_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#83501D"
+        android:backgroundTint="#FFAD5A"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:foregroundTint="#b87f45"
+        android:text="@string/plan_btn_title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:cornerRadius="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.678"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.871"
-        tools:ignore="TextContrastCheck" />
+        app:layout_constraintVertical_bias="0.866" />
 
     <TextView
         android:id="@+id/main_title_text"
@@ -67,7 +86,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.843" />
+        app:layout_constraintVertical_bias="0.873" />
 
     <TextView
         android:id="@+id/plan_header_text"
@@ -80,7 +99,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.865" />
+        app:layout_constraintVertical_bias="0.946" />
 
     <AutoCompleteTextView
         android:id="@+id/search_text"
@@ -96,55 +115,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.243" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/plan_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#83501D"
-        android:backgroundTint="#FFAD5A"
-        android:fontFamily="sans-serif-condensed-medium"
-        android:foregroundTint="#b87f45"
-        android:text="@string/plan_btn_title"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:cornerRadius="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.916" />
+        app:layout_constraintVertical_bias="0.229" />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="170dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="592dp"
-        android:layout_marginEnd="268dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="168dp"
+        android:layout_height="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/grass" />
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="170dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="264dp"
-        android:layout_marginTop="592dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="164dp"
+        android:layout_height="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/grass" />
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="170dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="592dp"
+        android:layout_width="157dp"
+        android:layout_height="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/grass" />
 
     <ImageView
@@ -157,17 +153,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/monke2" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/settings_btn"
         style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="12dp"
-        android:layout_marginBottom="256dp"
-        android:text="settings"
+        android:background="#8A8A8A"
+        android:backgroundTint="#A8A8A8"
+        android:text="Settings"
         app:icon="@android:drawable/ic_menu_preferences"
-        app:layout_constraintBottom_toTopOf="@+id/visitation_list_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
