@@ -60,62 +60,66 @@ import java.util.Map;
 @LargeTest
 public class SearchSuggestionTests {
 
-//    @Rule
-//    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
-//            MainActivity.class);
-//
-//    private MainActivity mActivity = null;
-//
-//    @Before
-//    public void setActivity() {
-//        mActivity = mActivityRule.getActivity();
-//    }
-//
-//    @Test
-//    public void testAutoCompleteTextView() {
-//        onView(withId(R.id.search_text))
-//                .perform(typeText("en"), closeSoftKeyboard());
-//        onView(withText("Entrance and Exit Gate"))
-//                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
-//                .check(matches(isDisplayed()));
-//        onView(withText("Entrance Plaza"))
-//                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
-//                .check(matches(isDisplayed()));
-//        onView(withText("Entrance Plaza"))
-//                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
-//                .perform(click());
-//        onView(withId(R.id.search_text))
-//                .check(matches(withText("Entrance Plaza")));
-//    }
-//
-//    @Test
-//    public void testAutoCompleteTextView2() {
-//        onView(withId(R.id.search_text))
-//                .perform(typeText("al"), closeSoftKeyboard());
-//        onView(withText("Arctic Foxes"))
-//                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
-//                .check(matches(isDisplayed()));
-//        onView(withText("Elephant Odyssey"))
-//                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
-//                .check(matches(isDisplayed()));
-//        onView(withText("Lions"))
-//                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
-//                .check(matches(isDisplayed()));
-//        onView(withText("Gorillas"))
-//                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
-//                .check(matches(isDisplayed()));
-//        onView(withText("Alligators"))
-//                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
-//                .check(matches(isDisplayed()));
-//        onView(withText("Alligators"))
-//                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
-//                .perform(click());
-//        onView(withId(R.id.search_text))
-//                .check(matches(withText("Alligators")));
-//    }
+    @Rule
+    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
+            MainActivity.class);
+
+    private MainActivity mActivity = null;
+
+    @Before
+    public void setActivity() {
+        mActivity = mActivityRule.getActivity();
+    }
 
     @Test
-    public void testThis(){
-        assertEquals(true,true);
+    public void testAutoCompleteTextView() {
+        onView(withId(R.id.search_text))
+                .perform(typeText("en"), closeSoftKeyboard());
+        onView(withText("Blue Capped Motmot"))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+        onView(withText("Fern Canyon"))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+        onView(withText("Bali Mynah"))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .perform(click());
+        onView(withId(R.id.search_text))
+                .check(matches(withText("Bali Mynah")));
+    }
+
+    @Test
+    public void testAutoCompleteTextView2() {
+        onView(withId(R.id.search_text))
+                .perform(typeText("al"), closeSoftKeyboard());
+        onView(withText("Capuchin Monkeys"))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+        onView(withText("Blue Capped Motmot"))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+        onView(withText("Gorillas"))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+        onView(withText("Siamangs"))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+        onView(withText("Emerald Dove"))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+        onView(withText("Hippos"))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+        onView(withText("Orangutans"))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+        onView(withText("Bali Mynah"))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+        onView(withText("Bali Mynah"))
+                .inRoot(withDecorView(not(is(mActivity.getWindow().getDecorView()))))
+                .perform(click());
+        onView(withId(R.id.search_text))
+                .check(matches(withText("Bali Mynah")));
     }
 }

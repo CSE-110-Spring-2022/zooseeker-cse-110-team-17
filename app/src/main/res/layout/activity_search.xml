@@ -8,6 +8,24 @@
     android:backgroundTint="#B7C34E"
     tools:context=".MainActivity">
 
+    <Button
+        android:id="@+id/clear_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:backgroundTint="#FFFFFF"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:foregroundTint="#FFFFFF"
+        android:text="@string/clear_btn_title"
+        app:cornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.871"
+        tools:ignore="TextContrastCheck" />
+
     <TextView
         android:id="@+id/main_title_text"
         android:layout_width="311dp"
@@ -35,10 +53,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.685" />
+        app:layout_constraintVertical_bias="0.601" />
 
     <TextView
-        android:id="@+id/plan_header_text"
+        android:id="@+id/exhibit_count_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
@@ -52,7 +70,7 @@
         app:layout_constraintVertical_bias="0.843" />
 
     <TextView
-        android:id="@+id/exhibit_count_txt"
+        android:id="@+id/plan_header_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
@@ -60,10 +78,9 @@
         android:textColor="#252525"
         app:layout_constraintBottom_toTopOf="@+id/visitation_list_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/plan_header_text"
-        app:layout_constraintVertical_bias="0.352" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.865" />
 
     <AutoCompleteTextView
         android:id="@+id/search_text"

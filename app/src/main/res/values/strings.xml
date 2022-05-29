@@ -4,6 +4,7 @@
     <string name="plan_header">Current Visit Plan</string>
     <string name="search_hint">Search for an Animal</string>
     <string name="plan_btn_title">Plan</string>
+    <string name="clear_btn_title">Clear</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 </resources>
