@@ -65,10 +65,17 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
+    private Button settings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_search);
+
+        // finding settings button, and setting onClickListener accordingly to helper method
+        settings = findViewById(R.id.settings_btn);
+        settings.setOnClickListener(this::openSettings);
 
         database = ZooKeeperDatabase.getSingleton(this);
 
@@ -218,4 +225,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    // method for opening Settings Activity
+    public void openSettings(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.example.team17zooseeker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,7 +32,10 @@ public class DirectionsActivity extends AppCompatActivity {
     private StateDao stateDao;
 
     private SharedPreferences preferences;
+    private SharedPreferences directionsPreferences;
     private SharedPreferences.Editor editor;
+
+    private boolean directionType;
 
     ArrayList<String> VList;
 
@@ -47,8 +51,19 @@ public class DirectionsActivity extends AppCompatActivity {
         stateDao.delete(stateDao.get());
         stateDao.insert(new State("2"));
 
+        // gets shared preferences from the preferences we made with the fragment
+        directionsPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         preferences = getPreferences(MODE_PRIVATE);
         editor = preferences.edit();
+
+        // checks what the current value is in the shared preference
+        if(directionsPreferences.getBoolean("direction_type", true)){
+            // if true, sets the directionType to true
+            directionType = true;
+        } else {
+            // otherwise, false (meaning simple directions)
+            directionType = false;
+        }
 
         Bundle extras = getIntent().getExtras();
 
@@ -74,6 +89,7 @@ public class DirectionsActivity extends AppCompatActivity {
         }
 
         Directions d = new Directions(Itinerary.getItinerary(), index);
+        d.setDetailedDirections(directionType);
         adapter = new DirectionsAdapter(d);
 
         adapter.setHasStableIds(true);

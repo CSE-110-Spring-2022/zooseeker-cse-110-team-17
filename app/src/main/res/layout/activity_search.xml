@@ -28,12 +28,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/visitation_list_view"
         android:layout_width="289dp"
-        android:layout_height="292dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="130dp"
         android:background="#E4E4E4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_btn"
         app:layout_constraintVertical_bias="0.703" />
 
     <TextView
@@ -68,9 +69,9 @@
         android:layout_width="265dp"
         android:layout_height="43dp"
         android:hint="@string/search_hint"
+        android:imeOptions="actionDone"
         android:minHeight="48dp"
         android:singleLine="true"
-        android:imeOptions="actionDone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -95,5 +96,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.963"
         tools:ignore="TextContrastCheck" />
+
+    <Button
+        android:id="@+id/settings_btn"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="256dp"
+        android:text="settings"
+        app:icon="@android:drawable/ic_menu_preferences"
+        app:layout_constraintBottom_toTopOf="@+id/visitation_list_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
