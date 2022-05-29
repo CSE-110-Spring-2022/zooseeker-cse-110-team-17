@@ -13,6 +13,9 @@
             android:name=".ItineraryActivity"
             android:exported="false" />
         <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".DirectionsActivity"
             android:exported="false" />
         <activity
