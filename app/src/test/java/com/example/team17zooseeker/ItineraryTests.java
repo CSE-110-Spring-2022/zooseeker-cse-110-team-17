@@ -63,60 +63,54 @@ public class ItineraryTests {
     public void testShortestPathInItinerary(){
         //In case an itinerary has been created
         Itinerary.injectTestItinerary(null);
+        Itinerary.injectTestNodeDao(nodeDao);
 
-        String[] vL = {"Emerald Dove"};
+        String[] vL = {"dove"};
         ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
-        Context context = ApplicationProvider.getApplicationContext();
-        //Itinerary.createItinerary(context, testVisitationList);
+        Itinerary.createItinerary(context, testVisitationList);
 
-        //Planning to change after a merge do to multiple changes in tests
-        //assertEquals(310, Itinerary.distance("entrance_exit_gate", "lions"));
-        //assertEquals(600, Itinerary.distance("lions", "arctic_foxes"));
-        assertEquals(true,true);
+        //Check the distance function
+        assertEquals(5300, Itinerary.distance("entrance_exit_gate", "flamingo"));
     }
 
+    //Note: for a previous test when going from lions the distances to gorillas and the
+    //elephants are the same. Because of the order in which they were added we go to gorillas
+    //fist and have to back track to the elephants. This isn't optimal but works fine for now.
     @Test
     public void testValidCreationOfItinerary() {
         //In case an itinerary has been created
         Itinerary.injectTestItinerary(null);
+        Itinerary.injectTestNodeDao(nodeDao);
 
-        String[] vL = {"entrance_plaza", "lions"};
+        String[] vL = {"dove","mynah","capuchin","gorilla","hippo","siamang"};
         ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
 
-        Context context = ApplicationProvider.getApplicationContext();
-
-        //Itinerary.createItinerary(context, testVisitationList);
+        Itinerary.createItinerary(context, testVisitationList);
         List<String> testItinerary = Itinerary.getItinerary();
 
-        String[] cI = {"entrance_exit_gate", "entrance_plaza", "lions", "entrance_exit_gate"};
+        String[] cI = {"entrance_exit_gate","siamang","owens_aviary","hippo","capuchin","gorilla","entrance_exit_gate"};
         ArrayList<String> correctItinerary = new ArrayList<String>(Arrays.asList(cI));
 
-        //Planning to change after a merge do to multiple changes in tests
-        //assertEquals(correctItinerary, testItinerary);
-        assertEquals(true,true);
+        assertEquals(correctItinerary, testItinerary);
     }
 
-    //Note: for this test when going from lions the distances to gorillas and the
-    //elephants are the same. Because of the order in which they were added we go to gorillas
-    //fist and have to back track to the elephants. This isn't optimal but works fine for now.
     @Test
-    public void testValidCreationOfItineraryExtended() {
+    public void testVisitationListFormatsFunction() {
         //In case an itinerary has been created
         Itinerary.injectTestItinerary(null);
+        Itinerary.injectTestNodeDao(nodeDao);
 
-        String[] vL = {"entrance_plaza", "lions", "gorillas", "gators", "elephant_odyssey", "arctic_foxes"};
+        String[] vL = {"dove", "gorilla"};
         ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
 
-        Context context = ApplicationProvider.getApplicationContext();
-        //Itinerary.createItinerary(context, testVisitationList);
+        Itinerary.createItinerary(context, testVisitationList);
         List<String> testItinerary = Itinerary.getItinerary();
 
-        String[] cI = {"entrance_exit_gate", "entrance_plaza", "gators", "lions", "gorillas", "elephant_odyssey", "arctic_foxes", "entrance_exit_gate"};
+        //Checking the aviary is added
+        String[] cI = {"entrance_exit_gate", "owens_aviary", "gorilla", "entrance_exit_gate"};
         ArrayList<String> correctItinerary = new ArrayList<String>(Arrays.asList(cI));
 
-        //Planning to change after a merge do to multiple changes in tests
-        //assertEquals(correctItinerary, testItinerary);
-        assertEquals(true,true);
+        assertEquals(correctItinerary, testItinerary);
     }
 
     @Test
