@@ -1,6 +1,7 @@
 package com.example.team17zooseeker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,9 +33,12 @@ public class DirectionsActivity extends AppCompatActivity {
     private StateDao stateDao;
 
     private SharedPreferences preferences;
+    private SharedPreferences directionsPreferences;
     private SharedPreferences.Editor editor;
 
     public static boolean theLastButtonPressedWasPrevious = false;
+
+    private boolean directionType;
 
     ArrayList<String> VList;
 
@@ -54,8 +58,19 @@ public class DirectionsActivity extends AppCompatActivity {
         stateDao.delete(stateDao.get());
         stateDao.insert(new State("2"));
 
+        // gets shared preferences from the preferences we made with the fragment
+        directionsPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         preferences = getPreferences(MODE_PRIVATE);
         editor = preferences.edit();
+
+        // checks what the current value is in the shared preference
+        if(directionsPreferences.getBoolean("direction_type", true)){
+            // if true, sets the directionType to true
+            directionType = true;
+        } else {
+            // otherwise, false (meaning simple directions)
+            directionType = false;
+        }
 
         Bundle extras = getIntent().getExtras();
 
@@ -91,6 +106,7 @@ public class DirectionsActivity extends AppCompatActivity {
 
         Directions d = new Directions(Itinerary.getItinerary(), index);
         adapter = new DirectionsAdapter(d, prevBtn, skipBtn, nextBtn);
+        d.setDetailedDirections(directionType);
 
         adapter.setHasStableIds(true);
 
@@ -119,6 +135,8 @@ public class DirectionsActivity extends AppCompatActivity {
     public void onSkipClicked (View view) {
         adapter.setDirectItems(DirectionsActivity.this, true, true);
         //Position stays the same because we just skipped the next thing
+        editor.putStringSet("VList", new HashSet(Itinerary.getItinerary()));
+        editor.apply();
         Log.d("Current Position", Itinerary.getItinerary().get(Directions.getCurrentIndex()));
     }
 
@@ -158,6 +176,5 @@ public class DirectionsActivity extends AppCompatActivity {
         theLastButtonPressedWasPrevious = false;
     }
 
-    //For testing
     public DirectionsAdapter getAdapter(){ return adapter; }
 }

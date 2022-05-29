@@ -80,10 +80,21 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
+    private Button settings;
+
+    private List<nodeItem> addedNodesList = new ArrayList<nodeItem>();
+    private NodeListAdapter adapter = new NodeListAdapter();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_search);
+
+        // finding settings button, and setting onClickListener accordingly to helper method
+        settings = findViewById(R.id.settings_btn);
+        settings.setOnClickListener(this::openSettings);
 
         database = ZooKeeperDatabase.getSingleton(this);
 
@@ -111,11 +122,11 @@ public class MainActivity extends AppCompatActivity {
 
         if(state == null) {
             stateDao.insert(new State("0"));
+            state = stateDao.get();
         }
 
         List<edgeItem> edges = edgeDao.getAll();
         List<nodeItem> nodes = nodeDao.getAll();
-
 
         // For MainActivity
         preferences = getPreferences(MODE_PRIVATE);
@@ -128,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
         this.nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getName, Function.identity()));
 
         //Visitation List recycler
-        NodeListAdapter adapter = new NodeListAdapter();
         adapter.setHasStableIds(true);
 
         RecyclerView visitationView = findViewById(R.id.visitation_list_view);
@@ -138,8 +148,6 @@ public class MainActivity extends AppCompatActivity {
         //Adding an exhibit to visitation list
         EditText searchText = findViewById(R.id.search_text);
         TextView exhibitText = findViewById(R.id.exhibit_count_txt);
-
-        List<nodeItem> addedNodesList = new ArrayList<nodeItem>();
 
         if(vSet != null) {
 
@@ -154,37 +162,15 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        //If no persisted vList data, there is no vList to extract from memory
         else {
             this.visitationList = new ArrayList<String>();
         }
 
-        //Itinerary State Check
-        if(state.state.equals(STATE_ITINERARY)) {
+        //Check to see if user closed app on non-main activity
+        handleNMState(state);
 
-            for(int i = 0; i < this.visitationList.size(); i++){
-                this.visitationList.set(i, this.nodeMap.get(this.visitationList.get(i)).getId());
-            }
-
-            this.visitationList.clear();
-            editor.putStringSet("visitationList", null);
-            editor.apply();
-
-            Intent intent = new Intent(this, ItineraryActivity.class);
-
-            startActivity(intent);
-            finish();
-
-        }
-
-        else if(state.state.equals(STATE_DIRECTIONS)) {
-
-            Intent intent = new Intent(this, DirectionsActivity.class);
-
-            startActivity(intent);
-            finish();
-
-        }
-
+        //If not, proceed using default main activity functionality
         searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
@@ -215,6 +201,9 @@ public class MainActivity extends AppCompatActivity {
         Button plan = findViewById(R.id.plan_btn);
         plan.setOnClickListener(this::onPlanClicked);
 
+        Button clear = findViewById(R.id.clear_btn);
+        clear.setOnClickListener(this::onClearClicked);
+
         //Setting up the autocomplete text field with custom adapter
         AutoCompleteTextView searchTextView = (AutoCompleteTextView)findViewById(R.id.search_text);
         ArrayAdapter<String> autoCompleteAdapter = new AutoCompleteAdapter(this);
@@ -238,12 +227,53 @@ public class MainActivity extends AppCompatActivity {
         };
 
         locationManager.requestLocationUpdates(provider,0,0f, locationListener);
+
+    private void handleNMState(State state) {
+
+        if(state.state.equals(STATE_ITINERARY)) {
+
+            for(int i = 0; i < this.visitationList.size(); i++){
+                this.visitationList.set(i, this.nodeMap.get(this.visitationList.get(i)).getId());
+            }
+
+            this.visitationList.clear();
+            editor.putStringSet("visitationList", null);
+            editor.apply();
+
+            Intent intent = new Intent(this, ItineraryActivity.class);
+
+            startActivity(intent);
+            finish();
+
+        }
+
+        else if(state.state.equals(STATE_DIRECTIONS)) {
+
+            Intent intent = new Intent(this, DirectionsActivity.class);
+
+            startActivity(intent);
+            finish();
+
+        }
+    }
+
+    void onClearClicked(View view) {
+        TextView exhibitText = findViewById(R.id.exhibit_count_txt);
+
+        visitationList.clear();
+        addedNodesList.clear();
+
+        editor.putStringSet("visitationList", new HashSet(visitationList));
+        editor.apply();
+
+        adapter.setNodeItems(addedNodesList);
+        exhibitText.setText("( " + visitationList.size() + " )");
     }
 
     void onPlanClicked (View view){
         Log.d("Visitation List: ", this.visitationList.toString());
         if(visitationList.size()==0){
-            Utilities.showAlert(this, "Please add Exhibits to your Visitation Vlan :D");
+            Utilities.showAlert(this, "Please add Exhibits to your Visitation Plan :D");
             return;
         }
         //Visitation List needs to be in Ids and not names
@@ -261,7 +291,15 @@ public class MainActivity extends AppCompatActivity {
 
         //this.visitationList.clear();
 
+
         startActivity(intent);
         finish();
     }
+
+    // method for opening Settings Activity
+    public void openSettings(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
 }

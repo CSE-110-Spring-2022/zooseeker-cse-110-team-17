@@ -348,7 +348,8 @@ public class Directions {
       
     @VisibleForTesting
     public void skipDirections(){
-        itinerary.remove(currentIndex  + 1);
+        Itinerary.skip(itinerary.get(currentIndex  + 1));
+        itinerary = Itinerary.getItinerary();
     }
 
     public static void updateItinerary(){
@@ -358,7 +359,6 @@ public class Directions {
         }
         //Get new path
         itinerary = Itinerary.getItinerary();
-
     }
 
     public static void increaseCurrentPosition(){ if(currentIndex < Itinerary.getItinerary().size() - 1) currentIndex++; }

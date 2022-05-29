@@ -39,6 +39,10 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
         }
         this.directItems.clear();
         this.directItems = this.directions.createTestDirections(context, forward); //Not using database
+        //If you already at the exhibit
+        if(this.directItems.size() == 0){
+            this.directItems.add("You are already at the exit! :-)");
+        }
         int index = Directions.getCurrentIndex();
         int size = this.directions.getItinerarySize();
              if (index == size - 2) {
