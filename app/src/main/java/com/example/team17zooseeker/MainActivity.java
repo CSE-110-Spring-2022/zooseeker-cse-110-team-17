@@ -227,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
         locationManager.requestLocationUpdates(provider,0,0f, locationListener);
+    }
 
     private void handleNMState(State state) {
 
