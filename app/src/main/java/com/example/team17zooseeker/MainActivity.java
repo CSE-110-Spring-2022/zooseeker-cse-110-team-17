@@ -65,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
+    private List<nodeItem> addedNodesList = new ArrayList<nodeItem>();
+    private NodeListAdapter adapter = new NodeListAdapter();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
         State state = stateDao.get();
 
         if(state == null) {
-            state = new State("0");
-            stateDao.insert(state);
+            stateDao.insert(new State("0"));
+            state = stateDao.get();
         }
 
         List<edgeItem> edges = edgeDao.getAll();
@@ -101,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
         this.nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getName, Function.identity()));
 
         //Visitation List recycler
-        NodeListAdapter adapter = new NodeListAdapter();
         adapter.setHasStableIds(true);
 
         RecyclerView visitationView = findViewById(R.id.visitation_list_view);
@@ -112,9 +114,6 @@ public class MainActivity extends AppCompatActivity {
         EditText searchText = findViewById(R.id.search_text);
         TextView exhibitText = findViewById(R.id.exhibit_count_txt);
 
-        List<nodeItem> addedNodesList = new ArrayList<nodeItem>();
-
-        //Checks for persisted vList data
         if(vSet != null) {
 
             visitationList = new ArrayList(vSet);
@@ -167,6 +166,9 @@ public class MainActivity extends AppCompatActivity {
         Button plan = findViewById(R.id.plan_btn);
         plan.setOnClickListener(this::onPlanClicked);
 
+        Button clear = findViewById(R.id.clear_btn);
+        clear.setOnClickListener(this::onClearClicked);
+
         //Setting up the autocomplete text field with custom adapter
         AutoCompleteTextView searchTextView = (AutoCompleteTextView)findViewById(R.id.search_text);
         ArrayAdapter<String> autoCompleteAdapter = new AutoCompleteAdapter(this);
@@ -200,13 +202,25 @@ public class MainActivity extends AppCompatActivity {
             finish();
 
         }
+    }
 
+    void onClearClicked(View view) {
+        TextView exhibitText = findViewById(R.id.exhibit_count_txt);
+
+        visitationList.clear();
+        addedNodesList.clear();
+
+        editor.putStringSet("visitationList", new HashSet(visitationList));
+        editor.apply();
+
+        adapter.setNodeItems(addedNodesList);
+        exhibitText.setText("( " + visitationList.size() + " )");
     }
 
     void onPlanClicked (View view){
         Log.d("Visitation List: ", this.visitationList.toString());
         if(visitationList.size()==0){
-            Utilities.showAlert(this, "Please add Exhibits to your Visitation Vlan :D");
+            Utilities.showAlert(this, "Please add Exhibits to your Visitation Plan :D");
             return;
         }
         //Visitation List needs to be in Ids and not names
@@ -223,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
 
         //this.visitationList.clear();
+
 
         startActivity(intent);
         finish();
