@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.core.content.IntentCompat;
@@ -19,12 +20,16 @@ import androidx.room.Room;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -42,6 +47,11 @@ public class PreserveTests {
                 .allowMainThreadQueries()
                 .build();
         ZooKeeperDatabase.injectTestDatabase(testDb);
+
+        //Populate Database
+        List<String> temp = new ArrayList<String>();
+        testDb.nodeItemDao().insert(new nodeItem("gorillas", "exhibit", "Gorillas","000",1,1, temp));
+        testDb.nodeItemDao().insert(new nodeItem("koi", "exhibit", "Koi Fish", "111", 0,0, temp));
     }
 
     public void resetApplication(Context context) {
@@ -58,8 +68,6 @@ public class PreserveTests {
         scenario.onActivity(activity -> {
             preferences = activity.getPreferences(MODE_PRIVATE);
             editor = preferences.edit();
-            List<String> temp = new ArrayList<String>();
-
             State state = testDb.stateDao().get();
 
             Set<String> vSet = new HashSet<String>();
@@ -68,9 +76,6 @@ public class PreserveTests {
                 testDb.stateDao().insert(new State("0"));
                 state = testDb.stateDao().get();
             }
-
-            testDb.nodeItemDao().insert(new nodeItem("gorillas", "exhibit", "Gorillas","000",1,1, temp));
-            testDb.nodeItemDao().insert(new nodeItem("koi", "exhibit", "Koi Fish", "111", 0,0, temp));
 
             nodeItem temp1 = testDb.nodeItemDao().get("gorillas");
             nodeItem temp2 = testDb.nodeItemDao().get("koi");
@@ -130,6 +135,27 @@ public class PreserveTests {
 
             assertEquals("Gorillas", first);
             assertEquals("Koi Fish", last);
+
+            Button plan_btn = activity.findViewById(R.id.plan_btn);
+            plan_btn.performClick();
         });
+    }
+
+    @Test
+    public void PreserveItinerary() {
+        ActivityScenario<ItineraryActivity> scenario = ActivityScenario.launch(ItineraryActivity.class);
+        scenario.onActivity(activity -> {
+//            Itinerary.injectTestItinerary(null);
+//            Itinerary.injectTestNodeDao(testDb.nodeItemDao());
+//            String[] cI = {"gorillas", "koi"};
+//            ArrayList<String> correctItinerary = new ArrayList<String>(Arrays.asList(cI));
+//            Itinerary.createItinerary(activity, correctItinerary);
+//            Log.d("PreserveItinerary", Itinerary.getItinerary().toString());
+        });
+    }
+
+    @Test
+    public void PreserveDirections() {
+
     }
 }
