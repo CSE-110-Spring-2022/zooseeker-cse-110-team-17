@@ -86,9 +86,25 @@ public class MainActivity extends AppCompatActivity {
             stateDao.insert(new State("0"));
         }
 
-        List<edgeItem> edges = edgeDao.getAll();
-        List<nodeItem> nodes = nodeDao.getAll();
+        //List<edgeItem> edges = edgeDao.getAll();
+        //List<nodeItem> nodes = nodeDao.getAll();
+        List<edgeItem> edges;
+        List<nodeItem> nodes;
 
+        Map<String, nodeItem> nodeZ = null;
+
+        try {
+            nodeZ = nodeItem.loadNodeInfoJSON(this, "node.json");
+            //state = State.loadStateInfoJSON(context, "state.json");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        nodes = new ArrayList<nodeItem>(nodeZ.values());
+
+        //DELETEBADBADBAD
+        //nodeDao.insertAll(nodes);
 
         // For MainActivity
         preferences = getPreferences(MODE_PRIVATE);

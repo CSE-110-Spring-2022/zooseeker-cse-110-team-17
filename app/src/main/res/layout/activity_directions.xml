@@ -57,8 +57,7 @@
         android:backgroundTint="#01BC2A"
 
         android:fontFamily="sans-serif-medium"
-        android:text="@string/next"
-        android:textAllCaps="false"
+        android:text="Next"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
