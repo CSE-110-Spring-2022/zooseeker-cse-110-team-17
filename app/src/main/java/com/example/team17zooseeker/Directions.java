@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class Directions {
 
     // Optimized itinerary to traverse through zoo
-    private final List<String> itinerary;
+    private List<String> itinerary;
     /**
      * Can we possibly make this list of strings, exhibit names, not id names?
      */
@@ -351,7 +351,8 @@ public class Directions {
       
     @VisibleForTesting
     public void skipDirections(){
-        itinerary.remove(currentIndex);
+        Itinerary.skip(itinerary.get(currentIndex));
+        itinerary=Itinerary.getItinerary();
         currentIndex--;
     }
 
