@@ -4,18 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:backgroundTint="#FFFFFF"
+    android:background="#F4F4F4"
+    android:backgroundTint="#B7C34E"
     tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/main_title_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="311dp"
+        android:layout_height="111dp"
         android:layout_marginStart="176dp"
         android:layout_marginEnd="177dp"
-        android:fontFamily="sans-serif-condensed-medium"
+        android:fontFamily="sans-serif-black"
         android:text="@string/main_title"
+        android:textAlignment="center"
         android:textColor="#292929"
         android:textSize="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -29,18 +30,18 @@
         android:id="@+id/visitation_list_view"
         android:layout_width="289dp"
         android:layout_height="292dp"
-        android:background="#E4E4E4"
+        android:background="#CEEA79"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.703" />
+        app:layout_constraintVertical_bias="0.726" />
 
     <TextView
         android:id="@+id/plan_header_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed-medium"
+        android:fontFamily="sans-serif-medium"
         android:text="@string/plan_header"
         android:textColor="#151515"
         app:layout_constraintBottom_toTopOf="@+id/visitation_list_view"
@@ -54,6 +55,7 @@
         android:id="@+id/exhibit_count_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
         android:text="( 0 )"
         android:textColor="#252525"
         app:layout_constraintBottom_toTopOf="@+id/visitation_list_view"
@@ -66,34 +68,35 @@
     <AutoCompleteTextView
         android:id="@+id/search_text"
         android:layout_width="265dp"
-        android:layout_height="43dp"
+        android:layout_height="48dp"
         android:hint="@string/search_hint"
+        android:imeOptions="actionDone"
         android:minHeight="48dp"
         android:singleLine="true"
-        android:imeOptions="actionDone"
+        android:textColor="#000000"
+        android:textColorHint="#DCDCDC"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.209" />
+        app:layout_constraintVertical_bias="0.26" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/plan_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:backgroundTint="#FFFFFF"
+        android:background="#83501D"
+        android:backgroundTint="#FFAD5A"
         android:fontFamily="sans-serif-condensed-medium"
-        android:foregroundTint="#FFFFFF"
+        android:foregroundTint="#b87f45"
         android:text="@string/plan_btn_title"
-        app:cornerRadius="10dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:cornerRadius="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.963"
-        tools:ignore="TextContrastCheck" />
+        app:layout_constraintVertical_bias="0.963" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
