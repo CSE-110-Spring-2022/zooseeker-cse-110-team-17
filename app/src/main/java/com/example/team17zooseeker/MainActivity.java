@@ -20,6 +20,7 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Ignore;
@@ -78,9 +79,11 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<String> visitationList;
 
+    private SharedPreferences settingsPreferences;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
+    private boolean gpsEnable;
     private Button settings;
 
     private List<nodeItem> addedNodesList = new ArrayList<nodeItem>();
@@ -130,6 +133,19 @@ public class MainActivity extends AppCompatActivity {
 
         /////// /////// /////// /////// /////// /////// /////// /////// /////// /////// /////// ///////
 
+        settingsPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        // checks what the current value is in the shared preference
+
+        if(settingsPreferences.getBoolean("gps_enable", true)){
+            // if true, sets the gpsEnable to true
+            gpsEnable = true;
+        } else {
+            // otherwise, false (meaning no GPS)
+            gpsEnable = false;
+        }
+        Log.d("gpsEnable", Boolean.toString(gpsEnable));
+        Log.d("gpsPreference", Boolean.toString(settingsPreferences.getBoolean("gps_enable",true)));
+
         //Permissions Setup
         {
             //If location permissions aren't granted then use default app functionality
@@ -137,10 +153,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //Configure Location Listener and Setup Dynamic Directions
-        {
-            dynoDirections = DynamicDirections.getSingleDyno(this,this);
-            setupLocationListener(dynoDirections::updateUserLocation);
-        }
+        dynoDirections = DynamicDirections.getSingleDyno(this,this);
+        setupLocationListener(dynoDirections::updateUserLocation);
+        /*{
+            if(gpsEnable) {
+                dynoDirections = DynamicDirections.getSingleDyno(this,this);
+                setupLocationListener(dynoDirections::updateUserLocation);
+            } else {
+                dynoDirections = null;
+            }
+        }*/
 
         //TESTING
         //stateDao.delete(stateDao.get());

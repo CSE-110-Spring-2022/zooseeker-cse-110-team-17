@@ -54,11 +54,16 @@ public class Directions {
         return itinerary.size();
     }
     public static String getCurrStartPos(){ return currStartPos; }
+    public void setItinerary(List<String> itinerary) {this.itinerary = itinerary;}
 
     @VisibleForTesting
     public List<String> createTestDirections(Context context) {
 
-        currStartPos = dynoDirections.getClosestLocationID();
+        if(dynoDirections == null){
+            currStartPos = "entrance_exit_gate";
+        } else {
+            currStartPos = dynoDirections.getClosestLocationID();
+        }
         String end = itinerary.get(currentIndex);
 
         //Load Data if needed
