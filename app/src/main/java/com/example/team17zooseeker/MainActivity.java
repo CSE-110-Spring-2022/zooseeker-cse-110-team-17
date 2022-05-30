@@ -195,33 +195,36 @@ public class MainActivity extends AppCompatActivity {
         //Check to see if user closed app on non-main activity
         handleNMState(state);
 
-        //If not, proceed using default main activity functionality
-        searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-                int result = actionId & EditorInfo.IME_MASK_ACTION;
+        //Search Bar Configuration
+        {
+            //If not, proceed using default main activity functionality
+            searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+                    int result = actionId & EditorInfo.IME_MASK_ACTION;
 
-                if(result == EditorInfo.IME_ACTION_DONE) {
-                    String searchQuery = searchText.getText().toString();
+                    if (result == EditorInfo.IME_ACTION_DONE) {
+                        String searchQuery = searchText.getText().toString();
 
-                    if (nodeMap.containsKey(searchQuery) &&
-                            !(visitationList.contains(searchQuery))) {
+                        if (nodeMap.containsKey(searchQuery) &&
+                                !(visitationList.contains(searchQuery))) {
 
-                        addedNodesList.add(nodeMap.get(searchQuery));
-                        visitationList.add(nodeMap.get(searchQuery).getName());
+                            addedNodesList.add(nodeMap.get(searchQuery));
+                            visitationList.add(nodeMap.get(searchQuery).getName());
 
-                        editor.putStringSet("visitationList", new HashSet(visitationList));
-                        editor.apply();
+                            editor.putStringSet("visitationList", new HashSet(visitationList));
+                            editor.apply();
 
-                        adapter.setNodeItems(addedNodesList);
+                            adapter.setNodeItems(addedNodesList);
 
-                        exhibitText.setText("( " + visitationList.size() + " )");
+                            exhibitText.setText("( " + visitationList.size() + " )");
+                        }
                     }
+                    searchText.setText("");
+                    return true;
                 }
-                searchText.setText("");
-                return true;
-            }
-        });
+            });
+        }
 
         Button plan = findViewById(R.id.plan_btn);
         plan.setOnClickListener(this::onPlanClicked);
