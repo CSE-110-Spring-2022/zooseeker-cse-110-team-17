@@ -126,7 +126,7 @@ public class Directions {
             instructionBuilder.setLength(0); // reset/empty the string builder
 
             //distance to be walked along an edge (street)
-            @SuppressLint("DefaultLocale") String street = String.format("%d. Walk %.0f meters along %s ",
+            @SuppressLint("DefaultLocale") String street = String.format("%d. Walk %.0f feet along %s ",
                     i,
                     g.getEdgeWeight(e),
                     // calls could throw null pointer exceptions
@@ -213,7 +213,7 @@ public class Directions {
 
             //distance to be walked along an edge (street)
             @SuppressLint("DefaultLocale")
-            String street = String.format("%d. Walk %.0f meters along %s ",
+            String street = String.format("%d. Walk %.0f feet along %s ",
                     i,
                     g.getEdgeWeight(e),
                     // calls could throw null pointer exceptions
@@ -298,7 +298,7 @@ public class Directions {
             edge1 = Objects.requireNonNull(eInfo.get(edges.get(j).getId())).street;
 
             @SuppressLint("DefaultLocale")
-            String street = String.format("%d. Walk %.0f meters along %s ",
+            String street = String.format("%d. Walk %.0f feet along %s ",
                     i,
                     dist,
                     edge1);

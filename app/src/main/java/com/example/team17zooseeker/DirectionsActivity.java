@@ -134,7 +134,7 @@ public class DirectionsActivity extends AppCompatActivity {
         }
         theLastButtonPressedWasPrevious = true;
         adapter.setDirectItems(DirectionsActivity.this, false, false);
-
+        Log.d("prev itinerary", Itinerary.getItinerary().toString());
         Log.d("Current Position", Itinerary.getItinerary().get(Directions.getCurrentIndex()));
     }
 
@@ -167,16 +167,21 @@ public class DirectionsActivity extends AppCompatActivity {
             if(theLastButtonPressedWasPrevious){
                 //Now the person has moved so decrease their position on directions
                 Directions.decreaseCurrentPosition();
+                //Set Save info
+                editor.putInt("ItinIndex", Directions.getCurrentIndex());
+                editor.apply();
+
+                adapter.setDirectItems(DirectionsActivity.this, true, false);
             }else{
                 //Now the person has moved so increase their position on directions
                 Directions.increaseCurrentPosition();
+                //Set Save info
+                editor.putInt("ItinIndex", Directions.getCurrentIndex());
+                editor.apply();
+
+                adapter.setDirectItems(DirectionsActivity.this, true, false);
             }
-
-            //Set Save info
-            editor.putInt("ItinIndex", Directions.getCurrentIndex());
-            editor.apply();
-
-            adapter.setDirectItems(DirectionsActivity.this, true, false);
+            Log.d("next itinerary", Itinerary.getItinerary().toString());
             Log.d("Current Position", Itinerary.getItinerary().get(Directions.getCurrentIndex()));
         }
         theLastButtonPressedWasPrevious = false;

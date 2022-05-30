@@ -44,7 +44,7 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
         }
         int index = Directions.getCurrentIndex();
         int size = this.directions.getItinerarySize();
-             if (index == size - 2) {
+             if (index == size - 2 && !DirectionsActivity.theLastButtonPressedWasPrevious) {
                 next.setText("FINISH");
                 skip.setEnabled(false);
              } else {
