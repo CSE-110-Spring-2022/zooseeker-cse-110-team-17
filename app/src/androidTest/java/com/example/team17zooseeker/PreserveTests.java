@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.core.content.IntentCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -201,6 +202,39 @@ public class PreserveTests {
 
     @Test
     public void TestPreserveDirections() {
+        DirectionsActivity.setTesting(true);
+        Itinerary.injectTestItinerary(null);
+        Itinerary.injectTestNodeDao(nodeDao);
+        Itinerary.injectMockItinerary();
 
+        ActivityScenario<DirectionsActivity> scenario = ActivityScenario.launch(DirectionsActivity.class);
+        scenario.onActivity(activity -> {
+
+            State state = db.stateDao().get();
+
+            if(state == null) {
+                db.stateDao().insert(new State("2"));
+                state = db.stateDao().get();
+            }
+
+            RecyclerView rv = activity.findViewById(R.id.directions_items);
+            RecyclerView.ViewHolder vh = rv.findViewHolderForAdapterPosition(0);
+
+            preferences = activity.getPreferences(MODE_PRIVATE);
+            editor = preferences.edit();
+
+            TextView v = vh.itemView.findViewById(R.id.directions_item_text);
+
+            editor.putString("direction", v.getText().toString());
+            editor.apply();
+
+            resetApplication(activity);
+
+            Log.e("PreserveTests-State:", state.state);
+
+            assertEquals(v.getText().toString(), preferences.getString("direction", null));
+            preferences.edit().remove("direction").apply();
+            //ZooKeeperDatabase.getSingleton(activity).stateDao().delete(ZooKeeperDatabase.getSingleton(activity).stateDao().get());
+        });
     }
 }

@@ -252,6 +252,14 @@ public class Itinerary {
         return groupIdMap.get(query);
     }
 
+    public static void injectMockItinerary() {
+        itinerary = new ArrayList<String>();
+        itinerary.add("entrance_exit_gate");
+        itinerary.add("gorilla");
+        itinerary.add("koi");
+        itinerary.add("entrance_exit_gate");
+    }
+
     //Developer Notes----------
     // for (IdentifiedWeightedEdge e : zooMap.edgeSet()) {
     //     Log.d("Edge: ", e.toString());

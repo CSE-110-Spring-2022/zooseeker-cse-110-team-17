@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.common.util.VisibleForTesting;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -44,6 +46,8 @@ public class DirectionsActivity extends AppCompatActivity {
 
     ArrayList<String> VList;
 
+    private static boolean currentlyTesting = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,8 +61,14 @@ public class DirectionsActivity extends AppCompatActivity {
         database = ZooKeeperDatabase.getSingleton(this);
         stateDao = database.stateDao();
 
-        stateDao.delete(stateDao.get());
-        stateDao.insert(new State("2"));
+        // For Preserve Testing
+        if(!currentlyTesting) {
+            stateDao.delete(stateDao.get());
+            stateDao.insert(new State("2"));
+        }
+        else if(stateDao == null) {
+            stateDao.insert(new State("2"));
+        }
 
         // gets shared preferences from the preferences we made with the fragment
         directionsPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -173,4 +183,9 @@ public class DirectionsActivity extends AppCompatActivity {
     }
 
     public DirectionsAdapter getAdapter(){ return adapter; }
+
+    @VisibleForTesting
+    public static void setTesting(boolean s) {
+        currentlyTesting = s;
+    }
 }
