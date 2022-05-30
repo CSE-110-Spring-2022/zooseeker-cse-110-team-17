@@ -40,8 +40,6 @@ public class DirectionsActivity extends AppCompatActivity {
     private SharedPreferences directionsPreferences;
     private SharedPreferences.Editor editor;
 
-    public static boolean theLastButtonPressedWasPrevious = false;
-
     private boolean directionType;
 
     ArrayList<String> VList;
@@ -121,7 +119,7 @@ public class DirectionsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        adapter.setDirectItems(DirectionsActivity.this, false);
+        adapter.setDirectItems(this, false);
     }
 
     public void onPrevClicked (View view) {
@@ -168,6 +166,7 @@ public class DirectionsActivity extends AppCompatActivity {
             //Update UI
             adapter.setDirectItems(this, false);
 
+            //Do exactly this to mock location
             DynamicDirections.getSingleDyno(this,this).updateUserLocation(new Pair<Double, Double>(32.73459618734685,-117.14936));
             DynamicDirections.setLocationCurrentlyMocked(true);
         }
