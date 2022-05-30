@@ -54,7 +54,8 @@ public class Directions {
         return currentIndex;
     }
     public static void resetCurrentIndex(){ currentIndex = 0; }
-
+    public void setItinerary(List<String> itinerary){this.itinerary = itinerary;}
+    public List<String> getItinerary(){return itinerary;}
     public int getItinerarySize(){
         return itinerary.size();
     }
