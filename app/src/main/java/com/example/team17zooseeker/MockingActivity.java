@@ -7,30 +7,24 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
-public class SettingsActivity extends AppCompatActivity {
+public class MockingActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_mocking);
 
         // below line is used to check if
         // frame layout is empty or not.
-        if (findViewById(R.id.fragment_container_view) != null) {
+        if (findViewById(R.id.mocking_fragment_container_view) != null) {
             if (savedInstanceState != null) {
                 return;
             }
             // below line is to inflate our fragment.
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.fragment_container_view, new SettingsFragment())
+                    .add(R.id.mocking_fragment_container_view, new MockingFragment())
                     .commit();
         }
-
-        // for logging values on change
-        SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this /* Activity context */);
-        boolean type = sharedPreferences.getBoolean("direction_type", true);
-        Log.d("Direction Type", Boolean.toString(type));
     }
 }
