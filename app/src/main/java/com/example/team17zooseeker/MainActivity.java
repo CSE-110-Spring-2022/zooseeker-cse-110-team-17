@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -86,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
     private NodeListAdapter adapter = new NodeListAdapter();
 
 
+    private static boolean currentlyTesting = false;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,6 +149,15 @@ public class MainActivity extends AppCompatActivity {
         State state = stateDao.get();
 
         if(state == null) {
+            stateDao.insert(new State("0"));
+            state = stateDao.get();
+        }
+
+        // For Preserve Testing
+        if(currentlyTesting) {
+            state = new State("0");
+        }
+        else if(state == null) {
             stateDao.insert(new State("0"));
             state = stateDao.get();
         }
@@ -330,6 +343,12 @@ public class MainActivity extends AppCompatActivity {
     public void openSettings(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+    }
+
+    // For Preserve Testing
+    @VisibleForTesting
+    public static void setTesting(boolean s) {
+        currentlyTesting = s;
     }
 
 }
