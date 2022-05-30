@@ -147,6 +147,7 @@ public class DirectionsActivity extends AppCompatActivity {
     }
 
     public void onNextClicked (View view){
+        theLastButtonPressedWasPrevious = false;
         if(nextBtn.getText().equals("FINISH")){
             Itinerary.deleteItinerary();
             Itinerary.setItineraryCreated(false);
@@ -184,7 +185,6 @@ public class DirectionsActivity extends AppCompatActivity {
             Log.d("next itinerary", Itinerary.getItinerary().toString());
             Log.d("Current Position", Itinerary.getItinerary().get(Directions.getCurrentIndex()));
         }
-        theLastButtonPressedWasPrevious = false;
     }
 
     public DirectionsAdapter getAdapter(){ return adapter; }

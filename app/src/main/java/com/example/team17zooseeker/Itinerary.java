@@ -11,8 +11,10 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 public class Itinerary {
     //Static itinerary list to hold a single organized itinerary
@@ -28,6 +30,7 @@ public class Itinerary {
 
     private static boolean nodeDaoWasInjected = false;
 
+    private static Map<String, ArrayList<String>> groupIdMap = new HashMap<>();
 
     public static void createItinerary(Context context, List<String> visitationList){
         if(itinerary == null){
@@ -120,6 +123,14 @@ public class Itinerary {
         for(String place : visitationList){
             if(nodeDao.get(place).group_id != null){
                 resultsSet.add(nodeDao.get(place).group_id);
+                //Adds the animals to a map of group Ids so we can keep track of what user wanted to see.
+                if(groupIdMap.get(nodeDao.get(place).group_id) == null){
+                    ArrayList<String> listToInsert = new ArrayList<>();
+                    listToInsert.add(place);
+                    groupIdMap.put(nodeDao.get(place).group_id, listToInsert);
+                } else {
+                    groupIdMap.get(nodeDao.get(place).group_id).add(place);
+                }
             }else{
                 resultsSet.add(place);
             }
@@ -249,6 +260,14 @@ public class Itinerary {
         }
         Itinerary.injectTestItinerary(null);
         Itinerary.buildItinerary(newVisitationList);
+    }
+
+    //Must already exist or will through a null pointer
+    public static ArrayList<String> getAnimalsVisited(String query){
+        if(groupIdMap.get(query) == null){
+            return new ArrayList<>();
+        }
+        return groupIdMap.get(query);
     }
 
     //Developer Notes----------
