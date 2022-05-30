@@ -54,6 +54,7 @@ public class Directions {
         return itinerary.size();
     }
     public static String getCurrStartPos(){ return currStartPos; }
+    public void setItinerary(List<String> itinerary) {this.itinerary = itinerary;}
 
     @VisibleForTesting
     public List<String> createTestDirections(Context context) {
