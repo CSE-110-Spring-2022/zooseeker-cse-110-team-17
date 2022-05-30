@@ -110,7 +110,7 @@ public class DirectionsActivity extends AppCompatActivity {
         nextBtn = findViewById(R.id.next_btn);
         nextBtn.setOnClickListener(this::onNextClicked);
 
-        Directions d = new Directions(Itinerary.getItinerary(), index);
+        Directions d = new Directions(Itinerary.getItinerary(), DynamicDirections.getSingleDyno(this,this), index);
         adapter = new DirectionsAdapter(d, prevBtn, skipBtn, nextBtn);
         d.setDetailedDirections(directionType);
 
@@ -120,38 +120,32 @@ public class DirectionsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        adapter.setDirectItems(DirectionsActivity.this, true, false);
+        adapter.setDirectItems(DirectionsActivity.this, false);
     }
 
     public void onPrevClicked (View view) {
-        if(theLastButtonPressedWasPrevious){
-            //Now the person has moved so decrease their position on directions
-            Directions.decreaseCurrentPosition();
+        Directions.decreaseCurrentPosition();
 
-            //Set Save info
-            editor.putInt("ItinIndex", Directions.getCurrentIndex());
-            editor.apply();
-        }
-        theLastButtonPressedWasPrevious = true;
-        adapter.setDirectItems(DirectionsActivity.this, false, false);
-        Log.d("prev itinerary", Itinerary.getItinerary().toString());
-        Log.d("Current Position", Itinerary.getItinerary().get(Directions.getCurrentIndex()));
+        //Save info
+        editor.putInt("ItinIndex", Directions.getCurrentIndex());
+        editor.apply();
+
+        //Update UI
+        adapter.setDirectItems(this, false);
     }
 
     public void onSkipClicked (View view) {
-        adapter.setDirectItems(DirectionsActivity.this, true, true);
+        adapter.setDirectItems(this, true);
         //Position stays the same because we just skipped the next thing
         editor.putStringSet("VList", new HashSet(Itinerary.getItinerary()));
         editor.apply();
-        Log.d("Current Position", Itinerary.getItinerary().get(Directions.getCurrentIndex()));
     }
 
     public void onNextClicked (View view){
-        theLastButtonPressedWasPrevious = false;
         if(nextBtn.getText().equals("FINISH")){
             Itinerary.deleteItinerary();
             Itinerary.setItineraryCreated(false);
-            //Setting current index position
+            //Resetting current index position
             Directions.resetCurrentIndex();
 
             stateDao.delete(stateDao.get());
@@ -164,26 +158,14 @@ public class DirectionsActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
-        }else{
-            if(theLastButtonPressedWasPrevious){
-                //Now the person has moved so decrease their position on directions
-                Directions.decreaseCurrentPosition();
-                //Set Save info
-                editor.putInt("ItinIndex", Directions.getCurrentIndex());
-                editor.apply();
+        } else {
+            Directions.increaseCurrentPosition();
+            //Save info
+            editor.putInt("ItinIndex", Directions.getCurrentIndex());
+            editor.apply();
 
-                adapter.setDirectItems(DirectionsActivity.this, true, false);
-            }else{
-                //Now the person has moved so increase their position on directions
-                Directions.increaseCurrentPosition();
-                //Set Save info
-                editor.putInt("ItinIndex", Directions.getCurrentIndex());
-                editor.apply();
-
-                adapter.setDirectItems(DirectionsActivity.this, true, false);
-            }
-            Log.d("next itinerary", Itinerary.getItinerary().toString());
-            Log.d("Current Position", Itinerary.getItinerary().get(Directions.getCurrentIndex()));
+            //Update UI
+            adapter.setDirectItems(this, false);
         }
     }
 

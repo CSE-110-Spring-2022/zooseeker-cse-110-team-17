@@ -33,72 +33,53 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
         this.skip = skip;
     }
 
-    public void setDirectItems(Context context, boolean forward, boolean skipNext){
-        if(skipNext){
-            this.directions.skipDirections();
-        }
-        this.directItems.clear();
-        this.directItems = this.directions.createTestDirections(context, forward); //Not using database
-        //If you already at the exhibit
-        if(this.directItems.size() == 0){
-            this.directItems.add("You are already at the exit! :-)");
-        }
-        int index = Directions.getCurrentIndex();
-        int size = this.directions.getItinerarySize();
-             if (index == size - 2 && !DirectionsActivity.theLastButtonPressedWasPrevious) {
-                next.setText("FINISH");
-                skip.setEnabled(false);
-             } else {
-                next.setText("NEXT");
-                skip.setEnabled(true);
-             }
-             if (size == 2 || index == 0) {
-                 prev.setEnabled(false);
-                 prev.setClickable(false);
-             } else if(index == 1 && DirectionsActivity.theLastButtonPressedWasPrevious){
-                 prev.setEnabled(false);
-                 prev.setClickable(false);
-             } else {
-                 prev.setEnabled(true);
-                 prev.setClickable(true);
-             }
+    public void setDirectItems(Context context, boolean skipNext){
 
-        notifyDataSetChanged();
+        if(skipNext){ this.directions.skipDirections(); }
+
+        this.directItems.clear();
+        this.directItems = this.directions.createTestDirections(context);
+
+        //If you are already at the exhibit
+        if(this.directItems.size() == 0){
+            this.directItems.add("You Have Arrived at Your Destination! :D");
+        }
+
         currContext = context;
+
+        configureButtons();
         updateDirectionsSourceTargetViews();
+        notifyDataSetChanged();
     }
 
     public void itineraryUpdated(){
-        this.directItems = this.directions.createTestDirections(currContext, true);
+        this.directItems.clear();
+        this.directItems = this.directions.createTestDirections(currContext);
+
+        configureButtons();
+        updateDirectionsSourceTargetViews();
+        notifyDataSetChanged();
+    }
+
+    public void configureButtons(){
         int index = Directions.getCurrentIndex();
-
-        //Edge Case: Rerouting from the 0th index of Itin
-        if(index == 0) {
-            Directions.increaseCurrentPosition();
-            index++;
-        }
-
         int size = this.directions.getItinerarySize();
-        if (index == size - 2) {
+
+        //Handle next/skip button
+        if (index == size - 1) {
             next.setText("FINISH");
             skip.setEnabled(false);
         } else {
             next.setText("NEXT");
             skip.setEnabled(true);
         }
-        if (size == 2 || index == 0) {
+
+        //Handle prev button
+        if (index == 0) {
             prev.setEnabled(false);
-            prev.setClickable(false);
-        } else if(index == 1 && DirectionsActivity.theLastButtonPressedWasPrevious){
-            prev.setEnabled(false);
-            prev.setClickable(false);
         } else {
             prev.setEnabled(true);
-            prev.setClickable(true);
         }
-
-        updateDirectionsSourceTargetViews();
-        notifyDataSetChanged();
     }
 
     private void updateDirectionsSourceTargetViews() {
@@ -106,14 +87,10 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
         TextView fromTxt = ((DirectionsActivity)currContext).findViewById(R.id.from_text);
         TextView toTxt = ((DirectionsActivity)currContext).findViewById(R.id.to_text);
 
-        String from = Itinerary.getNameFromId(Itinerary.getItinerary().get(Directions.getCurrentIndex()));
+        String from = Itinerary.getNameFromId(DynamicDirections.getSingleDyno(currContext, (DirectionsActivity)currContext).getClosestLocationID());
         fromTxt.setText("From: " + from);
 
-        int nextIndex = Directions.getCurrentIndex() + 1;
-        if(DirectionsActivity.theLastButtonPressedWasPrevious){
-            nextIndex -= 2;
-        }
-        String toID = Itinerary.getItinerary().get(nextIndex);
+        String toID = Itinerary.getItinerary().get(Directions.getCurrentIndex());
         String to = Itinerary.getNameFromId(toID);
         ArrayList<String> groupList = Itinerary.getAnimalsVisited(toID);
 

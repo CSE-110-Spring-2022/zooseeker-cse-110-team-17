@@ -25,7 +25,7 @@ public class DirectionsTests {
     @Test
     public void testDirectionsList(){
         List<String> itinerary = Arrays.asList("entrance_exit_gate", "elephant_odyssey");
-        Directions d = new Directions(itinerary, 0);
+        //Directions d = new Directions(itinerary, 0);
         Context context = ApplicationProvider.getApplicationContext();
         // this code will hold the list of directions to be iterated through
         //List<String> dirs = d.createTestDirections(context);
@@ -41,7 +41,7 @@ public class DirectionsTests {
     @Test
     public void testMultipleDirectionsList(){
         List<String> itinerary = Arrays.asList("entrance_exit_gate", "elephant_odyssey", "arctic_foxes");
-        Directions d = new Directions(itinerary, 0);
+        //Directions d = new Directions(itinerary, 0);
         Context context = ApplicationProvider.getApplicationContext();
         //List<String> dirs = d.createTestDirections(context);
 
@@ -55,7 +55,7 @@ public class DirectionsTests {
     @Test
     public void testDetailedDirectionsList(){
         List<String> itinerary = Arrays.asList("entrance_exit_gate", "siamang", "capuchin", "gorilla");
-        Directions d = new Directions(itinerary, 0);
+        //Directions d = new Directions(itinerary, 0);
         Context context = ApplicationProvider.getApplicationContext();
         //List<String> dirs = d.createTestDirections(context);
 
@@ -69,7 +69,7 @@ public class DirectionsTests {
 
     public void testPreviousDirectionsList(){
         List<String> itinerary = Arrays.asList("entrance_exit_gate", "arctic_foxes", "elephant_odyssey", "entrance_exit_gate" );
-        Directions d = new Directions(itinerary, 0);
+        //Directions d = new Directions(itinerary, 0);
         Context context = ApplicationProvider.getApplicationContext();
         /*
         d.createTestDirections(context, true);
@@ -84,7 +84,7 @@ public class DirectionsTests {
     @Test
     public void testSkipDirectionsList(){
         List<String> itinerary = new LinkedList<>(Arrays.asList("entrance_exit_gate", "arctic_foxes", "elephant_odyssey"));
-        Directions d = new Directions(itinerary, 0);
+        //Directions d = new Directions(itinerary, 0);
         Context context = ApplicationProvider.getApplicationContext();
         /*
         d.createTestDirections(context, true);
@@ -102,7 +102,7 @@ public class DirectionsTests {
     @Test
     public void TestDirectionsOutOfBoundException() {
         List<String> itinerary = Arrays.asList("entrance_exit_gate", "elephant_odyssey");
-        Directions d = new Directions(itinerary, 1);
+        //Directions d = new Directions(itinerary, 1);
         Context context = ApplicationProvider.getApplicationContext();
         //List<String> dirs = d.createDirections(context);
 
