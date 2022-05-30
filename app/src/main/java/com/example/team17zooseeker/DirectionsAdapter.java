@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -98,7 +99,36 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
 
         updateDirectionsSourceTargetViews();
         notifyDataSetChanged();
+    }
 
+    private void updateDirectionsSourceTargetViews() {
+
+        TextView fromTxt = ((DirectionsActivity)currContext).findViewById(R.id.from_text);
+        TextView toTxt = ((DirectionsActivity)currContext).findViewById(R.id.to_text);
+
+        String from = Itinerary.getNameFromId(Itinerary.getItinerary().get(Directions.getCurrentIndex()));
+        fromTxt.setText("From: " + from);
+
+        int nextIndex = Directions.getCurrentIndex() + 1;
+        if(DirectionsActivity.theLastButtonPressedWasPrevious){
+            nextIndex -= 2;
+        }
+        String toID = Itinerary.getItinerary().get(nextIndex);
+        String to = Itinerary.getNameFromId(toID);
+        ArrayList<String> groupList = Itinerary.getAnimalsVisited(toID);
+
+        //If it isn't a group
+        if(groupList.size() != 0){
+            StringBuilder strBld = new StringBuilder();
+            strBld.append(to + " to see ");
+            for(String id : groupList){
+                strBld.append(Itinerary.getNameFromId(id) + ", ");
+            }
+            strBld.deleteCharAt(strBld.length() - 1);
+            strBld.deleteCharAt(strBld.length() - 1);
+            to = strBld.toString();
+        }
+        toTxt.setText("To: " + to);
     }
 
     @NonNull
@@ -145,15 +175,5 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
             this.direct = direct;
             this.textView.setText(direct);
         }
-    }
-
-    private void updateDirectionsSourceTargetViews() {
-
-        TextView fromTxt = ((DirectionsActivity)currContext).findViewById(R.id.from_text);
-        TextView toTxt = ((DirectionsActivity)currContext).findViewById(R.id.to_text);
-
-        fromTxt.setText("From: " + Itinerary.getNameFromId(Itinerary.getItinerary().get(Directions.getCurrentIndex())));
-        toTxt.setText("To: " + Itinerary.getNameFromId(Itinerary.getItinerary().get(Directions.getCurrentIndex() + 1)));
-
     }
 }

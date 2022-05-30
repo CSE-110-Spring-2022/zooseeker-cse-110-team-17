@@ -7,6 +7,25 @@
     android:background="#B7C34E"
     tools:context=".ItineraryActivity">
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/clear_btn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="44dp"
+        android:background="#FF5E5E"
+        android:backgroundTint="#FF6161"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:foregroundTint="#FFFFFF"
+        android:text="@string/clear_btn_title"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:cornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="TextContrastCheck" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/itinerary_recycler"
         android:layout_width="361dp"
@@ -22,17 +41,16 @@
         android:id="@+id/get_direction"
         android:layout_width="214dp"
         android:layout_height="62dp"
-        android:layout_marginBottom="40dp"
         android:backgroundTint="#FFAD5A"
         android:fontFamily="sans-serif-condensed-medium"
         android:text="Get Directions"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/clear_btn2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/itinerary_recycler"
-        app:layout_constraintVertical_bias="0.295" />
+        app:layout_constraintVertical_bias="0.444" />
 
     <TextView
         android:id="@+id/textView"
@@ -51,17 +69,22 @@
         android:id="@+id/imageView3"
         android:layout_width="297dp"
         android:layout_height="112dp"
+        android:scaleX="2"
+        android:scaleY="2"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:srcCompat="@drawable/grass"
-        tools:layout_editor_absoluteX="169dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView5"
+        app:srcCompat="@drawable/grass" />
 
     <ImageView
         android:id="@+id/imageView5"
-        android:layout_width="308dp"
-        android:layout_height="116dp"
+        android:layout_width="247dp"
+        android:layout_height="107dp"
+        android:scaleX="2"
+        android:scaleY="2"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:srcCompat="@drawable/grass"
-        tools:layout_editor_absoluteX="-56dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/grass" />
 
     <ImageView
         android:id="@+id/imageView6"

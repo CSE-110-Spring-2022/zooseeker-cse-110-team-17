@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -26,6 +27,8 @@ public class ItineraryActivity extends AppCompatActivity {
 
     private ArrayList<String> VList;
     private Set<String> VSet;
+
+    private Button clearBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +86,9 @@ public class ItineraryActivity extends AppCompatActivity {
         //Setting the directions button event
         this.Get_direction = this.findViewById(R.id.get_direction);
         Get_direction.setOnClickListener(this::onGetDirectionClicked);
+
+        clearBtn = findViewById(R.id.clear_btn2);
+        clearBtn.setOnClickListener(this::onClearClicked);
     }
 
     void onGetDirectionClicked (View view){
@@ -93,6 +99,24 @@ public class ItineraryActivity extends AppCompatActivity {
         editor.putStringSet("VList", null);
         editor.apply();
 
+        finish();
+    }
+
+    public void onClearClicked (View view) {
+        Itinerary.deleteItinerary();
+        Itinerary.setItineraryCreated(false);
+        //Setting current index position
+        Directions.resetCurrentIndex();
+
+        stateDao.delete(stateDao.get());
+        stateDao.insert(new State("0"));
+
+        editor.putStringSet("VList", null);
+        editor.putInt("ItinIndex", 0);
+        editor.apply();
+
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
         finish();
     }
 }
