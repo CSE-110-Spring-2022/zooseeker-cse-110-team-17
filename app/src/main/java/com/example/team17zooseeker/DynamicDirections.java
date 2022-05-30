@@ -7,6 +7,7 @@ import android.location.Location;
 import android.util.Log;
 import android.util.Pair;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.MutableLiveData;
 
 import org.jgrapht.GraphPath;
@@ -29,9 +30,15 @@ public class DynamicDirections {
 
     private static final String pathChangedPrompt = "You are close to %s. Would you like to be rerouted from there?";
 
+    private static boolean nodeDaoWasInjected = false;
+
     public DynamicDirections(Context context, Activity activity) {
-        ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(context);
-        nodeDao = database.nodeItemDao();
+        //Conditional for testing with database. Tests should always inject a nodeDao
+        if(!nodeDaoWasInjected){
+            ZooKeeperDatabase database = ZooKeeperDatabase.getSingleton(context);
+            nodeDao = database.nodeItemDao();
+            Log.d("DynoDirections", "DynoDirections created with no injected Database.");
+        }
         lastKnownCoordinates = new MutableLiveData<>(null);
         lastKnownLocation = new Location("lastKnownLocation");
         currActivity = activity;
@@ -129,4 +136,11 @@ public class DynamicDirections {
     }
 
     public static void setDynamicEnabled(boolean enable){ dynamicEnabled = enable; }
+
+    //Must inject a nodeDao for tests to work
+    @VisibleForTesting
+    public static void injectTestNodeDao(NodeItemDao noDao){
+        nodeDaoWasInjected = true;
+        nodeDao = noDao;
+    }
 }
