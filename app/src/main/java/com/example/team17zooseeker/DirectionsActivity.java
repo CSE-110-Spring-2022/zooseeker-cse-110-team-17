@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.strictmode.DiskReadViolation;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -166,6 +167,9 @@ public class DirectionsActivity extends AppCompatActivity {
 
             //Update UI
             adapter.setDirectItems(this, false);
+
+            DynamicDirections.getSingleDyno(this,this).updateUserLocation(new Pair<Double, Double>(32.73459618734685,-117.14936));
+            DynamicDirections.setLocationCurrentlyMocked(true);
         }
     }
 

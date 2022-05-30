@@ -34,6 +34,8 @@ public class DynamicDirections {
 
     private static boolean nodeDaoWasInjected = false;
 
+    private static boolean locationCurrentlyMocked = false;
+
     private DynamicDirections(Context context, Activity activity) {
         //Conditional for testing with database. Tests should always inject a nodeDao
         if(!nodeDaoWasInjected){
@@ -65,6 +67,9 @@ public class DynamicDirections {
 
         if(Itinerary.existsOnPath(start, end, closestLocation)){ Log.d("DynoDirections-OnPredictedPath", "True"); return; }
 
+        //Edge case if start and end are the same
+        if(start.equals(end)) { return;}
+
         Utilities.promptUpdatePath(currActivity, String.format(pathChangedPrompt, closestLocationTitle));
     }
 
@@ -92,10 +97,11 @@ public class DynamicDirections {
         //Loop through all nodes in database. Save closest node
         for(nodeItem node : nodes){
             double currDistance = distanceToNode(node);
-            if(!node.kind.equals("exhibit") && !node.kind.equals("exhibit_group")){
+            //Redundant check because the distance to these exhibits is massive because the lat and lng are 0
+            if(node.group_id != null){
                 continue;
             }
-            if(node.lat != 0 && currDistance < shortestDistance){
+            if(currDistance < shortestDistance){
                 Log.d("DynoDirections-CheckedNode", node.id);
                 closestNode = node;
                 shortestDistance = currDistance;
@@ -116,8 +122,12 @@ public class DynamicDirections {
 
     //For Mocking and Updating User location
     public void updateUserLocation(Pair<Double, Double> updatedLocation){
-        //Set our coordinates
-        lastKnownCoordinates.setValue(updatedLocation);
+        //Set our coordinates until they are mocked coordinates
+        if(!locationCurrentlyMocked){
+            lastKnownCoordinates.setValue(updatedLocation);
+        }
+
+        //new Pair<Double, Double>(32.73459618734685,-117.14936) Entrance Gate
         //new Pair<Double, Double>(32.7440416465169,-117.15952052282296) Flamingo
         //new Pair<Double, Double>(32.74531131120979,-117.16626781198586) Hippo
 
@@ -146,6 +156,8 @@ public class DynamicDirections {
     }
 
     public static void setDynamicEnabled(boolean enable){ dynamicEnabled = enable; }
+
+    public static void setLocationCurrentlyMocked(boolean mocked){ locationCurrentlyMocked = mocked; }
 
     public String getClosestLocationID(){
         return findClosestLocation();

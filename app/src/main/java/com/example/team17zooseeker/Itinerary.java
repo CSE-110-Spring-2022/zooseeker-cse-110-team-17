@@ -170,7 +170,7 @@ public class Itinerary {
         }
 
         //if the closest node is in our itinerary make it the next thing we see
-        if(itinerary.contains(closestNode)){
+        if(itinerary.contains(closestNode) && !closestNode.equals("entrance_exit_gate")){
             newItinerary.add(closestNode);
         }
         Log.d("CheckForReRoute-FirstHalfItinerary", newItinerary.toString());

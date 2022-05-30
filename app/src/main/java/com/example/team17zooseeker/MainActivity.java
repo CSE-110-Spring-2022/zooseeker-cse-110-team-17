@@ -254,7 +254,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        locationManager.requestLocationUpdates(provider,0,0f, locationListener);
+        //Waits five seconds to check location
+        locationManager.requestLocationUpdates(provider,10000,0f, locationListener);
     }
 
     private void handleNMState(State state) {
