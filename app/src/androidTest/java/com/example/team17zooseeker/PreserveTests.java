@@ -161,12 +161,46 @@ public class PreserveTests {
     }
 
     @Test
-    public void PreserveItinerary() {
+    public void TestPreserveItinerary() {
+        ItineraryActivity.setTesting(true);
+        ActivityScenario<ItineraryActivity> scenario = ActivityScenario.launch(ItineraryActivity.class);
+        scenario.onActivity(activity -> {
+            preferences = activity.getPreferences(MODE_PRIVATE);
+            editor = preferences.edit();
 
+            State state = db.stateDao().get();
+
+            if(state == null) {
+                db.stateDao().insert(new State("1"));
+                state = db.stateDao().get();
+            }
+
+            Itinerary.injectTestItinerary(null);
+            Itinerary.injectTestNodeDao(nodeDao);
+
+            String[] cI = {"gorilla", "koi"};
+            editor.putStringSet("visitationList", new HashSet(Arrays.asList(cI)));
+            editor.apply();
+
+            resetApplication(activity);
+
+            Log.e("PreserveTests-State:", state.state);
+
+            Set<String> vSet = preferences.getStringSet("visitationList", null);
+
+            ArrayList<String> visitationList = new ArrayList<String>(vSet);
+            Itinerary.updateCurrentLocation("entrance_exit_gate");
+            Itinerary.createItinerary(activity, visitationList);
+
+            assertEquals("gorilla", Itinerary.getItinerary().get(1));
+
+            preferences.edit().remove("visitationList").apply();
+            db.stateDao().delete(db.stateDao().get());
+        });
     }
 
     @Test
-    public void PreserveDirections() {
+    public void TestPreserveDirections() {
 
     }
 }

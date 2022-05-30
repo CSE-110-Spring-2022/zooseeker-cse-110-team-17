@@ -30,6 +30,8 @@ public class ItineraryActivity extends AppCompatActivity {
 
     private Button clearBtn;
 
+    private static boolean currentlyTesting = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,8 +45,11 @@ public class ItineraryActivity extends AppCompatActivity {
         database = ZooKeeperDatabase.getSingleton(this);
         stateDao = database.stateDao();
 
-        stateDao.delete(stateDao.get());
-        stateDao.insert(new State("1"));
+        // For Preservation Testing
+        if(!currentlyTesting) {
+            stateDao.delete(stateDao.get());
+            stateDao.insert(new State("1"));
+        }
 
         // For Itinerary Activity
         preferences = getPreferences(MODE_PRIVATE);
@@ -116,6 +121,17 @@ public class ItineraryActivity extends AppCompatActivity {
         editor.apply();
 
         Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public static void setTesting(boolean s) {
+        currentlyTesting = s;
+    }
+
+    public void testDirection(HashSet<String> s) {
+        Intent intent = new Intent(this, DirectionsActivity.class);
+        intent.putExtra("VList", new ArrayList(s));
         startActivity(intent);
         finish();
     }
