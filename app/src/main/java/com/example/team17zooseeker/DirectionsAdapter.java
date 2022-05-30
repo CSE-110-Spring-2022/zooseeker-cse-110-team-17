@@ -152,8 +152,8 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
         TextView fromTxt = ((DirectionsActivity)currContext).findViewById(R.id.from_text);
         TextView toTxt = ((DirectionsActivity)currContext).findViewById(R.id.to_text);
 
-        fromTxt.setText("From: " + Itinerary.getItinerary().get(Directions.getCurrentIndex()));
-        toTxt.setText("To: " + Itinerary.getItinerary().get(Directions.getCurrentIndex() + 1));
+        fromTxt.setText("From: " + Itinerary.getNameFromId(Itinerary.getItinerary().get(Directions.getCurrentIndex())));
+        toTxt.setText("To: " + Itinerary.getNameFromId(Itinerary.getItinerary().get(Directions.getCurrentIndex() + 1)));
 
     }
 }
