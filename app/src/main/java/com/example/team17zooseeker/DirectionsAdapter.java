@@ -32,7 +32,6 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
         this.skip = skip;
     }
 
-
     public void setDirectItems(Context context, boolean forward, boolean skipNext){
         if(skipNext){
             this.directions.skipDirections();
@@ -62,13 +61,22 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
                  prev.setEnabled(true);
                  prev.setClickable(true);
              }
+
         notifyDataSetChanged();
         currContext = context;
+        updateDirectionsSourceTargetViews();
     }
 
     public void itineraryUpdated(){
         this.directItems = this.directions.createTestDirections(currContext, true);
         int index = Directions.getCurrentIndex();
+
+        //Edge Case: Rerouting from the 0th index of Itin
+        if(index == 0) {
+            Directions.increaseCurrentPosition();
+            index++;
+        }
+
         int size = this.directions.getItinerarySize();
         if (index == size - 2) {
             next.setText("FINISH");
@@ -87,7 +95,10 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
             prev.setEnabled(true);
             prev.setClickable(true);
         }
+
+        updateDirectionsSourceTargetViews();
         notifyDataSetChanged();
+
     }
 
     @NonNull
@@ -134,5 +145,15 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
             this.direct = direct;
             this.textView.setText(direct);
         }
+    }
+
+    private void updateDirectionsSourceTargetViews() {
+
+        TextView fromTxt = ((DirectionsActivity)currContext).findViewById(R.id.from_text);
+        TextView toTxt = ((DirectionsActivity)currContext).findViewById(R.id.to_text);
+
+        fromTxt.setText("From: " + Itinerary.getItinerary().get(Directions.getCurrentIndex()));
+        toTxt.setText("To: " + Itinerary.getItinerary().get(Directions.getCurrentIndex() + 1));
+
     }
 }

@@ -102,6 +102,30 @@ public class MainActivity extends AppCompatActivity {
         edgeDao  = database.edgeItemDao();
         stateDao = database.stateDao();
 
+        /////// /////// /////// /////// /////// /////// /////// /////// /////// /////// /////// ///////
+
+        Map<String, nodeItem> nodeZ = null;
+        Map<String, edgeItem> edgeZ = null;
+
+        try {
+            nodeZ = nodeItem.loadNodeInfoJSON(this, "node.json");
+            edgeZ = edgeItem.loadEdgeInfoJSON(this, "edge.json");
+            //state = State.loadStateInfoJSON(context, "state.json");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//
+          List<nodeItem> nodeList = new ArrayList<nodeItem>(nodeZ.values());
+//        List<edgeItem> edgeList = new ArrayList<edgeItem>(edgeZ.values());
+//
+          this.nodeMap = nodeList.stream().collect(Collectors.toMap(nodeItem::getName, Function.identity()));
+
+//        nodeDao.insertAll(nodeList);
+//        edgeDao.insertAll(edgeList);
+
+        /////// /////// /////// /////// /////// /////// /////// /////// /////// /////// /////// ///////
+
         //Permissions Setup
         {
             //If location permissions aren't granted then use default app functionality
@@ -115,8 +139,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //TESTING
-        //stateDao.delete(stateDao.get());
-        //stateDao.insert(new State("0"));
+        stateDao.delete(stateDao.get());
+        stateDao.insert(new State("0"));
 
         State state = stateDao.get();
 
@@ -136,7 +160,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Database stuff
 
-        this.nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getName, Function.identity()));
+        //Uncomment Later
+        //this.nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getName, Function.identity()));
 
         //Visitation List recycler
         adapter.setHasStableIds(true);

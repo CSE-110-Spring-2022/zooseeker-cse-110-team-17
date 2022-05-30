@@ -13,6 +13,7 @@ import android.os.strictmode.DiskReadViolation;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +27,8 @@ public class DirectionsActivity extends AppCompatActivity {
     private Button nextBtn;
     private Button prevBtn;
     private Button skipBtn;
+    private TextView fromTxt;
+    private TextView toTxt;
 
     private DirectionsAdapter adapter;
 
@@ -94,6 +97,9 @@ public class DirectionsActivity extends AppCompatActivity {
             Itinerary.createItinerary(this, VList);
 
         }
+
+        fromTxt = findViewById(R.id.from_text);
+        toTxt = findViewById(R.id.to_text);
 
         skipBtn = findViewById(R.id.skip_btn);
         skipBtn.setOnClickListener(this::onSkipClicked);
