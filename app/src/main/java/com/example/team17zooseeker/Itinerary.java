@@ -161,7 +161,7 @@ public class Itinerary {
         ArrayList<String> remainingExhibitVisitationList = new ArrayList<>();
 
         //Loop through already visited locations
-        for(int i = 0; i <= currIndex; i++){ //Starts at 1 for entrance gate edge case
+        for(int i = 0; i < currIndex; i++){ //Don't reroute the things we've seen
             //If the closest Node to user is already in itinerary and visited don't add
             if(itinerary.get(i).equals(closestNode)){
                 continue;
@@ -176,16 +176,13 @@ public class Itinerary {
         Log.d("CheckForReRoute-FirstHalfItinerary", newItinerary.toString());
 
         //Loop through all unvisited locations
-        for(int i = currIndex + 1; i < itinerary.size(); i++){
+        for(int i = currIndex; i < itinerary.size(); i++){
             //Get all remaining exhibits that we haven't been to
             if(!itinerary.get(i).equals("entrance_exit_gate") && !itinerary.get(i).equals(closestNode)){
                 remainingExhibitVisitationList.add(itinerary.get(i));
             }
         }
         Log.d("CheckForReRoute-SecondHalfVisitationList", remainingExhibitVisitationList.toString());
-
-        //Index of current location is now the closest location to the user
-        int indexOfCurrLocation = currIndex;
 
         int finalCapacity = itinerary.size() - 1; //It's -1 because we don't have entrance at the end
 

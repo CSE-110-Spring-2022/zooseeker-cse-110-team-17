@@ -68,7 +68,7 @@ public class DynamicDirections {
         if(Itinerary.existsOnPath(start, end, closestLocation)){ Log.d("DynoDirections-OnPredictedPath", "True"); return; }
 
         //Edge case if start and end are the same
-        if(start.equals(end)) { return;}
+        if(start.equals(end)) { return; }
 
         Utilities.promptUpdatePath(currActivity, String.format(pathChangedPrompt, closestLocationTitle));
     }
