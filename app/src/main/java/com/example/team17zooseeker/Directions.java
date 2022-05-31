@@ -35,6 +35,8 @@ public class Directions {
 
     private static String currStartPos;
 
+    private static boolean currentlyTesting = false;
+
     //Zoo Data
     Graph<String, IdentifiedWeightedEdge> g = null;
     Map<String, ZooData.VertexInfo> vInfo = null;
@@ -239,6 +241,8 @@ public class Directions {
         //Get new path
         itinerary = Itinerary.getItinerary();
     }
+
+
 
     public static void increaseCurrentPosition(){ if(currentIndex < Itinerary.getItinerary().size() - 1) currentIndex++; }
     public static void decreaseCurrentPosition(){ if(currentIndex > 0) currentIndex--; }

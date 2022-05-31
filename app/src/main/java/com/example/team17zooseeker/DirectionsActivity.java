@@ -1,5 +1,6 @@
 package com.example.team17zooseeker;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -44,6 +45,8 @@ public class DirectionsActivity extends AppCompatActivity {
 
     ArrayList<String> VList;
 
+    private static boolean currentlyTesting = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,8 +60,14 @@ public class DirectionsActivity extends AppCompatActivity {
         database = ZooKeeperDatabase.getSingleton(this);
         stateDao = database.stateDao();
 
-        stateDao.delete(stateDao.get());
-        stateDao.insert(new State("2"));
+        // For Preserve Testing
+        if(!currentlyTesting) {
+            stateDao.delete(stateDao.get());
+            stateDao.insert(new State("2"));
+        }
+        else if(stateDao == null) {
+            stateDao.insert(new State("2"));
+        }
 
         // gets shared preferences from the preferences we made with the fragment
         directionsPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -175,6 +184,11 @@ public class DirectionsActivity extends AppCompatActivity {
             DynamicDirections.getSingleDyno(this,this).updateUserLocation(new Pair<Double, Double>(32.73459618734685,-117.14936));
             DynamicDirections.setLocationCurrentlyMocked(true);
         }
+    }
+    // For Preserve Testing
+    @VisibleForTesting
+    public static void setTesting(boolean s) {
+        currentlyTesting = s;
     }
 
     public DirectionsAdapter getAdapter(){ return adapter; }
