@@ -59,7 +59,6 @@
         android:id="@+id/clear_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="76dp"
         android:background="#FF5E5E"
         android:backgroundTint="#FF6161"
         android:fontFamily="sans-serif-condensed-medium"
@@ -69,9 +68,11 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.356"
+        app:layout_constraintEnd_toStartOf="@+id/plan_btn"
+        app:layout_constraintHorizontal_bias="0.809"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.888"
         tools:ignore="TextContrastCheck" />
 
     <TextView
