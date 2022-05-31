@@ -32,7 +32,7 @@ public class Itinerary {
 
     private static Map<String, ArrayList<String>> groupIdMap = new HashMap<>();
 
-    private static String currLocation;
+    private static String currLocation = "entrance_exit_gate";
 
     public static void createItinerary(Context context, List<String> visitationList){
         if(itinerary == null){
