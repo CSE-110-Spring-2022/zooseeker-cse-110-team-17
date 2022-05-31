@@ -229,7 +229,7 @@ public class BDDTests {
         ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
 
         Itinerary.createItinerary(context, testVisitationList);
-        List<String> testItinerary = Itinerary.getItinerary();
+
         ActivityScenario<ItineraryActivity> scenario = ActivityScenario.launch(ItineraryActivity.class);
         scenario.onActivity(activity -> {
 
@@ -269,11 +269,68 @@ public class BDDTests {
 
             assertEquals("Gorillas\n(31400 feet)",content);
 
+            //Button dir_btn = activity.findViewById(R.id.get_direction);
+            //dir_btn.performClick();
+            //resetApplication(activity);
+
+        });
+    }
+
+    @Test
+    public void DirectionsActivityTest() {
+        DirectionsActivity.setTesting(true);
+
+        ItineraryActivity.setTesting(true);
+        Itinerary.injectTestItinerary(null);
+        Itinerary.injectTestNodeDao(nodeDao);
+        Itinerary.updateCurrentLocation("entrance_exit_gate");
+
+        String[] vL = {"gorilla","capuchin","hippo","siamang","mynah","dove"};
+        ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
+
+        Itinerary.createItinerary(context, testVisitationList);
+        Itinerary.updateCurrentLocation("gorilla");
+        Directions.resetCurrentIndex();
+
+        ActivityScenario<DirectionsActivity> scenario = ActivityScenario.launch(DirectionsActivity.class);
+        scenario.onActivity(activity -> {
+
+
+            Button next_btn = activity.findViewById(R.id.next_btn);
+            Button skip_btn = activity.findViewById(R.id.skip_btn);
+            Button prev_btn = activity.findViewById(R.id.prev_btn);
+            DirectionsAdapter dirAdapter = activity.getAdapter();
+
+            Log.d("itinerary order", Itinerary.getItinerary().toString());
+
+            assertEquals("2. Walk 1100 feet along Treetops Way from 'Front Street / Treetops Way' to 'Treetops Way / Fern Canyon Trail'.", dirAdapter.getItemName(1));
+
+            next_btn.performClick();
+            assertEquals("2. Walk 1100 feet along Treetops Way from 'Front Street / Treetops Way' to 'Treetops Way / Fern Canyon Trail'.", dirAdapter.getItemName(1));
+
+            prev_btn.performClick();
+            assertEquals("2. Walk 1100 feet along Treetops Way from 'Front Street / Treetops Way' to 'Treetops Way / Fern Canyon Trail'.", dirAdapter.getItemName(1));
+
+            skip_btn.performClick();
+            assertEquals("2. Walk 1100 feet along Treetops Way from 'Front Street / Treetops Way' to 'Treetops Way / Fern Canyon Trail'.", dirAdapter.getItemName(1));
+
+            skip_btn.performClick();
+            assertEquals("2. Walk 1100 feet along Treetops Way from 'Front Street / Treetops Way' to 'Treetops Way / Fern Canyon Trail'.", dirAdapter.getItemName(1));
+
+            skip_btn.performClick();
+            assertEquals("2. Walk 2700 feet along Front Street from 'Front Street / Treetops Way' to 'Front Street / Monkey Trail'.", dirAdapter.getItemName(1));
+
+            next_btn.performClick();
+            assertEquals("2. Walk 1100 feet along Treetops Way from 'Front Street / Treetops Way' to 'Treetops Way / Fern Canyon Trail'.", dirAdapter.getItemName(1));
+
+            next_btn.performClick();
+            assertEquals("You Have Arrived at Your Destination! :D", dirAdapter.getItemName(0));
+
+            next_btn.performClick();
 
             resetApplication(activity);
 
         });
     }
-
 
 }

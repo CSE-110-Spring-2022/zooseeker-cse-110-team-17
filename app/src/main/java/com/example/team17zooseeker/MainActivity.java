@@ -157,8 +157,8 @@ public class MainActivity extends AppCompatActivity {
         setupLocationListener(dynoDirections::updateUserLocation);
 
         //TESTING
-       //stateDao.delete(stateDao.get());
-       //stateDao.insert(new State("0"));
+        //stateDao.delete(stateDao.get());
+        //stateDao.insert(new State("0"));
 
         State state = stateDao.get();
 
