@@ -206,9 +206,8 @@ public class DirectionsActivity extends AppCompatActivity {
 
         // if mocking is enabled, then we set update location to mocked location
         if (settingsPreferences.getBoolean("mock_enable", true)) {
-            DynamicDirections.setLocationCurrentlyMocked(false);
-            DynamicDirections.getSingleDyno(this,this).updateUserLocation(new Pair<Double, Double>(lat,lng));
             DynamicDirections.setLocationCurrentlyMocked(true);
+            DynamicDirections.getSingleDyno(this,this).updateUserLocation(new Pair<Double, Double>(lat,lng));
         } else {
             // otherwise proceed as normal
             DynamicDirections.setLocationCurrentlyMocked(false);

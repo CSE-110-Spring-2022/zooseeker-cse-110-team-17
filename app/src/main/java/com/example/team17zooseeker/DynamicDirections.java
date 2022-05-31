@@ -122,11 +122,8 @@ public class DynamicDirections {
 
     //For Mocking and Updating User location
     public void updateUserLocation(Pair<Double, Double> updatedLocation){
-        //Set our coordinates until they are mocked coordinates
-        if(!locationCurrentlyMocked){
-            lastKnownCoordinates.setValue(updatedLocation);
-        }
 
+        lastKnownCoordinates.setValue(updatedLocation);
         //new Pair<Double, Double>(32.73459618734685,-117.14936) Entrance Gate
         //new Pair<Double, Double>(32.7440416465169,-117.15952052282296) Flamingo
         //new Pair<Double, Double>(32.74531131120979,-117.16626781198586) Hippo
@@ -142,6 +139,13 @@ public class DynamicDirections {
         //Check if we need to reroute if Itinerary has been created
         if(Itinerary.isItineraryCreated() && dynamicEnabled){
             checkForReRouteFromCurrentLocation();
+        }
+    }
+
+    public void updateUserLocationFromLocationListener(Pair<Double, Double> updatedLocation){
+        //Set our coordinates until they are mocked coordinates
+        if(!locationCurrentlyMocked){
+            updateUserLocation(updatedLocation);
         }
     }
 

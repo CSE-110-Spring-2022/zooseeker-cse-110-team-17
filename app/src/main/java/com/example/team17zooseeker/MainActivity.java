@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Configure Location Listener and Setup Dynamic Directions
         dynoDirections = DynamicDirections.getSingleDyno(this,this);
-        setupLocationListener(dynoDirections::updateUserLocation);
+        setupLocationListener(dynoDirections::updateUserLocationFromLocationListener);
 
         //TESTING
         //stateDao.delete(stateDao.get());
