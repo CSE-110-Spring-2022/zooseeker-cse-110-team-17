@@ -59,10 +59,15 @@ public class Itinerary {
         itinerary = new ArrayList<String>(visitationList.size() + 1);
         int finalCapacity = visitationList.size();
 
+        //First start from current location
+        String nextLocation = findClosestLocation(visitationList, currLocation);
+        itinerary.add(nextLocation);
+        visitationList.remove(nextLocation);
+
         //Until the itinerary has every location from the visitation list find the next location
         while(itinerary.size() < finalCapacity){
 
-            String nextLocation = findClosestLocation(visitationList);
+            nextLocation = findClosestLocation(visitationList, itinerary.get(itinerary.size() - 1));
 
             //Add the closest destination in visitation list to itinerary and remove it from the
             //visitation list.
@@ -73,7 +78,7 @@ public class Itinerary {
         itinerary.add("entrance_exit_gate");
     }
 
-    private static String findClosestLocation(List<String> visitationList){
+    private static String findClosestLocation(List<String> visitationList, String from){
         // for every location in the visitation list calculate the distance to the
         // current location and keep track of smallest distance.
         int smallestDistOfDestinations = Integer.MAX_VALUE;
@@ -84,7 +89,8 @@ public class Itinerary {
         }
 
         for(int i = 0; i < visitationList.size(); i++){
-            int currDist = Itinerary.distance(currLocation, visitationList.get(i));
+            int currDist = Itinerary.distance(from, visitationList.get(i));;
+
             if(currDist < smallestDistOfDestinations){
                 smallestDistOfDestinations = currDist;
                 indexOfLocationWithSmallestDistance = i;
@@ -191,9 +197,14 @@ public class Itinerary {
 
         int finalCapacity = itinerary.size() - 1; //It's -1 because we don't have entrance at the end
 
+        //First start from current location
+        String nextLocation = findClosestLocation(remainingExhibitVisitationList, currLocation);
+        newItinerary.add(nextLocation);
+        remainingExhibitVisitationList.remove(nextLocation);
+
         while(newItinerary.size() < finalCapacity){
 
-            String nextLocation = findClosestLocation(remainingExhibitVisitationList);
+            nextLocation = findClosestLocation(remainingExhibitVisitationList, newItinerary.get(newItinerary.size() - 1));
 
             //Add the closest destination our of remaining items to new itinerary and remove it.
             newItinerary.add(nextLocation);

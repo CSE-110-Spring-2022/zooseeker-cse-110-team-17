@@ -120,10 +120,6 @@ public class DirectionsActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         adapter.setDirectItems(this, false);
-
-        //DynamicDirections.setLocationCurrentlyMocked(false);
-        //DynamicDirections.getSingleDyno(this,this).updateUserLocation(new Pair<Double, Double>(32.7337949159672,-117.1769866067953));
-       // DynamicDirections.setLocationCurrentlyMocked(true);
     }
 
     public void onPrevClicked (View view) {
