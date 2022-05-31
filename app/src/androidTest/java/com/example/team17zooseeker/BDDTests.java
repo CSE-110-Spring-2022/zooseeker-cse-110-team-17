@@ -218,5 +218,62 @@ public class BDDTests {
 
     }
 
+    @Test
+    public void ItineraryActivityTest() {
+        ItineraryActivity.setTesting(true);
+        Itinerary.injectTestItinerary(null);
+        Itinerary.injectTestNodeDao(nodeDao);
+        Itinerary.updateCurrentLocation("entrance_exit_gate");
+
+        String[] vL = {"dove","mynah","capuchin","gorilla","hippo","siamang"};
+        ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
+
+        Itinerary.createItinerary(context, testVisitationList);
+        List<String> testItinerary = Itinerary.getItinerary();
+        ActivityScenario<ItineraryActivity> scenario = ActivityScenario.launch(ItineraryActivity.class);
+        scenario.onActivity(activity -> {
+
+            RecyclerView rv = activity.findViewById(R.id.itinerary_recycler);
+            RecyclerView.ViewHolder vh = rv.findViewHolderForAdapterPosition(0);
+
+            TextView textView = vh.itemView.findViewById(R.id.itinerary_textItem);
+            String content = textView.getText().toString();
+
+            assertEquals("Siamangs\n(3900 feet)",content);
+
+            vh = rv.findViewHolderForAdapterPosition(1);
+
+            textView = vh.itemView.findViewById(R.id.itinerary_textItem);
+            content = textView.getText().toString();
+
+            assertEquals("Owens Aviary\n(9400 feet)",content);
+
+            vh = rv.findViewHolderForAdapterPosition(2);
+
+            textView = vh.itemView.findViewById(R.id.itinerary_textItem);
+            content = textView.getText().toString();
+
+            assertEquals("Hippos\n(14300 feet)",content);
+
+            vh = rv.findViewHolderForAdapterPosition(3);
+
+            textView = vh.itemView.findViewById(R.id.itinerary_textItem);
+            content = textView.getText().toString();
+
+            assertEquals("Capuchin Monkeys\n(19000 feet)",content);
+
+            vh = rv.findViewHolderForAdapterPosition(4);
+
+            textView = vh.itemView.findViewById(R.id.itinerary_textItem);
+            content = textView.getText().toString();
+
+            assertEquals("Gorillas\n(31400 feet)",content);
+
+
+            resetApplication(activity);
+
+        });
+    }
+
 
 }

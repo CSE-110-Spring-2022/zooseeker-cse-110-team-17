@@ -84,9 +84,6 @@ public class Itinerary {
         int smallestDistOfDestinations = Integer.MAX_VALUE;
         int indexOfLocationWithSmallestDistance = 0;
 
-        if(currLocation == null) {
-            updateCurrentLocation("entrance_exit_gate");
-        }
 
         for(int i = 0; i < visitationList.size(); i++){
             int currDist = Itinerary.distance(from, visitationList.get(i));;
@@ -100,7 +97,12 @@ public class Itinerary {
     }
 
     public static void updateCurrentLocation(String location){
-        currLocation = location;
+        if(nodeDaoWasInjected){
+            currLocation="entrance_exit_gate";
+        }
+        else{
+            currLocation = location;
+        }
     }
 
     //Helper Function for building Itinerary
