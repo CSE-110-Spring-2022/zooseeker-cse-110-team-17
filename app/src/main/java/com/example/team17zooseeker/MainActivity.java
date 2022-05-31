@@ -165,8 +165,8 @@ public class MainActivity extends AppCompatActivity {
         }*/
 
         //TESTING
-//        stateDao.delete(stateDao.get());
-//        stateDao.insert(new State("0"));
+       //stateDao.delete(stateDao.get());
+       //stateDao.insert(new State("0"));
 
         State state = stateDao.get();
 

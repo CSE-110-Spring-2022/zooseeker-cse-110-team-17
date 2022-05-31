@@ -119,4 +119,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/update_btn"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="77dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="308dp"
+        android:background="#000000"
+        android:text="Update"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        app:icon="@android:drawable/ic_menu_preferences"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
