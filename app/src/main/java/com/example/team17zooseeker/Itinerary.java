@@ -78,6 +78,11 @@ public class Itinerary {
         // current location and keep track of smallest distance.
         int smallestDistOfDestinations = Integer.MAX_VALUE;
         int indexOfLocationWithSmallestDistance = 0;
+
+        if(currLocation == null) {
+            updateCurrentLocation("entrance_exit_gate");
+        }
+
         for(int i = 0; i < visitationList.size(); i++){
             int currDist = Itinerary.distance(currLocation, visitationList.get(i));
             if(currDist < smallestDistOfDestinations){
