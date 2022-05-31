@@ -113,19 +113,20 @@ public class DirectionsTests {
         Itinerary.injectTestNodeDao(nodeDao);
         Context context = ApplicationProvider.getApplicationContext();
 
+        Itinerary.updateCurrentLocation("entrance_exit_gate");
         String[] vL = {"dove","mynah","capuchin","gorilla","hippo","siamang"};
         ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
-        Itinerary.updateCurrentLocation("entrance_exit_gate");
+
         Itinerary.createItinerary(context, testVisitationList);
         List<String> testItinerary = Itinerary.getItinerary();
-        List<String> itinerary = Arrays.asList("siamang","capuchin", "owens_aviary","gorilla","entrance_exit_gate");
+        List<String> itinerary = Arrays.asList("siamang","owens_aviary","hippo","capuchin","gorilla","entrance_exit_gate");
 
         Directions d = new Directions(itinerary, null,1);
         d.skipDirections();
 
         d.setItinerary(Itinerary.getItinerary());
         List<String> nowItinerary = Itinerary.getItinerary();
-        Directions.getCurrentIndex();
+        int index = Directions.getCurrentIndex();
 
         List<String> dirs = d.createTestDirections(context);
 
