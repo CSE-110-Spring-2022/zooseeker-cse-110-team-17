@@ -56,6 +56,11 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Vi
         this.directItems.clear();
         this.directItems = this.directions.createTestDirections(currContext);
 
+        //If you are already at the exhibit
+        if(this.directItems.size() == 0){
+            this.directItems.add("You Have Arrived at Your Destination! :D");
+        }
+
         configureButtons();
         updateDirectionsSourceTargetViews();
         notifyDataSetChanged();
