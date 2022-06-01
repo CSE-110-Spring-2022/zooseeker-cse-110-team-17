@@ -328,18 +328,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void onPlanClicked (View view){
-        //Enable or disable gps location tracking
-        if(settingsPreferences.getBoolean("gps_enable", false)){
-            DynamicDirections.setLocationCurrentlyMocked(false);
-            Log.d("GPS_State", "On");
-        } else {
-            DynamicDirections.setLocationCurrentlyMocked(true);
-            //Update to Entrance Exit gate to force this case
-            dynoDirections.updateUserLocation(new Pair<Double, Double>(32.73459618734685,-117.14936));
-            Log.d("GPS_State", "Off");
-        }
-
-
         Log.d("Visitation List: ", this.visitationList.toString());
         if(visitationList.size()==0){
             Utilities.showAlert(this, "Please add Exhibits to your Visitation Plan :D");

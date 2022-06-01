@@ -161,6 +161,8 @@ public class Itinerary {
 
     public static String getNameFromId(String id){ return nodeDao.get(id).getName(); }
 
+    public static String getCurrLocation(){ return currLocation; }
+
     //Allows for a new itinerary if the use of the previous itinerary has been completed.
     public static void deleteItinerary(){
         itinerary.clear();

@@ -30,9 +30,12 @@ public class ItineraryItemAdapter extends RecyclerView.Adapter<ItineraryItemAdap
 
         //So the distance under each location is the distance to that location
         String currLoc = Itinerary.getItinerary().get(position);
-        String nextLoc = Itinerary.getItinerary().get(position + 1);
-
-        totalDistance += Itinerary.distance(currLoc ,nextLoc);
+        if(position == 0){
+            totalDistance += Itinerary.distance(Itinerary.getCurrLocation() , currLoc);
+        } else {
+            String prevLoc = Itinerary.getItinerary().get(position - 1);
+            totalDistance += Itinerary.distance(prevLoc , currLoc);
+        }
 
         //Set displayed name to node name and not Id
         currLoc = Itinerary.getNameFromId(currLoc);

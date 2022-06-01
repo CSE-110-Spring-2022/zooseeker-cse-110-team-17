@@ -239,40 +239,35 @@ public class BDDTests {
             TextView textView = vh.itemView.findViewById(R.id.itinerary_textItem);
             String content = textView.getText().toString();
 
-            assertEquals("Siamangs\n(3900 feet)",content);
+            assertEquals("Siamangs\n(4800 feet)",content);
 
             vh = rv.findViewHolderForAdapterPosition(1);
 
             textView = vh.itemView.findViewById(R.id.itinerary_textItem);
             content = textView.getText().toString();
 
-            assertEquals("Owens Aviary\n(9400 feet)",content);
+            assertEquals("Owens Aviary\n(8700 feet)",content);
 
             vh = rv.findViewHolderForAdapterPosition(2);
 
             textView = vh.itemView.findViewById(R.id.itinerary_textItem);
             content = textView.getText().toString();
 
-            assertEquals("Hippos\n(14300 feet)",content);
+            assertEquals("Hippos\n(14200 feet)",content);
 
             vh = rv.findViewHolderForAdapterPosition(3);
 
             textView = vh.itemView.findViewById(R.id.itinerary_textItem);
             content = textView.getText().toString();
 
-            assertEquals("Capuchin Monkeys\n(19000 feet)",content);
+            assertEquals("Capuchin Monkeys\n(19100 feet)",content);
 
             vh = rv.findViewHolderForAdapterPosition(4);
 
             textView = vh.itemView.findViewById(R.id.itinerary_textItem);
             content = textView.getText().toString();
 
-            assertEquals("Gorillas\n(31400 feet)",content);
-
-            //Button dir_btn = activity.findViewById(R.id.get_direction);
-            //dir_btn.performClick();
-            //resetApplication(activity);
-
+            assertEquals("Gorillas\n(23800 feet)",content);
         });
     }
 
@@ -303,10 +298,10 @@ public class BDDTests {
 
             Log.d("itinerary order", Itinerary.getItinerary().toString());
 
-            assertEquals("2. Walk 1100 feet along Treetops Way from 'Front Street / Treetops Way' to 'Treetops Way / Fern Canyon Trail'.", dirAdapter.getItemName(1));
+            assertEquals("2. Walk 2500 feet along Treetops Way from 'Front Street / Treetops Way' to 'Treetops Way / Orangutan Trail'.", dirAdapter.getItemName(1));
 
             next_btn.performClick();
-            assertEquals("2. Walk 1100 feet along Treetops Way from 'Front Street / Treetops Way' to 'Treetops Way / Fern Canyon Trail'.", dirAdapter.getItemName(1));
+            assertEquals("2. Walk 2500 feet along Treetops Way from 'Front Street / Treetops Way' to 'Treetops Way / Orangutan Trail'.", dirAdapter.getItemName(1));
 
             prev_btn.performClick();
             assertEquals("2. Walk 1100 feet along Treetops Way from 'Front Street / Treetops Way' to 'Treetops Way / Fern Canyon Trail'.", dirAdapter.getItemName(1));
