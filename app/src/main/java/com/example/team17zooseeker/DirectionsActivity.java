@@ -212,7 +212,8 @@ public class DirectionsActivity extends AppCompatActivity {
             // otherwise proceed as normal
             DynamicDirections.setLocationCurrentlyMocked(false);
         }
-        adapter.itineraryUpdated();
+        //adapter.itineraryUpdated();
+
         // logging because difficult
         Log.d("mock enable", Boolean.toString(settingsPreferences.getBoolean("mock_enable", true)));
         Log.d("mock lat", Double.toString(lat));
