@@ -11,8 +11,10 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 public class Itinerary {
     //Static itinerary list to hold a single organized itinerary
@@ -28,6 +30,9 @@ public class Itinerary {
 
     private static boolean nodeDaoWasInjected = false;
 
+    private static Map<String, ArrayList<String>> groupIdMap = new HashMap<>();
+
+    private static String currLocation = "entrance_exit_gate";
 
     public static void createItinerary(Context context, List<String> visitationList){
         if(itinerary == null){
@@ -52,37 +57,52 @@ public class Itinerary {
         List<String> visitationList = Itinerary.Formats(visitationList1);
 
         itinerary = new ArrayList<String>(visitationList.size() + 1);
-        int finalCapacity = visitationList.size() + 1;
-        itinerary.add("entrance_exit_gate"); //Always start at the entrance
+        int finalCapacity = visitationList.size();
 
-        //itinerary.add("entrance_exit_gate"); //Always start at the entrance
+        //First start from current location
+        String nextLocation = findClosestLocation(visitationList, currLocation);
+        itinerary.add(nextLocation);
+        visitationList.remove(nextLocation);
 
         //Until the itinerary has every location from the visitation list find the next location
-        int indexOfCurrLocation = 0;
         while(itinerary.size() < finalCapacity){
 
-            String currentLocation = itinerary.get(indexOfCurrLocation);
-
-            // for every location in the visitation list calculate the distance to the
-            // current location and keep track of smallest distance.
-            int smallestDistOfDestinations = Integer.MAX_VALUE;
-            int indexOfLocationWithSmallestDistance = 0;
-            for(int i = 0; i < visitationList.size(); i++){
-                int currDist = Itinerary.distance(currentLocation, visitationList.get(i));
-                if(currDist < smallestDistOfDestinations){
-                    smallestDistOfDestinations = currDist;
-                    indexOfLocationWithSmallestDistance = i;
-                }
-            }
+            nextLocation = findClosestLocation(visitationList, itinerary.get(itinerary.size() - 1));
 
             //Add the closest destination in visitation list to itinerary and remove it from the
             //visitation list.
-            itinerary.add(visitationList.get(indexOfLocationWithSmallestDistance));
-            visitationList.remove(indexOfLocationWithSmallestDistance);
-            indexOfCurrLocation++;
+            itinerary.add(nextLocation);
+            visitationList.remove(nextLocation);
         }
         //When finish rollback to exit
         itinerary.add("entrance_exit_gate");
+    }
+
+    private static String findClosestLocation(List<String> visitationList, String from){
+        // for every location in the visitation list calculate the distance to the
+        // current location and keep track of smallest distance.
+        int smallestDistOfDestinations = Integer.MAX_VALUE;
+        int indexOfLocationWithSmallestDistance = 0;
+
+
+        for(int i = 0; i < visitationList.size(); i++){
+            int currDist = Itinerary.distance(from, visitationList.get(i));;
+
+            if(currDist < smallestDistOfDestinations){
+                smallestDistOfDestinations = currDist;
+                indexOfLocationWithSmallestDistance = i;
+            }
+        }
+        return visitationList.get(indexOfLocationWithSmallestDistance);
+    }
+
+    public static void updateCurrentLocation(String location){
+        if(nodeDaoWasInjected){
+            currLocation="entrance_exit_gate";
+        }
+        else{
+            currLocation = location;
+        }
     }
 
     //Helper Function for building Itinerary
@@ -107,6 +127,7 @@ public class Itinerary {
 
         for (IdentifiedWeightedEdge e : path.getEdgeList()) {
             if(e.getFrom().equals(query)){ return true; }
+            if(e.getTo().equals(query)){ return true; }
             //Log.d("Edge Info: ", e.toString());
         }
 
@@ -120,6 +141,14 @@ public class Itinerary {
         for(String place : visitationList){
             if(nodeDao.get(place).group_id != null){
                 resultsSet.add(nodeDao.get(place).group_id);
+                //Adds the animals to a map of group Ids so we can keep track of what user wanted to see.
+                if(groupIdMap.get(nodeDao.get(place).group_id) == null){
+                    ArrayList<String> listToInsert = new ArrayList<>();
+                    listToInsert.add(place);
+                    groupIdMap.put(nodeDao.get(place).group_id, listToInsert);
+                } else {
+                    groupIdMap.get(nodeDao.get(place).group_id).add(place);
+                }
             }else{
                 resultsSet.add(place);
             }
@@ -131,6 +160,8 @@ public class Itinerary {
     public static List<String> getItinerary(){ return itinerary; }
 
     public static String getNameFromId(String id){ return nodeDao.get(id).getName(); }
+
+    public static String getCurrLocation(){ return currLocation; }
 
     //Allows for a new itinerary if the use of the previous itinerary has been completed.
     public static void deleteItinerary(){
@@ -144,11 +175,8 @@ public class Itinerary {
         newItinerary = new ArrayList<>();
         ArrayList<String> remainingExhibitVisitationList = new ArrayList<>();
 
-        //No matter what you have visited the entrance gate. Handles edge case if closest node is the entrance.
-        newItinerary.add("entrance_exit_gate");
-
         //Loop through already visited locations
-        for(int i = 1; i <= currIndex; i++){ //Starts at 1 for entrance gate edge case
+        for(int i = 0; i < currIndex; i++){ //Don't reroute the things we've seen
             //If the closest Node to user is already in itinerary and visited don't add
             if(itinerary.get(i).equals(closestNode)){
                 continue;
@@ -156,12 +184,14 @@ public class Itinerary {
             newItinerary.add(itinerary.get(i));
         }
 
-        //"The next thing we want to see is the closest node"
-        newItinerary.add(closestNode);
+        //if the closest node is in our itinerary make it the next thing we see
+        if(itinerary.contains(closestNode) && !closestNode.equals("entrance_exit_gate")){
+            newItinerary.add(closestNode);
+        }
         Log.d("CheckForReRoute-FirstHalfItinerary", newItinerary.toString());
 
         //Loop through all unvisited locations
-        for(int i = currIndex + 1; i < itinerary.size(); i++){
+        for(int i = currIndex; i < itinerary.size(); i++){
             //Get all remaining exhibits that we haven't been to
             if(!itinerary.get(i).equals("entrance_exit_gate") && !itinerary.get(i).equals(closestNode)){
                 remainingExhibitVisitationList.add(itinerary.get(i));
@@ -169,33 +199,20 @@ public class Itinerary {
         }
         Log.d("CheckForReRoute-SecondHalfVisitationList", remainingExhibitVisitationList.toString());
 
-        //Index of current location is now the closest location to the user
-        int indexOfCurrLocation = currIndex + 1;
+        int finalCapacity = itinerary.size() - 1; //It's -1 because we don't have entrance at the end
 
-        int finalCapacity = itinerary.size(); //It's not +1 because we removed the entrance gate so this is final capacity
-        //If closestNode is already in the Itinerary our final capacity needs to be one smaller
-        if(itinerary.contains(closestNode)){
-            finalCapacity -= 1;
-            indexOfCurrLocation -= 1;
-        }
+        //First start from current location
+        String nextLocation = findClosestLocation(remainingExhibitVisitationList, currLocation);
+        newItinerary.add(nextLocation);
+        remainingExhibitVisitationList.remove(nextLocation);
 
         while(newItinerary.size() < finalCapacity){
 
-            String currentLocation = newItinerary.get(indexOfCurrLocation);
+            nextLocation = findClosestLocation(remainingExhibitVisitationList, newItinerary.get(newItinerary.size() - 1));
 
-            int smallestDistOfDestinations = Integer.MAX_VALUE;
-            int indexOfLocationWithSmallestDistance = 0;
-            for(int i = 0; i < remainingExhibitVisitationList.size(); i++){
-                int currDist = Itinerary.distance(currentLocation, remainingExhibitVisitationList.get(i));
-                if(currDist < smallestDistOfDestinations){
-                    smallestDistOfDestinations = currDist;
-                    indexOfLocationWithSmallestDistance = i;
-                }
-            }
-
-            newItinerary.add(remainingExhibitVisitationList.get(indexOfLocationWithSmallestDistance));
-            remainingExhibitVisitationList.remove(indexOfLocationWithSmallestDistance);
-            indexOfCurrLocation++;
+            //Add the closest destination our of remaining items to new itinerary and remove it.
+            newItinerary.add(nextLocation);
+            remainingExhibitVisitationList.remove(nextLocation);
         }
         //We want to leave the zoo at the end
         newItinerary.add("entrance_exit_gate");
@@ -240,15 +257,24 @@ public class Itinerary {
 
     public static void setItineraryCreated(boolean created){ itineraryCreated = created; }
 
-    public static void skip(String exhibitToSkip){
-        ArrayList<String> newVisitationList = new ArrayList<>();
-        for(int i = 0; i < itinerary.size(); i++){
-            if(!itinerary.get(i).equals(exhibitToSkip) && !itinerary.get(i).equals("entrance_exit_gate")){
-                newVisitationList.add(itinerary.get(i));
-            }
+    public static void skip(){
+        itinerary.remove(Directions.getCurrentIndex());
+    }
+
+    //Must already exist or will through a null pointer
+    public static ArrayList<String> getAnimalsVisited(String query){
+        if(groupIdMap.get(query) == null){
+            return new ArrayList<>();
         }
-        Itinerary.injectTestItinerary(null);
-        Itinerary.buildItinerary(newVisitationList);
+        return groupIdMap.get(query);
+    }
+
+    public static void injectMockItinerary() {
+        itinerary = new ArrayList<String>();
+        itinerary.add("entrance_exit_gate");
+        itinerary.add("gorilla");
+        itinerary.add("koi");
+        itinerary.add("entrance_exit_gate");
     }
 
     //Developer Notes----------

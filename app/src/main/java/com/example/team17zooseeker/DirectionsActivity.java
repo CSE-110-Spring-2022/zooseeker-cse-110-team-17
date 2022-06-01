@@ -1,23 +1,22 @@
 package com.example.team17zooseeker;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.strictmode.DiskReadViolation;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class DirectionsActivity extends AppCompatActivity {
@@ -26,6 +25,8 @@ public class DirectionsActivity extends AppCompatActivity {
     private Button nextBtn;
     private Button prevBtn;
     private Button skipBtn;
+    private TextView fromTxt;
+    private TextView toTxt;
 
     private DirectionsAdapter adapter;
 
@@ -33,38 +34,55 @@ public class DirectionsActivity extends AppCompatActivity {
     private StateDao stateDao;
 
     private SharedPreferences preferences;
-    private SharedPreferences directionsPreferences;
+    private SharedPreferences settingsPreferences;
     private SharedPreferences.Editor editor;
-
-    public static boolean theLastButtonPressedWasPrevious = false;
 
     private boolean directionType;
 
+    private Button mocker;
+    private Button update;
+
     ArrayList<String> VList;
+
+    private static boolean currentlyTesting = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_directions);
 
-        //Allows for user prompts on this page
+        // Allows for user prompts on this page
         DynamicDirections.setCurrActivity(this);
         DynamicDirections.setDynamicEnabled(true);
+
+        // find Mocker button
+        mocker = findViewById(R.id.mocking_btn);
+        mocker.setOnClickListener(this::openMocker);
+
+        // find update button
+        update = findViewById(R.id.update_btn);
+        update.setOnClickListener(this::onUpdateClicked);
 
         // For Directions Activity
         database = ZooKeeperDatabase.getSingleton(this);
         stateDao = database.stateDao();
 
-        stateDao.delete(stateDao.get());
-        stateDao.insert(new State("2"));
+        // For Preserve Testing
+        if(!currentlyTesting) {
+            stateDao.delete(stateDao.get());
+            stateDao.insert(new State("2"));
+        }
+        else if(stateDao == null) {
+            stateDao.insert(new State("2"));
+        }
 
         // gets shared preferences from the preferences we made with the fragment
-        directionsPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        settingsPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         preferences = getPreferences(MODE_PRIVATE);
         editor = preferences.edit();
 
         // checks what the current value is in the shared preference
-        if(directionsPreferences.getBoolean("direction_type", true)){
+        if(settingsPreferences.getBoolean("direction_type", true)){
             // if true, sets the directionType to true
             directionType = true;
         } else {
@@ -95,6 +113,9 @@ public class DirectionsActivity extends AppCompatActivity {
 
         }
 
+        fromTxt = findViewById(R.id.from_text);
+        toTxt = findViewById(R.id.to_text);
+
         skipBtn = findViewById(R.id.skip_btn);
         skipBtn.setOnClickListener(this::onSkipClicked);
 
@@ -104,7 +125,7 @@ public class DirectionsActivity extends AppCompatActivity {
         nextBtn = findViewById(R.id.next_btn);
         nextBtn.setOnClickListener(this::onNextClicked);
 
-        Directions d = new Directions(Itinerary.getItinerary(), index);
+        Directions d = new Directions(Itinerary.getItinerary(), DynamicDirections.getSingleDyno(this,this), index);
         adapter = new DirectionsAdapter(d, prevBtn, skipBtn, nextBtn);
         d.setDetailedDirections(directionType);
 
@@ -114,37 +135,37 @@ public class DirectionsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        adapter.setDirectItems(DirectionsActivity.this, true, false);
+        adapter.setDirectItems(this, false);
+    }
+
+    // updates mocked location
+    public void onUpdateClicked (View view) {
+        setMock();
     }
 
     public void onPrevClicked (View view) {
-        if(theLastButtonPressedWasPrevious){
-            //Now the person has moved so decrease their position on directions
-            Directions.decreaseCurrentPosition();
+        Directions.decreaseCurrentPosition();
 
-            //Set Save info
-            editor.putInt("ItinIndex", Directions.getCurrentIndex());
-            editor.apply();
-        }
-        theLastButtonPressedWasPrevious = true;
-        adapter.setDirectItems(DirectionsActivity.this, false, false);
+        //Save info
+        editor.putInt("ItinIndex", Directions.getCurrentIndex());
+        editor.apply();
 
-        Log.d("Current Position", Itinerary.getItinerary().get(Directions.getCurrentIndex()));
+        //Update UI
+        adapter.setDirectItems(this, false);
     }
 
     public void onSkipClicked (View view) {
-        adapter.setDirectItems(DirectionsActivity.this, true, true);
+        adapter.setDirectItems(this, true);
         //Position stays the same because we just skipped the next thing
         editor.putStringSet("VList", new HashSet(Itinerary.getItinerary()));
         editor.apply();
-        Log.d("Current Position", Itinerary.getItinerary().get(Directions.getCurrentIndex()));
     }
 
     public void onNextClicked (View view){
         if(nextBtn.getText().equals("FINISH")){
             Itinerary.deleteItinerary();
             Itinerary.setItineraryCreated(false);
-            //Setting current index position
+            //Resetting current index position
             Directions.resetCurrentIndex();
 
             stateDao.delete(stateDao.get());
@@ -157,24 +178,54 @@ public class DirectionsActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
-        }else{
-            if(theLastButtonPressedWasPrevious){
-                //Now the person has moved so decrease their position on directions
-                Directions.decreaseCurrentPosition();
-            }else{
-                //Now the person has moved so increase their position on directions
-                Directions.increaseCurrentPosition();
-            }
-
-            //Set Save info
+        } else {
+            Directions.increaseCurrentPosition();
+            //Save info
             editor.putInt("ItinIndex", Directions.getCurrentIndex());
             editor.apply();
 
-            adapter.setDirectItems(DirectionsActivity.this, true, false);
-            Log.d("Current Position", Itinerary.getItinerary().get(Directions.getCurrentIndex()));
+            //Update UI
+            adapter.setDirectItems(this, false);
         }
-        theLastButtonPressedWasPrevious = false;
+    }
+
+    // For Preserve Testing
+    @VisibleForTesting
+    public static void setTesting(boolean s) {
+        currentlyTesting = s;
     }
 
     public DirectionsAdapter getAdapter(){ return adapter; }
+
+    // sets mocking capabilities if used during demo
+    public void setMock(){
+        double lat,lng;
+        // extract lat and long from shared preferences
+        lat = Double.parseDouble(settingsPreferences.getString("mock_lat", "32.73459618734685"));
+        lng = Double.parseDouble(settingsPreferences.getString("mock_lng", "-117.14936"));
+
+        // if mocking is enabled, then we set update location to mocked location
+        if (settingsPreferences.getBoolean("mock_enable", true)) {
+            DynamicDirections.setLocationCurrentlyMocked(true);
+            DynamicDirections.getSingleDyno(this,this).updateUserLocation(new Pair<Double, Double>(lat,lng));
+        } else {
+            // otherwise proceed as normal
+            DynamicDirections.setLocationCurrentlyMocked(false);
+        }
+        //adapter.itineraryUpdated();
+
+        // logging because difficult
+        Log.d("mock enable", Boolean.toString(settingsPreferences.getBoolean("mock_enable", true)));
+        Log.d("mock lat", Double.toString(lat));
+        Log.d("mock lng", Double.toString(lng));
+
+    }
+
+    // method for opening Mocker Activity
+    public void openMocker(View view) {
+        Intent intent = new Intent(this, MockingActivity.class);
+        startActivity(intent);
+    }
+
+
 }

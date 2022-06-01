@@ -18,7 +18,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Ignore;
@@ -77,13 +79,18 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<String> visitationList;
 
+    private SharedPreferences settingsPreferences;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
+    private boolean gpsEnable;
     private Button settings;
 
     private List<nodeItem> addedNodesList = new ArrayList<nodeItem>();
     private NodeListAdapter adapter = new NodeListAdapter();
+
+
+    private static boolean currentlyTesting = false;
 
 
     @Override
@@ -102,6 +109,43 @@ public class MainActivity extends AppCompatActivity {
         edgeDao  = database.edgeItemDao();
         stateDao = database.stateDao();
 
+        /////// /////// /////// /////// /////// /////// /////// /////// /////// /////// /////// ///////
+
+        Map<String, nodeItem> nodeZ = null;
+        Map<String, edgeItem> edgeZ = null;
+
+        try {
+            nodeZ = nodeItem.loadNodeInfoJSON(this, "node.json");
+            edgeZ = edgeItem.loadEdgeInfoJSON(this, "edge.json");
+            //state = State.loadStateInfoJSON(context, "state.json");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//
+          List<nodeItem> nodeList = new ArrayList<nodeItem>(nodeZ.values());
+//        List<edgeItem> edgeList = new ArrayList<edgeItem>(edgeZ.values());
+//
+          this.nodeMap = nodeList.stream().collect(Collectors.toMap(nodeItem::getName, Function.identity()));
+
+//        nodeDao.insertAll(nodeList);
+//        edgeDao.insertAll(edgeList);
+
+        /////// /////// /////// /////// /////// /////// /////// /////// /////// /////// /////// ///////
+
+        settingsPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        // checks what the current value is in the shared preference
+
+        if(settingsPreferences.getBoolean("gps_enable", true)){
+            // if true, sets the gpsEnable to true
+            gpsEnable = true;
+        } else {
+            // otherwise, false (meaning no GPS)
+            gpsEnable = false;
+        }
+        Log.d("gpsEnable", Boolean.toString(gpsEnable));
+        Log.d("gpsPreference", Boolean.toString(settingsPreferences.getBoolean("gps_enable",true)));
+
         //Permissions Setup
         {
             //If location permissions aren't granted then use default app functionality
@@ -109,10 +153,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //Configure Location Listener and Setup Dynamic Directions
-        {
-            dynoDirections = new DynamicDirections(this, this);
-            setupLocationListener(dynoDirections::updateUserLocation);
-        }
+        dynoDirections = DynamicDirections.getSingleDyno(this,this);
+        setupLocationListener(dynoDirections::updateUserLocationFromLocationListener);
 
         //TESTING
         //stateDao.delete(stateDao.get());
@@ -121,6 +163,15 @@ public class MainActivity extends AppCompatActivity {
         State state = stateDao.get();
 
         if(state == null) {
+            stateDao.insert(new State("0"));
+            state = stateDao.get();
+        }
+
+        // For Preserve Testing
+        if(currentlyTesting) {
+            state = new State("0");
+        }
+        else if(state == null) {
             stateDao.insert(new State("0"));
             state = stateDao.get();
         }
@@ -136,7 +187,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Database stuff
 
-        this.nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getName, Function.identity()));
+        //Uncomment Later
+        //this.nodeMap = nodes.stream().collect(Collectors.toMap(nodeItem::getName, Function.identity()));
 
         //Visitation List recycler
         adapter.setHasStableIds(true);
@@ -170,33 +222,36 @@ public class MainActivity extends AppCompatActivity {
         //Check to see if user closed app on non-main activity
         handleNMState(state);
 
-        //If not, proceed using default main activity functionality
-        searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-                int result = actionId & EditorInfo.IME_MASK_ACTION;
+        //Search Bar Configuration
+        {
+            //If not, proceed using default main activity functionality
+            searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+                    int result = actionId & EditorInfo.IME_MASK_ACTION;
 
-                if(result == EditorInfo.IME_ACTION_DONE) {
-                    String searchQuery = searchText.getText().toString();
+                    if (result == EditorInfo.IME_ACTION_DONE) {
+                        String searchQuery = searchText.getText().toString();
 
-                    if (nodeMap.containsKey(searchQuery) &&
-                            !(visitationList.contains(searchQuery))) {
+                        if (nodeMap.containsKey(searchQuery) &&
+                                !(visitationList.contains(searchQuery))) {
 
-                        addedNodesList.add(nodeMap.get(searchQuery));
-                        visitationList.add(nodeMap.get(searchQuery).getName());
+                            addedNodesList.add(nodeMap.get(searchQuery));
+                            visitationList.add(nodeMap.get(searchQuery).getName());
 
-                        editor.putStringSet("visitationList", new HashSet(visitationList));
-                        editor.apply();
+                            editor.putStringSet("visitationList", new HashSet(visitationList));
+                            editor.apply();
 
-                        adapter.setNodeItems(addedNodesList);
+                            adapter.setNodeItems(addedNodesList);
 
-                        exhibitText.setText("( " + visitationList.size() + " )");
+                            exhibitText.setText("( " + visitationList.size() + " )");
+                        }
                     }
+                    searchText.setText("");
+                    return true;
                 }
-                searchText.setText("");
-                return true;
-            }
-        });
+            });
+        }
 
         Button plan = findViewById(R.id.plan_btn);
         plan.setOnClickListener(this::onPlanClicked);
@@ -226,7 +281,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        locationManager.requestLocationUpdates(provider,0,0f, locationListener);
+        //Waits five seconds to check location
+        locationManager.requestLocationUpdates(provider,10000,0f, locationListener);
     }
 
     private void handleNMState(State state) {
@@ -301,6 +357,12 @@ public class MainActivity extends AppCompatActivity {
     public void openSettings(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+    }
+
+    // For Preserve Testing
+    @VisibleForTesting
+    public static void setTesting(boolean s) {
+        currentlyTesting = s;
     }
 
 }

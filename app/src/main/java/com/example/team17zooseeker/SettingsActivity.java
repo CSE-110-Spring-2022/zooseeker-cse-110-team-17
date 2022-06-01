@@ -1,8 +1,10 @@
 package com.example.team17zooseeker;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
@@ -13,10 +15,6 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
-        // below line is to change
-        // the title of our action bar.
-        getSupportActionBar().setTitle("Settings");
 
         // below line is used to check if
         // frame layout is empty or not.
@@ -38,4 +36,22 @@ public class SettingsActivity extends AppCompatActivity {
         Log.d("Direction Type", Boolean.toString(type));
     }
 
+    @Override
+    public void finish(){
+        SharedPreferences settingsPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        //Enable or disable gps location tracking
+        if(settingsPreferences.getBoolean("gps_enable", false)){
+            DynamicDirections.setLocationCurrentlyMocked(false);
+            Log.d("GPS_State", "On");
+        } else {
+            DynamicDirections.setLocationCurrentlyMocked(true);
+            //Update to Entrance Exit gate to force this case
+            DynamicDirections.getSingleDyno(this, this).updateUserLocation(new Pair<Double, Double>(32.73459618734685,-117.14936));
+            Log.d("GPS_State", "Off");
+        }
+
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
 }

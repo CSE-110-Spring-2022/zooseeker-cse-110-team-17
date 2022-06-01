@@ -3,4 +3,10 @@
     <SwitchPreferenceCompat
         app:key="direction_type"
         app:title="Enable detailed directions"/>
+
+    <SwitchPreferenceCompat
+        app:key="gps_enable"
+        app:title="Enable GPS tracking">
+    </SwitchPreferenceCompat>
+
 </PreferenceScreen>

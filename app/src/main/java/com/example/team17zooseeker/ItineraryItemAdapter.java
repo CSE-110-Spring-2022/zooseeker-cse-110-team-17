@@ -24,20 +24,23 @@ public class ItineraryItemAdapter extends RecyclerView.Adapter<ItineraryItemAdap
     //Setting viewHolder text values to the Itinerary Values
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        //Shifts everything in the itinerary up 1 position so entrance gate isn't shown.
-        position = position + 1;
-        if(position >= Itinerary.getItinerary().size()-1){ return; };
+
+        //Don't display the final entrance gate
+        if(position >= Itinerary.getItinerary().size() - 1){ return; };
 
         //So the distance under each location is the distance to that location
-        String currLoc = Itinerary.getItinerary().get(position - 1);
-        String nextLoc = Itinerary.getItinerary().get(position);
-
-        totalDistance += Itinerary.distance(currLoc ,nextLoc);
+        String currLoc = Itinerary.getItinerary().get(position);
+        if(position == 0){
+            totalDistance += Itinerary.distance(Itinerary.getCurrLocation() , currLoc);
+        } else {
+            String prevLoc = Itinerary.getItinerary().get(position - 1);
+            totalDistance += Itinerary.distance(prevLoc , currLoc);
+        }
 
         //Set displayed name to node name and not Id
-        nextLoc = Itinerary.getNameFromId(nextLoc);
+        currLoc = Itinerary.getNameFromId(currLoc);
 
-        String text = nextLoc + "\n(" + totalDistance + " feet)";
+        String text = currLoc + "\n(" + totalDistance + " feet)";
         holder.setText(text);
     }
 

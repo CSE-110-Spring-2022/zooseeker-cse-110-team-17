@@ -62,8 +62,10 @@ public class ItineraryTests {
     @Test
     public void testShortestPathInItinerary(){
         //In case an itinerary has been created
+        ItineraryActivity.setTesting(true);
         Itinerary.injectTestItinerary(null);
         Itinerary.injectTestNodeDao(nodeDao);
+        Itinerary.updateCurrentLocation("entrance_exit_gate");
 
         String[] vL = {"dove"};
         ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
@@ -79,8 +81,10 @@ public class ItineraryTests {
     @Test
     public void testValidCreationOfItinerary() {
         //In case an itinerary has been created
+        ItineraryActivity.setTesting(true);
         Itinerary.injectTestItinerary(null);
         Itinerary.injectTestNodeDao(nodeDao);
+        Itinerary.updateCurrentLocation("entrance_exit_gate");
 
         String[] vL = {"dove","mynah","capuchin","gorilla","hippo","siamang"};
         ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
@@ -88,7 +92,7 @@ public class ItineraryTests {
         Itinerary.createItinerary(context, testVisitationList);
         List<String> testItinerary = Itinerary.getItinerary();
 
-        String[] cI = {"entrance_exit_gate","siamang","owens_aviary","hippo","capuchin","gorilla","entrance_exit_gate"};
+        String[] cI = {"siamang","owens_aviary","hippo","capuchin","gorilla","entrance_exit_gate"};
         ArrayList<String> correctItinerary = new ArrayList<String>(Arrays.asList(cI));
 
         assertEquals(correctItinerary, testItinerary);
@@ -97,8 +101,10 @@ public class ItineraryTests {
     @Test
     public void testVisitationListFormatsFunction() {
         //In case an itinerary has been created
+        ItineraryActivity.setTesting(true);
         Itinerary.injectTestItinerary(null);
         Itinerary.injectTestNodeDao(nodeDao);
+        Itinerary.updateCurrentLocation("entrance_exit_gate");
 
         String[] vL = {"dove", "gorilla"};
         ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
@@ -107,7 +113,7 @@ public class ItineraryTests {
         List<String> testItinerary = Itinerary.getItinerary();
 
         //Checking the aviary is added
-        String[] cI = {"entrance_exit_gate", "owens_aviary", "gorilla", "entrance_exit_gate"};
+        String[] cI = {"owens_aviary", "gorilla", "entrance_exit_gate"};
         ArrayList<String> correctItinerary = new ArrayList<String>(Arrays.asList(cI));
 
         assertEquals(correctItinerary, testItinerary);
@@ -116,19 +122,21 @@ public class ItineraryTests {
     @Test
     public void testSkipItinerary(){
         //In case an itinerary has been created
+        ItineraryActivity.setTesting(true);
         Itinerary.injectTestItinerary(null);
         Itinerary.injectTestNodeDao(nodeDao);
+        Itinerary.updateCurrentLocation("entrance_exit_gate");
 
         String[] vL = {"dove","mynah","capuchin","gorilla","hippo","siamang"};
         ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
         Itinerary.createItinerary(context, testVisitationList);
 
-        String[] ciBefore = {"entrance_exit_gate","siamang","owens_aviary","hippo","capuchin","gorilla","entrance_exit_gate"};
+        String[] ciBefore = {"siamang","owens_aviary","hippo","capuchin","gorilla","entrance_exit_gate"};
         ArrayList<String> b_Itinerary = new ArrayList<String>(Arrays.asList(ciBefore));
         assertEquals(b_Itinerary,Itinerary.getItinerary());
-        String[] ciAfter = {"entrance_exit_gate","siamang","owens_aviary","gorilla","capuchin","entrance_exit_gate"};
+        String[] ciAfter = {"owens_aviary","hippo","capuchin","gorilla","entrance_exit_gate"};
         ArrayList<String> a_Itinerary = new ArrayList<String>(Arrays.asList(ciAfter));
-        Itinerary.skip("hippo");
+        Itinerary.skip();
         assertEquals(a_Itinerary,Itinerary.getItinerary());
     }
 }
