@@ -334,6 +334,8 @@ public class MainActivity extends AppCompatActivity {
             Log.d("GPS_State", "On");
         } else {
             DynamicDirections.setLocationCurrentlyMocked(true);
+            //Update to Entrance Exit gate to force this case
+            dynoDirections.updateUserLocation(new Pair<Double, Double>(32.73459618734685,-117.14936));
             Log.d("GPS_State", "Off");
         }
 
