@@ -16,6 +16,7 @@ import android.app.AlertDialog;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,6 +51,9 @@ public class BDDTests {
     private ZooKeeperDatabase testDb;
     private NodeItemDao nodeDao;
     private StateDao stateDao;
+
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
 
     private static Context context = null;
 
@@ -274,58 +278,38 @@ public class BDDTests {
     @Test
     public void DirectionsActivityTest() {
         DirectionsActivity.setTesting(true);
-
-        ItineraryActivity.setTesting(true);
         Itinerary.injectTestItinerary(null);
         Itinerary.injectTestNodeDao(nodeDao);
-        Itinerary.updateCurrentLocation("entrance_exit_gate");
-
-        String[] vL = {"gorilla","capuchin","hippo","siamang","mynah","dove"};
-        ArrayList<String> testVisitationList = new ArrayList<String>(Arrays.asList(vL));
-
-        Itinerary.createItinerary(context, testVisitationList);
-        Itinerary.updateCurrentLocation("gorilla");
-        Directions.resetCurrentIndex();
+        Itinerary.injectMockItinerary();
 
         ActivityScenario<DirectionsActivity> scenario = ActivityScenario.launch(DirectionsActivity.class);
         scenario.onActivity(activity -> {
 
+            State state = testDb.stateDao().get();
 
-            Button next_btn = activity.findViewById(R.id.next_btn);
-            Button skip_btn = activity.findViewById(R.id.skip_btn);
-            Button prev_btn = activity.findViewById(R.id.prev_btn);
-            DirectionsAdapter dirAdapter = activity.getAdapter();
+            if(state == null) {
+                testDb.stateDao().insert(new State("2"));
+                state = testDb.stateDao().get();
+            }
 
-            Log.d("itinerary order", Itinerary.getItinerary().toString());
+            RecyclerView rv = activity.findViewById(R.id.directions_items);
+            RecyclerView.ViewHolder vh = rv.findViewHolderForAdapterPosition(0);
 
-            assertEquals("2. Walk 2500 feet along Treetops Way from 'Front Street / Treetops Way' to 'Treetops Way / Orangutan Trail'.", dirAdapter.getItemName(1));
+            preferences = activity.getPreferences(MODE_PRIVATE);
+            editor = preferences.edit();
 
-            next_btn.performClick();
-            assertEquals("2. Walk 2500 feet along Treetops Way from 'Front Street / Treetops Way' to 'Treetops Way / Orangutan Trail'.", dirAdapter.getItemName(1));
+            TextView v = vh.itemView.findViewById(R.id.directions_item_text);
 
-            prev_btn.performClick();
-            assertEquals("2. Walk 1100 feet along Treetops Way from 'Front Street / Treetops Way' to 'Treetops Way / Fern Canyon Trail'.", dirAdapter.getItemName(1));
-
-            skip_btn.performClick();
-            assertEquals("2. Walk 1100 feet along Treetops Way from 'Front Street / Treetops Way' to 'Treetops Way / Fern Canyon Trail'.", dirAdapter.getItemName(1));
-
-            skip_btn.performClick();
-            assertEquals("2. Walk 1100 feet along Treetops Way from 'Front Street / Treetops Way' to 'Treetops Way / Fern Canyon Trail'.", dirAdapter.getItemName(1));
-
-            skip_btn.performClick();
-            assertEquals("2. Walk 2700 feet along Front Street from 'Front Street / Treetops Way' to 'Front Street / Monkey Trail'.", dirAdapter.getItemName(1));
-
-            next_btn.performClick();
-            assertEquals("2. Walk 1100 feet along Treetops Way from 'Front Street / Treetops Way' to 'Treetops Way / Fern Canyon Trail'.", dirAdapter.getItemName(1));
-
-            next_btn.performClick();
-            assertEquals("You Have Arrived at Your Destination! :D", dirAdapter.getItemName(0));
-
-            next_btn.performClick();
+            editor.putString("direction", v.getText().toString());
+            editor.apply();
 
             resetApplication(activity);
 
+            Log.e("PreserveTests-State:", state.state);
+
+            assertEquals(v.getText().toString(), preferences.getString("direction", null));
+            preferences.edit().remove("direction").apply();
+            //ZooKeeperDatabase.getSingleton(activity).stateDao().delete(ZooKeeperDatabase.getSingleton(activity).stateDao().get());
         });
     }
-
 }
